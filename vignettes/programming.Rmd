@@ -1,0 +1,99 @@
+---
+title: "Programming a Little App"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Programming a Little App}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(LittleApp2)
+```
+
+# To do !!!
+
+1. Fix the stratified sampling
+2. Add  a report to the data tab showing what the sample size  is and a breakdown if stratified.
+
+# Overview
+
+A Little App is a particular layout of Shiny app, consisting of several tabs and a top toolbar with items that are visible regardless of which tab is active. Typical tabs are
+
+1. explain: rendering HTML documentation describing the app
+2. data: providing a means to select a dataset and the response and explanatory variables to be displayed
+3. graph: the central graph showing the display at full size
+4. compare: like (3) but shows the display for both  the current graph and one that may have been frozen early.
+5. stats: a column of statistical report for both the current and frozen display
+6. codebook: showing the codebook for the selected data set
+7. debug: a place to print out intermediate results for debugging purposes
+
+
+## The app's personality
+
+Defining the `main_calculation()` reactive.
+
+RETURNS two plots in a list, `main` and `side`. Might return other stuff in the list as well, stuff you could  use  in  the `app_specific_services.R` list.
+
+
+## Data services
+
+
+
+### Inputs
+
+1. `input$package`: text. Which package to get the data from. 
+1. `input$frame`: text. Which data frame within the package
+1. `input$response`: text. Which variable from the frame.
+2. `input$explanatory` text. Which  variable from the frame.
+3. `input$covariate` text. Which variable from the frame. Optional. Set in `data_tab()`.
+4. `input$covariate2` text. Which variable from the frame. Optional. Set in `data_tab()`.
+1. `input$stratify`: logical, whether to stratify sampling by  the explanatory variables.
+
+### Reactives you can use
+
+1. `raw_data()`: returns the whole data frame, all variables. There may be NAs.
+2. `current_sample()`: returns the current sample, containing only the selected variables.
+    - The variables will always be in order: response, explanatory, covariate, covariate2
+    - The NA's have been filtered out
+3. `frozen_sample()`: the last sample frozen.
+5. `frozen_calculation()`:  this is provided automatically, based on saving a result from your `main_calculation()`
+
+### Reactives and renders you  need to define
+
+1. `main_calculation()`: *provided by the app  writer*.
+1. `output$current_stats`: Must be HTML and protected with `HTML()`
+2. `output$frozen_stats`: presumably identical, but with the frozen data.
+
+All the plot outputs are filled in automatically from the results of your  `main_calculation()` reactive
+
+### Modals you construct
+
+All of the inputs you need for your `main_calculation()` go in these modals. They are modals so that you  can make them  as large as you need without upsetting the standard  layout of the app.
+
+These are generated from Shiny input widgets. Each may contain either informative text, output widgets,  or input widgets.
+
+If they are input widgets, you  should cash each input  value  under the  `Common` reactive value.
+
+1. Modal for `input$show_model`
+2. Modal for `input$show_annotation`
+
+## Toolbar inputs
+
+You  put the inputs you need for your calculations in  the modals that you construct. You'll most likely use these in  your `main_calculation()` function.
+
+
+Other inputs are built in and used  by reactives such  as `raw_data()` and `current_sample()`. They are listed below, but you should not usually need to access these directly.
+
+1. `input$sample_size`: the size n of the desired sample
+2. `input$randomize`: if true, shuffle the response variable
+3. `input$new_sample`: trigger to collect a new random sample
+4. `input$freeze`: trigger to save the current sample/model/etc. in the frozen display
+

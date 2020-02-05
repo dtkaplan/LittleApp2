@@ -1,0 +1,21 @@
+Package: LittleApp2
+Type: Package
+Title: Little Apps, generation 2
+Version: 0.1.0
+Author: Daniel Kaplan
+Maintainer: Daniel Kaplan <kaplan@macalester.edu>
+Description: Provides functions for constructing new Little Apps along with some examples
+License: All rights reserved (for now)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown,
+    gridExtra,
+    ggformula,
+    openintro,
+    mosaicData,
+    Lock5Data,
+    testthat (>= 2.1.0)
+VignetteBuilder: knitr
