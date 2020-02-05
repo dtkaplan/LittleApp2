@@ -4,6 +4,7 @@
 #'
 #' @export
 get_package_frames <- function(package) {
+  if (package == "UPLOAD")  return("uploaded_data")
   listing <- data(package = package)
   as.character(listing$results[ ,3])
 }

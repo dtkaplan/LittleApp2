@@ -10,7 +10,13 @@ main_calculation <- reactive({
   modf <- model_formula()
   data <- with_dicotomous_response()
 
-  yrange  <- range(raw_data()[[input$response]], na.rm = TRUE)
+  yvals <- raw_data()[[input$response]]
+
+  if (is.numeric(yvals)) {
+    yrange  <- range(yvals, na.rm = TRUE)
+  } else  {
+    yrange  <- NULL
+  }
 
   F_app_plot(modf, data = data, yrange = yrange )
 })

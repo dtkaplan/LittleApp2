@@ -84,8 +84,7 @@ F_app_plot <- function(formula, data, yrange = NULL,
           labels = c(bottom, .25,  .5, .75, top),
           limits = c(-.1, 1.1)))
   } else if (!is.null(yrange)) {
-    # put the y scale
-    cat("Setting the y-range to", yrange,  "\n")
+    # put the y scale on a common footing for all samples
     P1 <- P1 %>% gf_lims(y  = yrange)
   }
 

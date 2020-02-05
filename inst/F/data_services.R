@@ -1,13 +1,20 @@
 #' Services for specifying and accessing data
 
-
-observe({})
+# Store the uploaded raw data
+Uploaded_data <- reactiveVal(NULL)
 
 # update available frames
 observeEvent(req(input$package), {
-  available_frames <- get_package_frames(input$package)
-  updateSelectInput(session, "frame",
+
+  if (input$package  == "UPLOAD") {
+    updateSelectInput(session, "frame", choices  = "uploaded_dataset")
+    3 + 7
+    8 * 9
+  } else {
+    available_frames <- get_package_frames(input$package)
+    updateSelectInput(session, "frame",
                     choices = c("Select data frame:" = "", available_frames))
+  }
 })
 
 
@@ -44,10 +51,45 @@ observe({
   }
 })
 
+observeEvent(input$uploaded_file, {
+  inFile <- input$uploaded_file
+  if (is.null(inFile))
+    return(NULL)
 
-raw_data <- eventReactive(req(input$frame), {
+  Sheet <- read.csv(inFile$datapath)#, header = input$header,
+                    #sep = input$sep, quote = input$quote)
+  Uploaded_data(Sheet)
+})
+
+data_upload_controls <- function() {
+  shiny::tagList(
+    shiny::fileInput('uploaded_file', 'Choose file to upload',
+                     accept = c(
+                       'text/csv',
+                       'text/comma-separated-values',
+                       'text/tab-separated-values',
+                       'text/plain',
+                       '.csv',
+                       '.tsv'
+                     )
+    )
+  )
+}
+observeEvent(req(input$package == "UPLOAD"), {
+  showModal(
+    modalDialog(title="Upload your own file.",
+                data_upload_controls())
+
+  )
+})
+
+raw_data <- reactive({
+  req(input$frame) #  for dependency
+  Uploaded_data() #  for dependency
+
   if (input$package == "UPLOAD") {
-    stop("Haven't implemented uploading data yet.")
+    req(Uploaded_data())
+    return(Uploaded_data())
   }
   if (isTruthy(input$frame)) {
     my_env = new.env() # where to put the data
@@ -80,6 +122,7 @@ current_variables <- reactive({
 
 
   res[!duplicated(res)] # kill off repeats
+  res <- res[res %in% names(raw_data())]
 
 })
 
@@ -100,7 +143,9 @@ frozen_calculation <- eventReactive(input$freeze, {
 current_sample <- reactive({
   if (!isTruthy(raw_data())) return(NA)
   the_variables <- current_variables()
-
+  the_variables <- the_variables[the_variables %in% names(raw_data())]
+  # the following is to  avoid legacy variable  names  from previous  dataset.
+  req(the_variables) # will  be triggered if <the_variables> is empty
 
   input$new_sample # for the dependency
   input$sample_size
