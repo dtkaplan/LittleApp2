@@ -61,7 +61,6 @@ output$codebook <- renderText({
     return(HTML(p("Sorry, but uploaded files don't have documentation available here.)")))
   }
   # Values of input$frame are package namespaced, e.g. "mosaicData::CPS85"
-  browser()
   components <- unlist(strsplit(input$frame, "::"))
   package <- input$package
   data_name <- input$frame

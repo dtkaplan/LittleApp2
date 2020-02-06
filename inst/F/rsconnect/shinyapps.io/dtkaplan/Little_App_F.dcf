@@ -1,0 +1,12 @@
+name: Little_App_F
+title: Little_App_F
+username:
+account: dtkaplan
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1773033
+bundleId: 2780432
+url: https://dtkaplan.shinyapps.io/Little_App_F/
+when: 1581016754.88722
+asMultiple: FALSE
+asStatic: FALSE
