@@ -9,15 +9,18 @@ License: All rights reserved (for now)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Requires:
+    dplyr,
+    ggplot2,
+    ggformula,
+    gridExtra
 Suggests: 
     knitr,
     rmarkdown,
     gridExtra,
-    ggformula,
     openintro,
     mosaicData,
     Lock5Data,
     triola,
     testthat (>= 2.1.0),
-    dplyr
 VignetteBuilder: knitr
