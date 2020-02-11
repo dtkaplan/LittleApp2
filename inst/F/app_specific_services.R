@@ -96,7 +96,7 @@ observeEvent(input$show_model, {
 format_stats <- function(stats) {
   # this doesn't need to be a reactive. It merely takes the <stats> output
   # from the main calculation and formats it.
-  stats$F <- with(stats,  ((n-dflex)/dflex)*(R2/(1-R2)))
+  stats$F <- with(stats,  ((n-(1+dflex))/dflex)*(R2/(1-R2)))
   res <- with(stats, glue::glue("
   <ul>
   <li>n = {n}</li>\n\n

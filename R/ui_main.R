@@ -24,11 +24,7 @@ include_my_css <- function() {
        width: 140pt;
        color: blue;
        margin: 5px;
-     }
-
-     #data-controls{
-       color: red;
-     }
+               }
 
      label.control-label, .selectize-control.single {
          display: table-cell;

@@ -4,6 +4,7 @@ library(shinyjs)
 library(miniUI)
 library(ggplot2)
 library(LittleApp2)
+library(dplyr)
 
 # Documentation for the app
 explain_text <- paste(

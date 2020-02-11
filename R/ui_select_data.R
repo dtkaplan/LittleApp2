@@ -16,23 +16,27 @@
 data_tab <- function(package_list = default_packages_list,                            covar = TRUE, covar2 = FALSE) {
   miniTabPanel(
     "Data", icon = icon("folder"),
-    miniButtonBlock(
-      ui_select_data(package_list, covar, covar2),
-      wellPanel(
-        checkboxInput("stratify", "Stratify by explan vars"),
-        plotOutput("preview_plot", width="300px", height="250px")
-      )
-    ),
-    verbatimTextOutput("frame_preview")
+    miniContentPanel(
+      side_by_side_table(
+        one = tagList(
+          ui_select_data(package_list, covar, covar2),
+          checkboxInput("stratify", "Stratify by explan vars")
+        ),
+        two = tagList(
+          plotOutput("preview_plot", width="300px", height="250px")
+        ))
+      ,
+      verbatimTextOutput("frame_preview"))
   )
 }
 
 
 default_packages_list <-
-  list("Little Apps" = "LittleApp2",
-       "Open Intro" = "openintro",
+  list("Little Apps" = "LittleApp2",
+       "Open Intro" = "openintro",
        "mosaic" = "mosaicData",
        "Lock-5" = "Lock5Data",
+       "Triola"  = "triola",
        "UPLOAD" = "UPLOAD")
 
 ui_select_data <-  function(package_list = default_packages_list,

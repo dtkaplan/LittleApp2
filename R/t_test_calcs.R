@@ -1,15 +1,15 @@
 #' Two-sample t-test plot
-#' NEED TO WRITE FORMAT_STATS !!!!!!!!!!
 #' @export
 t_test_calcs <-  function(formula, data, level = 0.95,
                                show_mean = TRUE, show_ci = TRUE,
                                show_t = TRUE, var_equal = TRUE,
-                               y_range = NULL) {
+                               y_range = NULL, null_hypothesis = 0) {
   if (rlang::f_rhs(formula) == 1) {
     return(
       one_sample_t_plot(formula  = formula, data  = data, level = level,
-                                     show_mean = show_mean, show_ci = show_ci,
-                                     null_hypothesis = 0, y_range = y_range)
+                        show_mean = show_mean, show_ci = show_ci,
+                        null_hypothesis = null_hypothesis,
+                        y_range = y_range)
     )
   }
   var_y <- as.character(formula[[2]])
@@ -178,9 +178,4 @@ no_x_axis <- ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                             axis.text.x = ggplot2::element_blank(),
                             axis.ticks.x = ggplot2::element_blank())
 
-nice_p <- function(p, n=2) {
-  order <- floor(log10(p))
-  if (order < -4) return("p value < 0.0001")
-  first_two_digits <- round(p * 10^-(order-(n-1)))
-  paste0("p value: 0.", paste0(rep("0", -(order+1)), collapse=""), first_two_digits)
-}
+

@@ -82,6 +82,7 @@ These are generated from Shiny input widgets. Each may contain either informativ
 
 If they are input widgets, you  should cash each input  value  under the  `Common` reactive value.
 
+LUMP THESE TOGETHER.  WE ONLY NEED ONE.
 1. Modal for `input$show_model`
 2. Modal for `input$show_annotation`
 

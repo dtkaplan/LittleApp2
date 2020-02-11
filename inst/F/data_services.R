@@ -2,6 +2,9 @@
 
 # Store the uploaded raw data
 Uploaded_data <- reactiveVal(NULL)
+# Store the current sample for future bootstrap draws
+# This will be NA when resampling is OFF.
+Saved_sample <- reactiveVal(NA)
 
 # update available frames
 observeEvent(req(input$package), {
@@ -141,15 +144,21 @@ frozen_calculation <- eventReactive(input$freeze, {
 })
 
 current_sample <- reactive({
+  input$new_sample # for the dependency
+
+  # Handle resampling  specially
+  if (is.data.frame(Saved_sample())) {
+    res <- dplyr::sample_n(Saved_sample(), size  = input$sample_size, replace=TRUE )
+    return(res)
+  }
+
   if (!isTruthy(raw_data())) return(NA)
   the_variables <- current_variables()
   the_variables <- the_variables[the_variables %in% names(raw_data())]
   # the following is to  avoid legacy variable  names  from previous  dataset.
   req(the_variables) # will  be triggered if <the_variables> is empty
 
-  input$new_sample # for the dependency
-  input$sample_size
-  input$stratify
+
 
   Raw_data <- na.omit( raw_data()[the_variables] )
   if (input$sample_size == "All") {
@@ -162,6 +171,19 @@ current_sample <- reactive({
   if (input$randomize)  Res[[1]] <- sample(Res[[1]])
 
   Res
+})
+
+observe({
+  #input$sample_size # for the dependency
+  #input$stratify # for the dependency
+  # req(input$response)
+  # req(input$explanatory
+  # input$covariate
+  # input$covariate2
+  # input$frame
+
+  if (input$resample) Saved_sample(isolate(current_sample()))
+  else Saved_sample(NA)
 })
 
 # If response is multi-level categorical, show one level and

@@ -20,10 +20,10 @@ graph_panel <- function() {
 compare_panel <- function() {
   miniTabPanel(
     "Compare", icon = icon("book-open"),
-    radioGroupButtons("compare_what", "Show what?",  c("data plot", "model values", "both")),
-    side_by_side_table(
-      current = plotOutput("compare_plot1", brush = brushOpts(id = "comp_ruler")),
-      frozen  = plotOutput("compare_plot2", brush = brushOpts(id = "comp_ruler"))
+      radioGroupButtons("compare_what", "Show what?",  c("data plot", "model values", "both")),
+      side_by_side_table(
+        current = plotOutput("compare_plot1", brush = brushOpts(id = "comp_ruler")),
+        frozen  = plotOutput("compare_plot2", brush = brushOpts(id = "comp_ruler"))
     )
   )
 }

@@ -5,14 +5,17 @@
 #' of which tab is showing. `ui_top_controls` is a function that creates the set of controls,
 #' which then needs to be placed in an appropriate container such as a `miniUI::miniButtonBlock`.
 #'
+#' @param ... UI controls to be added on top.
+#'
 #' @export
-ui_top_controls <- function() {
-  tagList(
+ui_top_controls <- function(title = "App controls",  ...) {
+    div(
     span(
-      selectInput("sample_size", "", c("n = 5" = 5, "n = 10"  = 10,
-                                       "n = 20" = 20, "n = 50" = 50,
-                                       "n  = 100" = 100, "n = 200" = 200, "n = 500" = 500,
-                                       "n = 1000" = 1000, "All" = "All"),
+      selectInput("sample_size", "", c("n = 5" = 5, "n = 10" = 10,
+                                       "n = 20" = 20, "n = 50" = 50,
+                                       "n = 100" = 100, "n = 200" = 200,
+                                       "n = 500" = 500,
+                                       "n = 1000" = 1000, "All" = "All"),
                   selected = 50),
       title = "set sample size"
     ),
@@ -41,27 +44,37 @@ ui_top_controls <- function() {
         label = "", #"model"
         icon = icon("signature"),
         size = "md"),
-      title = "Control model shape"
+      title = title
     ),
-    "   ",
-    span(
-      actionBttn(
-        inputId = "show_annotations",
-        label = "", #"annotations"
-        icon = icon("i-cursor"),
-        size = "md"),
-      title = "Show statistical annotations"
-    ),
+    # "   ",
+    # span(
+    #   actionBttn(
+    #     inputId = "show_annotations",
+    #     label = "", #"annotations"
+    #     icon = icon("i-cursor"),
+    #     size = "md"),
+    #   title = "Show statistical annotations"
+    # ),
     "   ",
     span(
       switchInput(
         inputId = "randomize",
-        label = "randomize response",
+        label = "shuffle",
         size = "mini",
-        labelWidth = "80px",
+        labelWidth = "60px",
         value = as.logical(FALSE)),
       title = "For Null Hypothesis testing. Use random shuffling to eliminate the relationship between the response and explanatory variables"
     ),
+    span(
+    switchInput(
+      inputId = "resample",
+      label = "resample",
+      size = "mini",
+      labelWidth = "60px",
+      value = as.logical(FALSE)),
+    title = "Resample from the current sample rather than generating a new sample"
+    ),
+
     "   ",
     span(
       actionBttn(

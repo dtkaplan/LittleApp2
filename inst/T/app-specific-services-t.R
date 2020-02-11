@@ -8,14 +8,13 @@ main_calculation <- reactive({
 
   yrange  <- range(as.numeric(yvals), na.rm = TRUE)
 
-
   t_test_calcs(modf, data,
                level = Common$conf_level,
                show_mean = Common$show_mean,
                show_ci = Common$show_ci,
                show_t = Common$show_t,
                var_equal = Common$var_equal,
-               y_range = NULL)
+               y_range = NULL,  null_hypothesis = as.numeric(Common$mu))
 })
 
 model_formula <- reactive({
@@ -35,23 +34,35 @@ Common <- reactiveValues(
   show_ci = FALSE,
   show_t = FALSE,
   var_equal = FALSE,
-  conf_level = 0.95
+  conf_level = 0.95,
+  mu = 0
 )
 
-observeEvent(input$show_annotations, {
+observeEvent(input$show_model, { #annotations, {
+  range <- range(current_sample()[[1]])
+
   showModal(
     modalDialog(
       title = "Statistical Annotations", easyClose  = TRUE,
-      checkboxInput("show_mean", "Show mean",  Common$show_mean),
-      checkboxInput("show_ci", "Show conf interval", Common$show_ci),
-      checkboxInput("show_t", "Show t-interval",  Common$show_t),
-      checkboxInput("var_equal", "Assume equal variances", Common$var_equal),
-      selectInput("conf_level", "Confidence level",
-                  choices  = c(0.5, 0.8, 0.9, 0.95, 0.99, 0.999),
-                  selected = Common$conf_level),
+      side_by_side_table(
+        tagList(
+          checkboxInput("show_mean", "Show mean",  Common$show_mean),
+          checkboxInput("show_ci", "Show conf interval", Common$show_ci),
+          checkboxInput("show_t", "Show t-interval",  Common$show_t),
+          checkboxInput("var_equal", "Assume equal variances", Common$var_equal)
+        ),
+        tagList(
+          selectInput("conf_level", "Confidence level",
+                      choices  = c(0.5, 0.8, 0.9, 0.95, 0.99, 0.999),
+                      selected = Common$conf_level),
+          numericInput("mu", "Null hypothesis value", min  = min(0, range ),
+                      max = max(0, range), value = Common$mu)
+        )
+      ),
       size = "s"
     )
   )
+
 })
 
 #  Store the modal inputs in the Common area
@@ -64,17 +75,50 @@ observeEvent(input$show_ci, {
 observeEvent(input$show_t, {
   Common$show_t <-  input$show_t
 })
-observeEvent(input$show_var_equal, {
+observeEvent(input$var_equal, {
   Common$var_equal <-  input$var_equal
 })
 observeEvent(input$conf_level, {
   Common$conf_level <-  as.numeric(input$conf_level)
 })
+observeEvent(input$mu, {
+  Common$mu <-  as.numeric(input$mu)
+})
 
 format_t_stats <- function(stats) {
-  #HTML(p("Just a constant for now."))
-  browser()
-  "Really?"
+  n_samp <- nrow(current_sample())
+  if ((n_samp - stats$parameter) == 1) {
+    my_estimate <- glue::glue("<li>mean = {signif(stats$estimate,  3)}</li>")
+    my_method <- glue::glue("One-sample t-test with mu_0 = {Common$mu}")
+  } else {
+    groups <- gsub("mean in group", "", names(stats$estimate))
+    my_estimate <- glue::glue(
+    '<li>means: {groups[1]} = {signif(stats$estimate[1],3)} vs {groups[2]} = {signif(stats$estimate[2],3)}</li>
+     <li>difference in means: {signif(diff(stats$estimate), 3)}</li>'
+    )
+    my_method <- glue::glue('method: {ifelse(Common$var_equal, "equal", "unequal")} variance two-sample t test')
+  }
+
+  res <- with(stats,
+       glue::glue('<ul>
+  <li>n = {n_samp}</li>
+  {my_estimate}
+  <li>CI = {signif(stats$conf.int[1],4)} to {signif(stats$conf.int[2], 4)} at
+  {100*attr(stats$conf.int, "conf.level")}% level.</li>
+  <li>t-statistic: {signif(stats$statistic, 3)}</li>
+  <li>F-statistic: {signif(stats$statistic^2, 3)}</li>
+  <li>Degrees flexibility: {signif(n_samp - (1+stats$parameter),3)}</li>
+  <li>Degrees of freedom: {signif(stats$parameter,3)}</li>
+  <li>{nice_p(stats$p.value)}</li>
+  <li>{my_method}</li>
+  </ul>'
+       )
+  )
+
+  HTML(res)
+
+
+
 }
 
 current_stats  <- reactive({

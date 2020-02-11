@@ -4,7 +4,10 @@
 \alias{ui_top_controls}
 \title{Create controls at top of app}
 \usage{
-ui_top_controls()
+ui_top_controls(title = "App controls", ...)
+}
+\arguments{
+\item{...}{UI controls to be added on top.}
 }
 \description{
 As a matter of design policy, each Little App has a row of controls

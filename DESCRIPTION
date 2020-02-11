@@ -17,5 +17,7 @@ Suggests:
     openintro,
     mosaicData,
     Lock5Data,
-    testthat (>= 2.1.0)
+    triola,
+    testthat (>= 2.1.0),
+    dplyr
 VignetteBuilder: knitr

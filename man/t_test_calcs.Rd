@@ -5,7 +5,8 @@
 \title{Two-sample t-test plot}
 \usage{
 t_test_calcs(formula, data, level = 0.95, show_mean = TRUE,
-  show_ci = TRUE, show_t = TRUE, var_equal = TRUE, y_range = NULL)
+  show_ci = TRUE, show_t = TRUE, var_equal = TRUE, y_range = NULL,
+  null_hypothesis = 0)
 }
 \description{
 Two-sample t-test plot
