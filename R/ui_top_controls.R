@@ -13,15 +13,15 @@
 ui_top_controls <- function(title = "App controls",  ...) {
     div(
     span(
-      selectInput("sample_size", "", c("n&nbsp;=&nbsp;5" = 5, "n&nbsp;=&nbsp;10" = 10,
-                                       "n&nbsp;=&nbsp;20" = 20, "n&nbsp;=&nbsp;50" = 50,
-                                       "n&nbsp;=&nbsp;100" = 100, "n&nbsp;=&nbsp;200" = 200,
-                                       "n&nbsp;=&nbsp;500" = 500,
-                                       "n&nbsp;=&nbsp;1000" = 1000, "All" = "All"),
+      selectInput("sample_size", "", c("n = 5" = 5, "n = 10" = 10,
+                                       "n = 20" = 20, "n = 50" = 50,
+                                       "n = 100" = 100, "n = 200" = 200,
+                                       "n = 500" = 500,
+                                       "n = 1000" = 1000, "All" = "All"),
                   selected = 50),
       title = "set sample size"
     ),
-    "&nbsp;&nbsp;&nbsp;",
+    "  ",
     span(
       actionBttn(
         inputId = "new_sample",
@@ -30,7 +30,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         size= "md"),
       title  = "Draw a new sample of size n"
     ),
-    "&nbsp;&nbsp;&nbsp;",
+    "  ",
     span(
       actionBttn(
         inputId = "freeze",
@@ -39,7 +39,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         size = "md"),
       title = "Freeze the current plot"
     ),
-    "&nbsp;&nbsp;&nbsp;",
+    "  ",
     span(
       actionBttn(
         inputId = "show_model",
@@ -48,7 +48,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         size = "md"),
       title = title
     ),
-    "&nbsp;&nbsp;&nbsp;",
+    "  ",
     span(
       switchInput(
         inputId = "randomize",
@@ -58,6 +58,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         value = as.logical(FALSE)),
       title = "For Null Hypothesis testing. Use random shuffling to eliminate the relationship between the response and explanatory variables"
     ),
+    "  ",
     span(
     switchInput(
       inputId = "resample",
@@ -68,7 +69,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
     title = "Resample from the current sample rather than generating a new sample"
     ),
 
-    "&nbsp;&nbsp;&nbsp;",
+    "  ",
     span(
       actionBttn(
         inputId = "bookmark",

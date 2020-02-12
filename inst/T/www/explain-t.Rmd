@@ -3,6 +3,7 @@
 ```{r include=FALSE}
 library(LittleApp2)
 library(mosaic)
+library(dplyr)
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 

@@ -20,7 +20,7 @@ data_tab <- function(package_list = default_packages_list,                      
       side_by_side_table(
         one = tagList(
           ui_select_data(package_list, covar, covar2),
-          checkboxInput("stratify", "Stratify&nbsp;by&nbsp;explan&nbsp;vars")
+          checkboxInput("stratify", "Stratify by explan vars")
         ),
         two = tagList(
           plotOutput("preview_plot", width="300px", height="250px")
@@ -32,8 +32,8 @@ data_tab <- function(package_list = default_packages_list,                      
 
 
 default_packages_list <-
-  list("Little&nbsp;Apps" = "LittleApp2",
-       "Open&nbsp;Intro" = "openintro",
+  list("Little Apps" = "LittleApp2",
+       "Open Intro" = "openintro",
        "mosaic" = "mosaicData",
        "Lock-5" = "Lock5Data",
        "Triola"  = "triola",

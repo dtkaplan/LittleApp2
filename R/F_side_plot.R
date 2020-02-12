@@ -82,14 +82,14 @@ F_side_plot <- function(raw, fitted, explan = "bogus", dflex = 1,
   }
   if (F || R2) {
     P <- P %>%
-      gf_label(low ~ 2.5, data = Stats[2,],
+      ggformula::gf_label(low ~ 2.5, data = Stats[2,],
                           label = label,
                           label.size  = 0, fill = "blue",
                           color  =  "black",  vjust  =  0,
                           hjust  = 1,
                           alpha  = 0.2)
   }
-  Label <- gf_label(1 ~ 1, label =  Rlabel) %>%
+  Label <- ggformula::gf_label(1 ~ 1, label =  Rlabel) %>%
     gf_theme(axis.ticks = element_blank(),
              axis.text = element_blank(),
              axis.title = element_blank(),

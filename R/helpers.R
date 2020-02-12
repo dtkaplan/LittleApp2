@@ -47,7 +47,7 @@ get_new_sample <- function() {
       This_group <- Raw_data[group == groups[k]]
       nmax <- min(sample_size, nrow(This_group))
       counts_in_group[k] <- nmax
-      Res <- bind_rows(Res, sample_n(This_group, size = nmax))
+      Res <- bind_rows(Res, dplyr::sample_n(This_group, size = nmax))
     }
     samp_size_message  <-
       paste(paste0(groups,
@@ -56,7 +56,7 @@ get_new_sample <- function() {
     output$sample_message <- renderText({samp_size_message})
   } else {
     # simple sample
-    Res <- sample_n( Raw_data, size = max)
+    Res <- dplyr::sample_n( Raw_data, size = max)
   }
 
 }
