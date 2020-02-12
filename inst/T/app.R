@@ -27,8 +27,8 @@ ui <- ui_main(
 server <- function(input, output, session) {
 
 
-  source("../F/data_services.R", local = TRUE)
-  source("../F/output_services.R", local = TRUE)
+  source(system.file("data_services.R",  package = "LittleApp2"), local = TRUE)
+  source(system.file("output_services.R", package = "LittleApp2"), local = TRUE)
   source("app-specific-services-t.R", local = TRUE)
 
   output$explain_text <- renderText({HTML(explain_text)})

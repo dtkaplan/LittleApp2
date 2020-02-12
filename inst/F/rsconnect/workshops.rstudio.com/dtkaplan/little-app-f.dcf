@@ -5,8 +5,8 @@ account: dtkaplan
 server: workshops.rstudio.com
 hostUrl: https://workshops.rstudio.com/rsconnect/__api__
 appId: 159
-bundleId: 195
+bundleId: 196
 url: https://workshops.rstudio.com/rsconnect/content/159/
-when: 1581454495.58862
+when: 1581536523.66209
 asMultiple: FALSE
 asStatic: FALSE
