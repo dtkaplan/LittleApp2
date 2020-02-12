@@ -27,7 +27,7 @@ output$compare_plot1 <- renderPlot({
 
 output$compare_plot2 <- renderPlot({
   if (input$freeze == 0 ) {
-    gf_label(1 ~ 1, label="No model frozen yet!")
+    ggformula::gf_label(1 ~ 1, label="No model frozen yet!")
   } else {
     if (input$compare_what == "data plot") frozen_calculation()$main
     else if (input$compare_what == "model values") frozen_calculation()$side

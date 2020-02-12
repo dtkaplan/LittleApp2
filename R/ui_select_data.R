@@ -18,11 +18,11 @@ data_tab <- function(package_list = default_packages_list,                      
     "Data", icon = icon("folder"),
     miniContentPanel(
       side_by_side_table(
-        one = tagList(
+        tagList(
           ui_select_data(package_list, covar, covar2),
           checkboxInput("stratify", "Stratify by explan vars")
         ),
-        two = tagList(
+        tagList(
           plotOutput("preview_plot", width="300px", height="250px")
         ))
       ,
