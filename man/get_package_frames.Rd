@@ -6,6 +6,21 @@
 \usage{
 get_package_frames(package)
 }
+\arguments{
+\item{package}{character string name of a package}
+
+\item{frame}{character string name of a data frame}
+
+\item{sample}{a data frame}
+
+\item{model_order}{integer, the order of spline to use for the primary explanatory variable
+when it is quantitative}
+
+\item{interaction}{logical flag. If `TRUE` include interactions among the explanatory
+variables}
+
+\item{model_type}{character string specifying the model architecture. Either `"lm"` or `"logistic"`}
+}
 \description{
 Get the names of frames available in the package
 }

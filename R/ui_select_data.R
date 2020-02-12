@@ -20,7 +20,7 @@ data_tab <- function(package_list = default_packages_list,                      
       side_by_side_table(
         one = tagList(
           ui_select_data(package_list, covar, covar2),
-          checkboxInput("stratify", "Stratify by explan vars")
+          checkboxInput("stratify", "Stratify&nbsp;by&nbsp;explan&nbsp;vars")
         ),
         two = tagList(
           plotOutput("preview_plot", width="300px", height="250px")
@@ -32,8 +32,8 @@ data_tab <- function(package_list = default_packages_list,                      
 
 
 default_packages_list <-
-  list("Little Apps" = "LittleApp2",
-       "Open Intro" = "openintro",
+  list("Little&nbsp;Apps" = "LittleApp2",
+       "Open&nbsp;Intro" = "openintro",
        "mosaic" = "mosaicData",
        "Lock-5" = "Lock5Data",
        "Triola"  = "triola",
@@ -42,7 +42,7 @@ default_packages_list <-
 ui_select_data <-  function(package_list = default_packages_list,
                             covar = TRUE, covar2 = FALSE) {
   table_str <-
-    glue::glue(
+    glue(
       '<table id="data-controls">
     <col width="150pt"><col width="200pt">
     <tr><td>Source package</td><td>{smaller_select("package", package_list)}</td></tr>
@@ -52,11 +52,11 @@ ui_select_data <-  function(package_list = default_packages_list,
     )
 
   if (covar) {
-    table_str <- paste(table_str, glue::glue(
+    table_str <- paste(table_str, glue(
       '<tr><td>Covar</td><td>{smaller_select("covariate", NULL)}</td></tr>'
     ))
     if (covar2) {
-      table_str <- paste(table_str, glue::glue(
+      table_str <- paste(table_str, glue(
         '<tr><td>Covar2</td><td>{smaller_select("covariate2", NULL)}</td></tr>'
       ))
     }

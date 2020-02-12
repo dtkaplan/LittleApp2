@@ -1,4 +1,17 @@
 #' Two-sample t-test plot
+#'
+#' Carry out the calculations for the t-test app
+#'
+#' @param formula a formula such as height ~ 1 or height ~ sex suitable for a one- or two-sample t-test
+#' @param data a dataframe with the variables mentioned in formula
+#' @param level confidence level. A number between zero and one.
+#' @param show_mean logical flag. Whether to show the groupwise means in the plot.
+#' @param show_ci similar to `show_mean`, but for the confidence interval
+#' @param show_t similar to `show_mean`, but for the t interval
+#' @param var_equal if `TRUE` use the equal variance t-test
+#' @param yrange a pair of numbers specifying the range to use on the y axis
+#' @param null_hypothesis a number saying what value for mu_0 should be used in the one-sample t-test
+#'
 #' @export
 t_test_calcs <-  function(formula, data, level = 0.95,
                                show_mean = TRUE, show_ci = TRUE,
@@ -174,8 +187,8 @@ LA_dot_layer <- function(formula, data, color, width, height, alpha = 1, seed = 
   P
 }
 
-no_x_axis <- ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                            axis.text.x = ggplot2::element_blank(),
-                            axis.ticks.x = ggplot2::element_blank())
+no_x_axis <- theme(axis.title.x = element_blank(),
+                   axis.text.x = element_blank(),
+                   axis.ticks.x = element_blank())
 
 

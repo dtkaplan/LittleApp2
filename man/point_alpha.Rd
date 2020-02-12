@@ -7,7 +7,7 @@
 point_alpha(n)
 }
 \arguments{
-\item{the}{number of dots in the plot (that is, the sample size)}
+\item{n}{the number of dots in the plot (that is, the sample size)}
 }
 \description{
 Based on the number of dots in the plot

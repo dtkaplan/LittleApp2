@@ -4,8 +4,12 @@
 \alias{get_model_formula}
 \title{construct the model formula}
 \usage{
-get_model_formula(sample, model_order = 1, interaction = TRUE,
-  model_type = "lm")
+get_model_formula(
+  sample,
+  model_order = 1,
+  interaction = TRUE,
+  model_type = "lm"
+)
 }
 \description{
 construct the model formula

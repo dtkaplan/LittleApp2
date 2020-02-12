@@ -6,6 +6,10 @@ library(mosaic)
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
+#### Quick Start
+
+If you haven't used this app  before, read on! But if you are experienced, go to the "Data" tab,  choose a dataset and  variables, and start from there.
+
 #### Samples and populations
 
 We often summarize a variable with its mean value. And, since we work with *samples* from a *population*, the mean we calculate is a "sample mean." The sample mean is an example of a "sample statistic", that is, a numerical summary of the sample.  

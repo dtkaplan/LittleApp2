@@ -2,7 +2,7 @@
 #'
 #' Based on the number of dots in the plot
 #'
-#' @param  the number of dots in the plot (that is, the sample size)
+#' @param  n the number of dots in the plot (that is, the sample size)
 #'
 #' @export
 point_alpha <- function(n) {

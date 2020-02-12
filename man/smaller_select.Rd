@@ -6,6 +6,11 @@
 \usage{
 smaller_select(id, choices)
 }
+\arguments{
+\item{id}{character string id to be assigned to the widget}
+
+\item{choices}{list or vector of choices for the selectInput}
+}
 \description{
-A few custom widgets
+Create a smaller version of a shiny selectInput
 }

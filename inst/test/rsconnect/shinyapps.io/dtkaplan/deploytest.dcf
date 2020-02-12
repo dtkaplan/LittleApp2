@@ -1,0 +1,12 @@
+name: deploytest
+title: deploytest
+username:
+account: dtkaplan
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1800711
+bundleId: 2795680
+url: https://dtkaplan.shinyapps.io/deploytest/
+when: 1581530067.50673
+asMultiple: FALSE
+asStatic: FALSE

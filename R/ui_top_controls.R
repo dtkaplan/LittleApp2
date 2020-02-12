@@ -5,21 +5,23 @@
 #' of which tab is showing. `ui_top_controls` is a function that creates the set of controls,
 #' which then needs to be placed in an appropriate container such as a `miniUI::miniButtonBlock`.
 #'
+#' @param title character string. The name to be used for the button that brings
+#' up the modal containing the app-specific controls
 #' @param ... UI controls to be added on top.
 #'
 #' @export
 ui_top_controls <- function(title = "App controls",  ...) {
     div(
     span(
-      selectInput("sample_size", "", c("n = 5" = 5, "n = 10" = 10,
-                                       "n = 20" = 20, "n = 50" = 50,
-                                       "n = 100" = 100, "n = 200" = 200,
-                                       "n = 500" = 500,
-                                       "n = 1000" = 1000, "All" = "All"),
+      selectInput("sample_size", "", c("n&nbsp;=&nbsp;5" = 5, "n&nbsp;=&nbsp;10" = 10,
+                                       "n&nbsp;=&nbsp;20" = 20, "n&nbsp;=&nbsp;50" = 50,
+                                       "n&nbsp;=&nbsp;100" = 100, "n&nbsp;=&nbsp;200" = 200,
+                                       "n&nbsp;=&nbsp;500" = 500,
+                                       "n&nbsp;=&nbsp;1000" = 1000, "All" = "All"),
                   selected = 50),
       title = "set sample size"
     ),
-    "   ",
+    "&nbsp;&nbsp;&nbsp;",
     span(
       actionBttn(
         inputId = "new_sample",
@@ -28,7 +30,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         size= "md"),
       title  = "Draw a new sample of size n"
     ),
-    "   ",
+    "&nbsp;&nbsp;&nbsp;",
     span(
       actionBttn(
         inputId = "freeze",
@@ -37,7 +39,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         size = "md"),
       title = "Freeze the current plot"
     ),
-    "   ",
+    "&nbsp;&nbsp;&nbsp;",
     span(
       actionBttn(
         inputId = "show_model",
@@ -46,16 +48,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         size = "md"),
       title = title
     ),
-    # "   ",
-    # span(
-    #   actionBttn(
-    #     inputId = "show_annotations",
-    #     label = "", #"annotations"
-    #     icon = icon("i-cursor"),
-    #     size = "md"),
-    #   title = "Show statistical annotations"
-    # ),
-    "   ",
+    "&nbsp;&nbsp;&nbsp;",
     span(
       switchInput(
         inputId = "randomize",
@@ -75,7 +68,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
     title = "Resample from the current sample rather than generating a new sample"
     ),
 
-    "   ",
+    "&nbsp;&nbsp;&nbsp;",
     span(
       actionBttn(
         inputId = "bookmark",

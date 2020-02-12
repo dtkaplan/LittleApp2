@@ -1,0 +1,12 @@
+name: little-app-f
+title: Little-App-F
+username: dtkaplan
+account: dtkaplan
+server: workshops.rstudio.com
+hostUrl: https://workshops.rstudio.com/rsconnect/__api__
+appId: 159
+bundleId: 195
+url: https://workshops.rstudio.com/rsconnect/content/159/
+when: 1581454495.58862
+asMultiple: FALSE
+asStatic: FALSE

@@ -4,8 +4,15 @@
 \alias{one_sample_t_plot}
 \title{One-sample t test plot}
 \usage{
-one_sample_t_plot(formula, data, level = 0.95, show_mean = TRUE,
-  show_ci = TRUE, null_hypothesis = 0, y_range = NULL)
+one_sample_t_plot(
+  formula,
+  data,
+  level = 0.95,
+  show_mean = TRUE,
+  show_ci = TRUE,
+  null_hypothesis = 0,
+  y_range = NULL
+)
 }
 \description{
 One-sample t test plot

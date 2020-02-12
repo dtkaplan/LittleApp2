@@ -2,6 +2,15 @@
 #'
 #' Get the names of frames available in the package
 #'
+#' @param package character string name of a package
+#' @param frame character string name of a data frame
+#' @param sample a data frame
+#' @param model_order integer, the order of spline to use for the primary explanatory variable
+#' when it is quantitative
+#' @param interaction logical flag. If `TRUE` include interactions among the explanatory
+#' variables
+#' @param model_type character string specifying the model architecture. Either `"lm"` or `"logistic"`
+#'
 #' @export
 get_package_frames <- function(package) {
   if (package == "UPLOAD")  return("uploaded_data")
@@ -38,7 +47,7 @@ get_new_sample <- function() {
       This_group <- Raw_data[group == groups[k]]
       nmax <- min(sample_size, nrow(This_group))
       counts_in_group[k] <- nmax
-      Res <- bind_rows(Res, dplyr::sample_n(This_group, size = nmax))
+      Res <- bind_rows(Res, sample_n(This_group, size = nmax))
     }
     samp_size_message  <-
       paste(paste0(groups,
@@ -66,21 +75,21 @@ get_model_formula <- function(sample, model_order=1, interaction=TRUE,
   vars <- names(sample)
 
   if (length(vars) == 1) {
-    return(as.formula(glue::glue("{vars[1]} ~ 1")))
+    return(as.formula(glue("{vars[1]} ~ 1")))
   }
 
   explan <- vars[2]
 
-  if (model_order > 1) explan <- glue::glue("splines::ns({explan}, {model_order})")
+  if (model_order > 1) explan <- glue("ns({explan}, {model_order})")
 
   if (length(vars) == 2) {
-    return(as.formula(glue::glue("{vars[1]} ~ {explan}")))
+    return(as.formula(glue("{vars[1]} ~ {explan}")))
   }
   if (length(vars) == 3) {
-    return(as.formula(glue::glue("{vars[1]} ~ {explan} {interaction_symbol} {vars[3]}")))
+    return(as.formula(glue("{vars[1]} ~ {explan} {interaction_symbol} {vars[3]}")))
   }
   if (length(vars) == 4) {
-    return(as.formula(glue::glue(
+    return(as.formula(glue(
       "{vars[1]} ~ {explan} {interaction_symbol} {vars[3]} {interaction_symbol} {vars[4]}")))
   }
   stop("Should never get here")

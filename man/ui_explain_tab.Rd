@@ -7,12 +7,10 @@
 ui_explain_tab(title = "", icon = "bicycle")
 }
 \arguments{
-\item{icon}{An optional icon, e.g. `icon("bicycle")`. Set to NULL to disable}
+\item{title}{A (short) character string naming the tab.}
 
-\item{text}{A (short) character string naming the tab.}
-
-\item{text}{A character string containing HTML.}
+\item{icon}{An optional icon, e.g. `"bicycle"`. Set to NULL to disable}
 }
 \description{
-An explain tab shows a string that will be rendered as HTML
+An explain tab containing an htmlOutput
 }

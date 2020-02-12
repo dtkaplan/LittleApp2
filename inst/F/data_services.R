@@ -148,7 +148,7 @@ current_sample <- reactive({
 
   # Handle resampling  specially
   if (is.data.frame(Saved_sample())) {
-    res <- dplyr::sample_n(Saved_sample(), size  = input$sample_size, replace=TRUE )
+    res <- sample_n(Saved_sample(), size  = input$sample_size, replace=TRUE )
     return(res)
   }
 
@@ -166,7 +166,7 @@ current_sample <- reactive({
   } else {
      choose_n <-  min(nrow(Raw_data), as.numeric(input$sample_size))
   }
-  Res <- dplyr::sample_n(Raw_data, size = choose_n)
+  Res <- sample_n(Raw_data, size = choose_n)
 
   if (input$randomize)  Res[[1]] <- sample(Res[[1]])
 

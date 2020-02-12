@@ -4,8 +4,7 @@
 \alias{data_tab}
 \title{Functions for constructing the data UI}
 \usage{
-data_tab(package_list = default_packages_list, covar = TRUE,
-  covar2 = FALSE)
+data_tab(package_list = default_packages_list, covar = TRUE, covar2 = FALSE)
 }
 \arguments{
 \item{package_list}{A named list whose values are character strings containing

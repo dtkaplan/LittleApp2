@@ -19,9 +19,17 @@
 #' @param F  logical flag to show the F value in the side plot
 #'
 #' @import ggformula
+#' @importFrom splines ns
+#' @importFrom stats as.formula fitted lm median var
+#' @importFrom utils capture.output data
+#' @import forcats
+#' @importFrom glue glue
+#' @import miniUI
+#' @import rlang
+#' @import tidyr
 #'
 #' @examples
-#' make_model_plots(wage ~ splines::ns(educ, 2)*sex,  data = mosaicData::CPS85)
+#' tmp <- F_app_plot(wage ~ splines::ns(educ, 2)*sex,  data = mosaicData::CPS85)
 #' @return  A list with the two plots (P1 and P2) and
 #' the fitted model
 #' @export
@@ -114,7 +122,7 @@ F_app_plot <- function(formula, data, yrange = NULL,
   P2 <- F_side_plot(response,
                     data$model_output,
                     explan = explanatory,
-                    df = model$rank -  1,
+                    dflex = model$rank -  1,
                     violin = FALSE,
                     R2 = R2,
                     F = F,

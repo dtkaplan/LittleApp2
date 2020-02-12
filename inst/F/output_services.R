@@ -27,7 +27,7 @@ output$compare_plot1 <- renderPlot({
 
 output$compare_plot2 <- renderPlot({
   if (input$freeze == 0 ) {
-    ggformula::gf_label(1 ~ 1, label="No model frozen yet!")
+    gf_label(1 ~ 1, label="No model frozen yet!")
   } else {
     if (input$compare_what == "data plot") frozen_calculation()$main
     else if (input$compare_what == "model values") frozen_calculation()$side
@@ -86,13 +86,13 @@ observeEvent(input$main_ruler, {
   req(current_sample())
   with(input$main_ruler, {
     yinfo <-
-      glue::glue("{input$response}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
+      glue("{input$response}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
 
     if(input$explanatory != "none_selected" &&
        is.numeric(raw_data()[[input$explanatory]])) {
       slope <- (ymax - ymin) / (xmax - xmin)
-      xinfo <- glue::glue("{input$explanatory}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
-      slope_info <- glue::glue("Slope of box diagonals: ± {signif(slope, 3)}")
+      xinfo <- glue("{input$explanatory}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
+      slope_info <- glue("Slope of box diagonals: ± {signif(slope, 3)}")
     } else {
       xinfo <- slope_info <- ""
     }
@@ -114,13 +114,13 @@ observeEvent(input$comp_ruler, {
   req(current_sample())
   with(input$comp_ruler, {
     yinfo <-
-      glue::glue("{input$response}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
+      glue("{input$response}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
 
     if(input$explanatory != "none_selected" &&
        is.numeric(raw_data()[[input$explanatory]])) {
       slope <- (ymax - ymin) / (xmax - xmin)
-      xinfo <- glue::glue("{input$explanatory}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
-      slope_info <- glue::glue("Slope of box diagonals: ± {signif(slope, 3)}")
+      xinfo <- glue("{input$explanatory}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
+      slope_info <- glue("Slope of box diagonals: ± {signif(slope, 3)}")
     } else {
       xinfo <- slope_info <- ""
     }

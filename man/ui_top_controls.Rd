@@ -7,6 +7,9 @@
 ui_top_controls(title = "App controls", ...)
 }
 \arguments{
+\item{title}{character string. The name to be used for the button that brings
+up the modal containing the app-specific controls}
+
 \item{...}{UI controls to be added on top.}
 }
 \description{

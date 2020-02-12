@@ -8,18 +8,23 @@
 #' @param raw the response variable as a vector
 #' @param fitted the fitted model values as a vector
 #' @param explan the explanatory variable as a vector
+#' @param dflex integer, degrees of flexibility (which is n - (degfreedom+1))
 #' @param sd if `TRUE`, show the interval of plus-or-minus one
 #' standard deviation
-#' @param R if `TRUE` show R  and R-squared in the graph.
+#' @param R2 if `TRUE` show R  and R-squared in the graph.
 #' @param F if `TRUE`  show n and F statistic
 #' @param violin if `TRUE` show a violin plot.
 #' @examples
 #' with(mosaicData::Galton,
-#' side_plot_R(height, fitted(lm(height ~ father)),
+#' F_side_plot(height, fitted(lm(height ~ father)),
 #'   explan = father))
 #' @import ggplot2
 #' @import ggformula
 #' @import dplyr
+#' @import shiny
+#' @import shinyWidgets
+#' @importFrom shinyjs hide show
+#'
 #' @export
 F_side_plot <- function(raw, fitted, explan = "bogus", dflex = 1,
                         violin = FALSE,
@@ -35,31 +40,31 @@ F_side_plot <- function(raw, fitted, explan = "bogus", dflex = 1,
     explan <- ((explan ) /
                  diff(range(explan))) / 2
     Pts  <- Pts %>%
-      dplyr::mutate(xpos = c(explan + 2,  explan + 1))
+      mutate(xpos = c(explan + 2,  explan + 1))
     P <-
-      ggformula::gf_jitter(v ~ source,  data = Pts,  alpha = 0) %>%
-      ggformula::gf_jitter(v ~ xpos, data = Pts, width = 0.1,
+      gf_jitter(v ~ source,  data = Pts,  alpha = 0) %>%
+      gf_jitter(v ~ xpos, data = Pts, width = 0.1,
                            color =  ~  source,  alpha  = 0.2)
   } else {
-    P <- ggformula::gf_jitter(v ~ source, data  = Pts,
+    P <- gf_jitter(v ~ source, data  = Pts,
                               color = ~ source, alpha  = .2,
                               width = 0.4, height = 0)
   }
 
   Stats <-  mosaicCore::df_stats(v ~ source, data = Pts,
                                  m = mean, var = var)  %>%
-    dplyr::mutate(high  =  m  + sqrt(var), low = m - sqrt(var))
+    mutate(high  =  m  + sqrt(var), low = m - sqrt(var))
   R2val <- Stats$var[1] /  Stats$var[2]
 
   if (violin)
     P <- P %>%
-    ggformula::gf_violin(fill = ~ source, alpha  = 0.2,
+    gf_violin(fill = ~ source, alpha  = 0.2,
                          color = ~ source)
   if (sd)
     P <- P %>%
-    ggformula::gf_errorbar(high + low ~ source, data = Stats,
+    gf_errorbar(high + low ~ source, data = Stats,
                            inherit  = FALSE) %>%
-    ggformula::gf_point(m ~ source, data = Stats, color = "black",
+    gf_point(m ~ source, data = Stats, color = "black",
                         inherit = FALSE)
   label <- ""
   Rlabel <- paste0("R=", signif(sqrt(R2val), 2),
@@ -77,7 +82,7 @@ F_side_plot <- function(raw, fitted, explan = "bogus", dflex = 1,
   }
   if (F || R2) {
     P <- P %>%
-      ggformula::gf_label(low ~ 2.5, data = Stats[2,],
+      gf_label(low ~ 2.5, data = Stats[2,],
                           label = label,
                           label.size  = 0, fill = "blue",
                           color  =  "black",  vjust  =  0,
@@ -94,11 +99,11 @@ F_side_plot <- function(raw, fitted, explan = "bogus", dflex = 1,
              panel.background = element_rect(color = NA))
 
   P  <-
-    P %>% ggformula::gf_labs(x = "", y = "") %>%
-    ggformula::gf_theme(axis.ticks.x = element_blank(),
+    P %>% gf_labs(x = "", y = "") %>%
+    gf_theme(axis.ticks.x = element_blank(),
                         axis.text.y = element_blank(),
                         legend.pos = "none") %>%
-    ggformula::gf_refine(scale_colour_manual(
+    gf_refine(scale_colour_manual(
       values = c("blue", "black")))
   return(list(P = P, label=Label, stats =
                 list(R2=R2val, n=length(raw), dflex=dflex,

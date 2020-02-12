@@ -4,8 +4,15 @@
 \alias{F_app_plot}
 \title{Main calculations for the F app}
 \usage{
-F_app_plot(formula, data, yrange = NULL, show_model = TRUE,
-  sd = TRUE, R2 = FALSE, F = FALSE)
+F_app_plot(
+  formula,
+  data,
+  yrange = NULL,
+  show_model = TRUE,
+  sd = TRUE,
+  R2 = FALSE,
+  F = FALSE
+)
 }
 \arguments{
 \item{formula}{of form A ~ B or A ~ B + C. You can also
@@ -39,5 +46,5 @@ showing the side plot comparing the distribution
 of raw to  model values
 }
 \examples{
-make_model_plots(wage ~ splines::ns(educ, 2)*sex,  data = mosaicData::CPS85)
+tmp <- F_app_plot(wage ~ splines::ns(educ, 2)*sex,  data = mosaicData::CPS85)
 }

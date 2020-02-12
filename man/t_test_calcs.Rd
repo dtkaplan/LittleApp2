@@ -4,10 +4,37 @@
 \alias{t_test_calcs}
 \title{Two-sample t-test plot}
 \usage{
-t_test_calcs(formula, data, level = 0.95, show_mean = TRUE,
-  show_ci = TRUE, show_t = TRUE, var_equal = TRUE, y_range = NULL,
-  null_hypothesis = 0)
+t_test_calcs(
+  formula,
+  data,
+  level = 0.95,
+  show_mean = TRUE,
+  show_ci = TRUE,
+  show_t = TRUE,
+  var_equal = TRUE,
+  y_range = NULL,
+  null_hypothesis = 0
+)
+}
+\arguments{
+\item{formula}{a formula such as height ~ 1 or height ~ sex suitable for a one- or two-sample t-test}
+
+\item{data}{a dataframe with the variables mentioned in formula}
+
+\item{level}{confidence level. A number between zero and one.}
+
+\item{show_mean}{logical flag. Whether to show the groupwise means in the plot.}
+
+\item{show_ci}{similar to `show_mean`, but for the confidence interval}
+
+\item{show_t}{similar to `show_mean`, but for the t interval}
+
+\item{var_equal}{if `TRUE` use the equal variance t-test}
+
+\item{null_hypothesis}{a number saying what value for mu_0 should be used in the one-sample t-test}
+
+\item{yrange}{a pair of numbers specifying the range to use on the y axis}
 }
 \description{
-Two-sample t-test plot
+Carry out the calculations for the t-test app
 }
