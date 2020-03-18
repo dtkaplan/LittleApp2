@@ -34,6 +34,7 @@ data_tab <- function(package_list = default_packages_list,                      
 default_packages_list <-
   list("Little Apps" = "LittleApp2",
        "Open Intro" = "openintro",
+       "Stats with Technology" = "MAT160",
        "mosaic" = "mosaicData",
        "Lock-5" = "Lock5Data",
        "Triola"  = "triola",

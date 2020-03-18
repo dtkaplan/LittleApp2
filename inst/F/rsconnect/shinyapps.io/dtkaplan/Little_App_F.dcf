@@ -5,8 +5,8 @@ account: dtkaplan
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1773033
-bundleId: 2795953
+bundleId: 2895600
 url: https://dtkaplan.shinyapps.io/Little_App_F/
-when: 1581536707.65924
+when: 1584565706.6218
 asMultiple: FALSE
 asStatic: FALSE
