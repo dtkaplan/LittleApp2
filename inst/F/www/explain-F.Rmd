@@ -1,3 +1,7 @@
+---
+pagetitle: "Model Functions"
+---
+
 ## **Model Functions _Little App_**
 
 Newbies: *Read this page then go to the "Data" tab on the bottom.*
