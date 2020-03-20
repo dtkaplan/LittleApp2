@@ -1,5 +1,15 @@
 #' Services for specifying and accessing data
 
+# Get the query string and use it to set up everything
+# getURLState <- eventReactive(input$frame, {
+#   query_string <- session$clientData$url_search
+#
+#   cat("Query string is:", query_string, "\n")
+#   query_string
+# })
+
+n_size <- reactiveVal(50, label = "sample_n")
+
 # Store the uploaded raw data
 Uploaded_data <- reactiveVal(NULL)
 # Store the current sample for future bootstrap draws
@@ -7,8 +17,7 @@ Uploaded_data <- reactiveVal(NULL)
 Saved_sample <- reactiveVal(NA)
 
 # update available frames
-observeEvent(req(input$package), {
-
+observeEvent(input$package, {
   if (input$package  == "UPLOAD") {
     updateSelectInput(session, "frame", choices  = "uploaded_dataset")
     3 + 7
@@ -16,7 +25,9 @@ observeEvent(req(input$package), {
   } else {
     available_frames <- get_package_frames(input$package)
     updateSelectInput(session, "frame",
-                    choices = c("Select data frame:" = "", available_frames))
+                    choices = c("Select data frame:" = "", available_frames),
+                    # Randomize the choice of a frame
+                    selected = sample(available_frames, 1))
   }
 })
 
@@ -28,16 +39,20 @@ observe({
   if (isTruthy(raw_data()))
     var_names <- names(raw_data())
   else
-    var_names <- character(1)
+    var_names <- c("", "")
 
+
+  randomly_selected <- sample(var_names, 2)
   updateSelectInput(session, "response",
                     choices = c("Select response var:" = "",
-                                var_names))
+                                var_names),
+                    selected = randomly_selected[1])
   # If there's only one variable, hide the explanatory chooser
   if (length(var_names) < 2) hide("explanatory") else show("explanatory")
   updateSelectInput(session, "explanatory",
                     choices = c("Select explanatory var:" = "",
-                                var_names))
+                                var_names),
+                    selected = randomly_selected[2])
   # These aren't being hidden when called for. I don't know why.
   if ('covariate' %in% names(input)) {
     if (length(var_names) < 3) hide("covariate") else show("covariate")
@@ -148,7 +163,8 @@ current_sample <- reactive({
 
   # Handle resampling  specially
   if (is.data.frame(Saved_sample())) {
-    res <- dplyr::sample_n(Saved_sample(), size  = input$sample_size, replace=TRUE )
+    res <- dplyr::sample_n(Saved_sample(),
+                           size  = n_size(), replace=TRUE )
     return(res)
   }
 
@@ -161,10 +177,10 @@ current_sample <- reactive({
 
 
   Raw_data <- na.omit( raw_data()[the_variables] )
-  if (input$sample_size == "All") {
+  if (n_size() == "All") {
     choose_n  <- nrow(Raw_data)
   } else {
-     choose_n <-  min(nrow(Raw_data), as.numeric(input$sample_size))
+     choose_n <-  min(nrow(Raw_data), as.numeric(n_size()))
   }
   Res <- dplyr::sample_n(Raw_data, size = choose_n)
 
@@ -174,7 +190,7 @@ current_sample <- reactive({
 })
 
 observe({
-  #input$sample_size # for the dependency
+  # n_size() # for the dependency
   #input$stratify # for the dependency
   # req(input$response)
   # req(input$explanatory

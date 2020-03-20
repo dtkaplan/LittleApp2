@@ -20,6 +20,8 @@ data_tab <- function(package_list = default_packages_list,                      
       side_by_side_table(
         tagList(
           ui_select_data(package_list, covar, covar2),
+          actionButton("show_explain", "Explain App"),
+          actionButton("show_metadata", "Show codebook"),
           checkboxInput("stratify", "Stratify by explan vars")
         ),
         tagList(

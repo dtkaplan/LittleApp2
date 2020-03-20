@@ -44,7 +44,8 @@ Common <- reactiveValues(
   model_type = "lm",
   model_order = 1,
   interaction_term = TRUE,
-  selected_category = character(0)
+  selected_category = character(0),
+  sample_size = 50
 )
 
 # One of the two modals you define
@@ -102,7 +103,7 @@ format_stats <- function(stats) {
   <li>n = {n}</li>\n\n
   <li>dflex = {dflex}</li>\n\n
   <li>var_raw = {signif(var_raw,4)}</li>\n\n
-  <li>nvar_model = {signif(var_model,4)}</li>\n\n
+  <li>var_model = {signif(var_model,4)}</li>\n\n
   </ul>
   <p>thus ...</p>\n\n
   <ul>
@@ -121,15 +122,11 @@ frozen_stats <- reactive({
   format_stats(frozen_calculation()$stats)
 })
 
-
-
 observeEvent(input$model_type,  {
   Common$model_type <<- input$model_type
 })
 observeEvent(input$interaction_term, {
-  cat("setting interaction term\n")
   Common$interaction_term <<- input$interaction_term
-  cat("Set interaction to  ", Common$interaction_term, "\n")
 })
 observeEvent(input$model_order, {
   Common$model_order <<- input$model_order

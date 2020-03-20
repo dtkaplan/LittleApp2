@@ -37,7 +37,7 @@ server <- function(input, output, session) {
 
 
   output$debug1 <- renderText({
-    input$sample_size
+    n_size()
     input$new_sample
     paste(capture.output(head(current_sample())), collapse = "\n")
     })

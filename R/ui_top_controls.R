@@ -12,15 +12,8 @@
 #' @export
 ui_top_controls <- function(title = "App controls",  ...) {
     div(
-    span(
-      selectInput("sample_size", "", c("n = 5" = 5, "n = 10" = 10,
-                                       "n = 20" = 20, "n = 50" = 50,
-                                       "n = 100" = 100, "n = 200" = 200,
-                                       "n = 500" = 500,
-                                       "n = 1000" = 1000, "All" = "All"),
-                  selected = 50),
-      title = "set sample size"
-    ),
+    span(actionBttn(inputId="n_select","n=50", size = "sm"),
+         title = "set sample size"),
     "  ",
     span(
       actionBttn(
@@ -60,11 +53,11 @@ ui_top_controls <- function(title = "App controls",  ...) {
     ),
     "  ",
     span(
-    switchInput(
+    checkboxInput(
       inputId = "resample",
       label = "resample",
-      size = "mini",
-      labelWidth = "60px",
+      #size = "mini",
+      #labelWidth = "60px",
       value = as.logical(FALSE)),
     title = "Resample from the current sample rather than generating a new sample"
     ),
@@ -75,7 +68,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         inputId = "bookmark",
         label = "", #"bookmark"
         icon = icon("bookmark"),
-        size = "md"),
+        size = "xs"),
       title = "Bookmark state of app"
     )
   )

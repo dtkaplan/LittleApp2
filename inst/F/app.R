@@ -5,6 +5,13 @@ library(miniUI)
 library(ggplot2)
 library(LittleApp2)
 library(dplyr)
+library(triola)
+library(mosaicData)
+library(MAT160)
+library(openintro)
+library(Lock5Data)
+
+options(warn = -1) # suppress  warnings
 
 # Documentation for the app
 explain_text <- paste(
@@ -14,18 +21,17 @@ explain_text <- paste(
 
 ui <- ui_main(
   ui_top_controls(),
-  ui_explain_tab("F", "info-circle"),
+  # ui_explain_tab("F", "info-circle"),
   data_tab(),
   graph_panel(),
   compare_panel(),
-  stats_panel(),
-  codebook_panel(),
-  debug_panel()
+  stats_panel()#,
+  #codebook_panel(),
+  #debug_panel()
   )
 
 
 server <- function(input, output, session) {
-
 
   source(system.file("data_services.R", package="LittleApp2"), local = TRUE)
   source(system.file("output_services.R", package = "LittleApp2"), local = TRUE)
@@ -37,7 +43,7 @@ server <- function(input, output, session) {
 
 
   output$debug1 <- renderText({
-    input$sample_size
+    n_size()
     input$new_sample
     paste(capture.output(head(current_sample())), collapse = "\n")
     })

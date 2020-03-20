@@ -11,9 +11,9 @@ ui_explain_tab <- function(title = "",
   res <- miniTabPanel(
     paste("Little App:", title),
     icon = icon(icon),
-    miniContentPanel(padding = 5,
-                     htmlOutput("explain_text")
-    )
+    # miniContentPanel(padding = 5,
+    #                  htmlOutput("explain_text")
+    # )
   )
 
   res

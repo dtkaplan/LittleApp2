@@ -23,7 +23,8 @@ Imports:
     mosaicCore,
     rlang,
     tidyr,
-    gridExtra
+    gridExtra,
+    jsonlite
 Suggests: 
     knitr,
     rmarkdown,

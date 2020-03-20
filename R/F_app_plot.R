@@ -74,8 +74,10 @@ F_app_plot <- function(formula, data, yrange = NULL,
   P1 <-
     if  (is.numeric(explanatory) &&
          length(unique(explanatory)) == 2 ) {
-      gf_point(plot_formula, data  = data,
-               color  = color_formula, alpha = alpha)
+      suppressWarnings(
+        gf_point(plot_formula, data  = data,
+                 color  = color_formula, alpha = alpha)
+      )
     } else {
       gf_jitter(plot_formula,  data = data,
                 color  = color_formula,

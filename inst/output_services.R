@@ -74,7 +74,8 @@ output$codebook <- renderText({
         collapse  = "\n")
     )
   } else {
-    HTML(p("Sorry, but there's no documentation for this frame."))
+    cat("no-documentation message\n")
+    "Sorry, but there's no documentation for this frame."
   }
 })
 
@@ -137,3 +138,82 @@ observeEvent(input$comp_ruler, {
   })
 })
 
+## For the documentation
+observeEvent(input$show_explain, {
+  showModal(
+    modalDialog(htmlOutput("explain_text"),
+                title  = "Explaining the App ...",  easyClose = TRUE)
+  )
+},
+  ignoreNULL = FALSE
+)
+
+## For the codebook
+observeEvent(input$show_metadata, {
+  showModal(
+    modalDialog(htmlOutput("codebook"),
+                title  = "Codebook",  easyClose = TRUE)
+  )
+}
+)
+
+
+
+## For the sample size
+observeEvent(input$n_select,  {
+  showModal(
+    modalDialog(
+      radioGroupButtons("sample_size", "Set sample size",
+                     c("n = 5" = 5, "n = 10" = 10,
+                       "n = 20" = 20, "n = 50" = 50,
+                       "n = 100" = 100, "n = 200" = 200,
+                       "n = 500" = 500,
+                       "n = 1000" = 1000, "All" = "All"),
+                     selected = n_size(), 1))
+    )
+})
+
+# When the modal for setting sample size is called
+# then input$sample_size will exist and have a value.
+# We can use that value to update the sample size.
+
+observeEvent(input$sample_size, {
+  n_size(input$sample_size)
+  updateActionButton(session,  "n_select",  label = paste0("n=",  input$sample_size))
+})
+
+# Handle the bookmark
+
+observeEvent(input$bookmark, {
+  state <-  list(
+    package = input$package,
+    frame = input$frame,
+    n_size = n_size(),
+    response  = input$response,
+    explanatory = input$explanatory
+    )
+  if ("covariate" %in% names(input)){
+    state$covariate = input$covariate
+  }
+  if ("covariate2" %in% names(input)){
+    state$covariate2 = input$covariate2
+  }
+  state <- jsonlite::toJSON(state)
+
+  #cat(names(session$clientData))
+  myURL <-
+    paste0(
+      session$clientData$url_protocol, "//",
+      session$clientData$url_hostname, ":",
+      session$clientData$url_port,
+      session$clientData$url_pathname,
+      "/?state=", state)
+
+  showModal(
+    modalDialog(
+      p("Use this URL to restore data..."),
+      p( myURL),
+      p("use url_search")
+    )
+  )
+})

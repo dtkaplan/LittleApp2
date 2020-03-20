@@ -26,10 +26,10 @@ get_frame_var_names <- function(frame) {
 get_new_sample <- function() {
   # Get  this sorted out for stratification.
 
-  sample_size <- if (input$sample_size == "All") {
+  sample_size <- if (n_size() == "All") {
     nrow(raw_data())
   } else {
-    as.numeric(input$sample_size)
+    as.numeric(n_size())
   }
 
   nmax <- min(sample_size, nrow(raw_data))
