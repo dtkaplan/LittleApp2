@@ -56,6 +56,7 @@ F_side_plot <- function(raw, fitted, explan = "bogus", dflex = 1,
     mutate(high  =  m  + sqrt(var), low = m - sqrt(var))
   R2val <- Stats$var[1] /  Stats$var[2]
 
+
   if (violin)
     P <- P %>%
     gf_violin(fill = ~ source, alpha  = 0.2,

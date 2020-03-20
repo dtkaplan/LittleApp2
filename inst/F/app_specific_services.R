@@ -18,7 +18,19 @@ main_calculation <- reactive({
     yrange  <- NULL
   }
 
-  F_app_plot(modf, data = data, yrange = yrange )
+  # Construct the plots,
+  # making sure that the data are adequate.
+  if (is_sample_plotable()) {
+     F_app_plot(modf, data = data, yrange = yrange )
+  } else {
+     list(main = gf_blank(modf, data = head(data,0)) %>%
+            gf_label(1 ~ 1, label="Not enough variation in this sample\nTry sampling again,\n perhaps with a larger sample size."),
+          stats = HTML(
+            "<p>No variation in this sample.</p>
+             <p>Try sampling again perhaps with a larger sample size.</p>"
+          )
+     )
+  }
 })
 
 
@@ -116,10 +128,20 @@ format_stats <- function(stats) {
 
 
 current_stats  <- reactive({
-  format_stats(main_calculation()$stats)
+  res <- main_calculation()$stats
+  if (inherits(res,  "html")) {
+    res  #  it's an  error  message
+  } else {
+    format_stats(res)
+  }
 })
 frozen_stats <- reactive({
-  format_stats(frozen_calculation()$stats)
+  res <- frozen_calculation()$stats
+  if (inherits(res,  "html")) {
+    res  #  it's an  error  message
+  } else {
+    format_stats(res)
+  }
 })
 
 observeEvent(input$model_type,  {

@@ -3,9 +3,10 @@
 
 
 output$big_plot <- renderPlot({
-  if (input$side_display) {
-    gridExtra::grid.arrange(main_calculation()$main,
-                            main_calculation()$side,
+  res <- main_calculation()$main
+  if (input$side_display && !is.null(res$side)) {
+    gridExtra::grid.arrange(res$main,
+                            res$side,
                             nrow = 1,
                             widths = c(3,1))
   } else {
@@ -15,11 +16,13 @@ output$big_plot <- renderPlot({
 })
 
 output$compare_plot1 <- renderPlot({
-  if (input$compare_what == "data plot") main_calculation()$main
-  else if (input$compare_what == "model values") main_calculation()$side
+  res <- main_calculation()
+  if (is.null(res$side)) return(res$main)
+  if (input$compare_what == "data plot") res$main
+  else if (input$compare_what == "model values") res$side
   else {
-    gridExtra::grid.arrange(main_calculation()$main,
-                            main_calculation()$side,
+    gridExtra::grid.arrange(res$main,
+                            res$side,
                             nrow = 1,
                             widths = c(3,1))
   }
@@ -29,11 +32,13 @@ output$compare_plot2 <- renderPlot({
   if (input$freeze == 0 ) {
     ggformula::gf_label(1 ~ 1, label="No model frozen yet!")
   } else {
-    if (input$compare_what == "data plot") frozen_calculation()$main
-    else if (input$compare_what == "model values") frozen_calculation()$side
+    res <- frozen_calculation()
+    if (input$compare_what == "data plot" ||
+        is.null(res$side)) res$main
+    else if (input$compare_what == "model values") res$side
     else {
-      gridExtra::grid.arrange(frozen_calculation()$main,
-                              frozen_calculation()$side,
+      gridExtra::grid.arrange(res$main,
+                              res$side,
                               nrow = 1,
                               widths = c(3,1))
     }
@@ -74,7 +79,6 @@ output$codebook <- renderText({
         collapse  = "\n")
     )
   } else {
-    cat("no-documentation message\n")
     "Sorry, but there's no documentation for this frame."
   }
 })
@@ -179,7 +183,18 @@ observeEvent(input$n_select,  {
 
 observeEvent(input$sample_size, {
   n_size(input$sample_size)
-  updateActionButton(session,  "n_select",  label = paste0("n=",  input$sample_size))
+  updateActionButton(
+    session,  "n_select",
+    label = paste0("n=",
+                   min(input$sample_size,
+                       nrow(req(current_sample())))))
+})
+
+observeEvent(nrow(current_sample()), {
+  updateActionButton(
+    session,  "n_select",
+    label = paste0("n=",
+                   nrow(current_sample())))
 })
 
 # Handle the bookmark
@@ -207,7 +222,7 @@ observeEvent(input$bookmark, {
       session$clientData$url_hostname, ":",
       session$clientData$url_port,
       session$clientData$url_pathname,
-      "/?state=", state)
+      "?state=", state)
 
   showModal(
     modalDialog(

@@ -33,9 +33,7 @@ observeEvent(input$package, {
 
 
 # update response and explanatory variable choices
-observe({
-  req(input$package) # for dependency
-  req(input$frame) # for dependency
+observeEvent(req(input$frame), {
   if (isTruthy(raw_data()))
     var_names <- names(raw_data())
   else
@@ -158,9 +156,20 @@ frozen_calculation <- eventReactive(input$freeze, {
   main_calculation()
 })
 
+# How many levels in each  variable
+count_levels <- reactive({
+  S <- current_sample()
+
+  unlist(lapply(S,  function(x) {length(unique(x))}))
+})
+
+is_sample_plotable <- reactive({
+  # They must all be > 1 to be plotable
+  all(count_levels() > 1)
+})
+
 current_sample <- reactive({
   input$new_sample # for the dependency
-
   # Handle resampling  specially
   if (is.data.frame(Saved_sample())) {
     res <- dplyr::sample_n(Saved_sample(),
@@ -208,9 +217,11 @@ with_dicotomous_response <- reactive({
   data <- current_sample()
   resp <- data[[1]]
   if (is.logical(resp)) data[[1]] <- as.numeric(data[[1]])
-  else if (!is.numeric(resp)) {
+  else if (!is.numeric(resp) &&  !inherits(resp, "Date")) {
     if (length(unique(resp)) > 2) {
-      data[[1]] <- forcats::fct_lump(data[[1]], n = 1)
+      data[[1]] <- forcats::fct_lump_n(
+        data[[1]], n = 1,
+        ties.method = "random")
     }
   }
 
