@@ -6,7 +6,7 @@
 main_calculation <- reactive({
   req(ncol(current_sample()) > 1)
   # These two assignments are to avoid lazy evaluation of the reactives
-  # when calling F_app_plot()
+  # when calling F_main_calc()
   modf <- model_formula()
   data <- with_dicotomous_response()
 
@@ -21,7 +21,7 @@ main_calculation <- reactive({
   # Construct the plots,
   # making sure that the data are adequate.
   if (is_sample_plotable()) {
-     F_app_plot(modf, data = data, yrange = yrange )
+     F_main_calc(modf, data = data, yrange = yrange )
   } else {
      list(main = gf_blank(modf, data = head(data,0)) %>%
             gf_label(1 ~ 1, label="Not enough variation in this sample\nTry sampling again,\n perhaps with a larger sample size."),
@@ -106,6 +106,11 @@ observeEvent(input$show_model, {
   )
 })
 
+#---
+# App specific translation between main_calculation()$stats and
+# HTML to be displayed in the stats tab.
+# This is not a reactive, but still needs to be defined  in
+# app_specific_services since it will be different for each app.
 format_stats <- function(stats) {
   # this doesn't need to be a reactive. It merely takes the <stats> output
   # from the main calculation and formats it.
@@ -126,23 +131,13 @@ format_stats <- function(stats) {
   HTML(res)
 }
 
+# Managing parameters that make sense only in the context
+# of this specific app. These parameters are set in the
+# app-specific parameter modal.
+# The inputs in the modal, are transient, existing only when the
+# modal is being displayed. These observers take the transient values
+# and  store them persistently in <Common>
 
-current_stats  <- reactive({
-  res <- main_calculation()$stats
-  if (inherits(res,  "html")) {
-    res  #  it's an  error  message
-  } else {
-    format_stats(res)
-  }
-})
-frozen_stats <- reactive({
-  res <- frozen_calculation()$stats
-  if (inherits(res,  "html")) {
-    res  #  it's an  error  message
-  } else {
-    format_stats(res)
-  }
-})
 
 observeEvent(input$model_type,  {
   Common$model_type <<- input$model_type

@@ -13,7 +13,7 @@
 ui_top_controls <- function(title = "App controls",  ...) {
     div(
     span(actionBttn(inputId="n_select","n=50", size = "sm"),
-         title = "set sample size"),
+         title = "Sets sample size.\n\nIf selected sample size is bigger than\nthe number of rows in the data frame,\nthis shows the number of rows."),
     "  ",
     span(
       actionBttn(

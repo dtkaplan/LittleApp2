@@ -1,57 +1,57 @@
 # reactive services for the outputs such as plots
 
-
+#-----------
+# Display outputs (non-modal)
 
 output$big_plot <- renderPlot({
-  res <- main_calculation()$main
+  res <- main_calculation()
+
   if (input$side_display && !is.null(res$side)) {
     gridExtra::grid.arrange(res$main,
                             res$side,
                             nrow = 1,
                             widths = c(3,1))
   } else {
-    main_calculation()$main
+    res$main
   }
 
 })
 
+
 output$compare_plot1 <- renderPlot({
-  res <- main_calculation()
-  if (is.null(res$side)) return(res$main)
-  if (input$compare_what == "data plot") res$main
-  else if (input$compare_what == "model values") res$side
-  else {
-    gridExtra::grid.arrange(res$main,
-                            res$side,
-                            nrow = 1,
-                            widths = c(3,1))
-  }
+  construct_compare_plot(
+    main_calculation(),
+    input$compare_what)
 })
 
 output$compare_plot2 <- renderPlot({
   if (input$freeze == 0 ) {
     ggformula::gf_label(1 ~ 1, label="No model frozen yet!")
   } else {
-    res <- frozen_calculation()
-    if (input$compare_what == "data plot" ||
-        is.null(res$side)) res$main
-    else if (input$compare_what == "model values") res$side
-    else {
-      gridExtra::grid.arrange(res$main,
-                              res$side,
-                              nrow = 1,
-                              widths = c(3,1))
-    }
+    construct_compare_plot(
+      frozen_calculation(),
+      input$compare_what)
   }
 })
 
+
 # The stats outputs
 output$current_stats <- renderText({
-  current_stats()
+  res <- main_calculation()$stats
+  if (inherits(res,  "html")) {
+    res  #  it's an  error  message
+  } else {
+    format_stats(res) # an app-specific function
+  }
 })
 
 output$frozen_stats <- renderText({
-  frozen_stats()
+  res <- frozen_calculation()$stats
+  if (inherits(res,  "html")) {
+    res  #  it's an  error  message
+  } else {
+    format_stats(res) # an app-specific function
+  }
 })
 
 # The codebook
@@ -85,6 +85,7 @@ output$codebook <- renderText({
 
 output$preview_plot <- renderPlot({main_calculation()$main})
 
+#------------
 # Display facts about brushed area in the plot with the ruler
 
 observeEvent(input$main_ruler, {
@@ -163,19 +164,10 @@ observeEvent(input$show_metadata, {
 
 
 
-## For the sample size
-observeEvent(input$n_select,  {
-  showModal(
-    modalDialog(
-      radioGroupButtons("sample_size", "Set sample size",
-                     c("n = 5" = 5, "n = 10" = 10,
-                       "n = 20" = 20, "n = 50" = 50,
-                       "n = 100" = 100, "n = 200" = 200,
-                       "n = 500" = 500,
-                       "n = 1000" = 1000, "All" = "All"),
-                     selected = n_size(), 1))
-    )
-})
+
+
+#-------
+#  SAMPLE SIZE LOGIC
 
 # When the modal for setting sample size is called
 # then input$sample_size will exist and have a value.
@@ -183,11 +175,6 @@ observeEvent(input$n_select,  {
 
 observeEvent(input$sample_size, {
   n_size(input$sample_size)
-  updateActionButton(
-    session,  "n_select",
-    label = paste0("n=",
-                   min(input$sample_size,
-                       nrow(req(current_sample())))))
 })
 
 observeEvent(nrow(current_sample()), {
@@ -197,6 +184,21 @@ observeEvent(nrow(current_sample()), {
                    nrow(current_sample())))
 })
 
+## For the sample size
+observeEvent(input$n_select,  {
+  showModal(
+    modalDialog(
+      radioGroupButtons("sample_size", "Set sample size",
+                        c("n = 5" = 5, "n = 10" = 10,
+                          "n = 20" = 20, "n = 50" = 50,
+                          "n = 100" = 100, "n = 200" = 200,
+                          "n = 500" = 500,
+                          "n = 1000" = 1000, "All" = "All"),
+                        selected = n_size(), 1))
+  )
+})
+
+#-------------
 # Handle the bookmark
 
 observeEvent(input$bookmark, {

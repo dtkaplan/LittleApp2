@@ -1,5 +1,12 @@
 #' Main calculations for the F app
 #'
+#' Main calculations for any app consist of ...
+#' - (1) The pain plot `P`
+#' - (2) The  side plot `side`. Can be null is none is needed.
+#' - (3) `stats` A data  frame or list with statistics on the system
+
+#' list(main = P1 %>% gf_theme(legend.position  =  "left"),
+#'
 #' A basic plot showing two or three variables:
 #' - a response
 #' - an explanatory variable
@@ -30,14 +37,16 @@
 #'
 #' @examples
 #' tmp <- F_app_plot(wage ~ splines::ns(educ, 2)*sex,  data = mosaicData::CPS85)
-#' @return  A list with the two plots (P1 and P2) and
-#' the fitted model
+#' @return  A list with the two plots (P1 and P2),
+#' the fitted model, and the stats.
 #' @export
 
-F_app_plot <- function(formula, data, yrange = NULL,
+F_main_calc <- function(formula, data, yrange = NULL,
                              show_model = TRUE,
-                             sd  =  TRUE, R2 = FALSE,
-                             F = FALSE) {
+                             sd  =  TRUE) {
+  # Don't really need the last  few arguments. I wanted to have them
+  # so that I could design the app. Perhaps I'll add controls about
+  # what to show and use them  to  replace the static TRUE/FALSEs
 
   response <- data[[formula[[2]]]]
   response_name <- as.character(formula[[2]])
@@ -125,9 +134,6 @@ F_app_plot <- function(formula, data, yrange = NULL,
                     data$model_output,
                     explan = explanatory,
                     dflex = model$rank -  1,
-                    violin = FALSE,
-                    R2 = R2,
-                    F = F,
                     sd = sd)
   if (!is.null(top)) {
     P2$P <- P2$P  %>% gf_lims(y  = c(-.1, 1.1))
@@ -137,6 +143,5 @@ F_app_plot <- function(formula, data, yrange = NULL,
 
   list(main = P1 %>% gf_theme(legend.position  =  "left"),
        side  = P2$P,
-       label = P2$label,
        stats = P2$stats)
 }

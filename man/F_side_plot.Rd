@@ -2,18 +2,9 @@
 % Please edit documentation in R/F_side_plot.R
 \name{F_side_plot}
 \alias{F_side_plot}
-\title{Graphics for the 2020 revisions of Little Apps}
+\title{Graphics for F  app}
 \usage{
-F_side_plot(
-  raw,
-  fitted,
-  explan = "bogus",
-  dflex = 1,
-  violin = FALSE,
-  R2 = TRUE,
-  F = TRUE,
-  sd = TRUE
-)
+F_side_plot(raw, fitted, explan = "bogus", dflex = 1, sd = TRUE)
 }
 \arguments{
 \item{raw}{the response variable as a vector}
@@ -23,12 +14,6 @@ F_side_plot(
 \item{explan}{the explanatory variable as a vector}
 
 \item{dflex}{integer, degrees of flexibility (which is n - (degfreedom+1))}
-
-\item{violin}{if `TRUE` show a violin plot.}
-
-\item{R2}{if `TRUE` show R  and R-squared in the graph.}
-
-\item{F}{if `TRUE`  show n and F statistic}
 
 \item{sd}{if `TRUE`, show the interval of plus-or-minus one
 standard deviation}
