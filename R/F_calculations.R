@@ -75,7 +75,8 @@ F_main_calc <- function(formula, data, yrange = NULL,
   if (!is.null(covariate) && is.numeric(covariate)) {
     # discretize the covariate for the displayed version  of the
     # model (but not the version used for the  F calculations)
-    discrete_values <- seq(min(covariate), max(covariate), length = 4)
+    discrete_values <- seq(min(covariate), max(covariate),
+                           length = 4)
     # Find the discrete_value that's closest to each element of
     # the covariate. Use that for  getting the model values.
 
@@ -133,7 +134,7 @@ F_main_calc <- function(formula, data, yrange = NULL,
         as.formula(paste("model_output  + model_output ~",  explanatory_name))
       P1 <- P1 %>%
         gf_errorbar(mod_plot_formula,
-                    data = data,
+                    data = mod_data,
                     color  =  color_formula)
     }
   }

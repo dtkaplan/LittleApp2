@@ -54,6 +54,16 @@ output$frozen_stats <- renderText({
   }
 })
 
+output$save_plot = downloadHandler(
+  filename = 'test.png',
+  content = function(file) {
+    device <- function(..., width = 4, height = 3) {
+      grDevices::png(..., width = width, height = height,
+                     res = 300, units = "in")
+    }
+    ggsave(file, plot = main_calculation()$main, device = device)
+  })
+
 # The codebook
 
 #' Services for the codebook

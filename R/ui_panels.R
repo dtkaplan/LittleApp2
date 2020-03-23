@@ -12,9 +12,11 @@ graph_panel <- function() {
       textOutput("big_plot_comment_top"),
       plotOutput("big_plot", width="100%",
                  brush = brushOpts(id = "main_ruler")),
-      textOutput("big_plot_comment_bottom")
+      textOutput("big_plot_comment_bottom"),
+      downloadButton("save_plot",  "Download graphic")
     )
   )
+
 }
 #' @export
 compare_panel <- function() {
