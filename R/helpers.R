@@ -22,45 +22,6 @@ get_frame_var_names <- function(frame) {
   names(frame)
 }
 
-#' @export
-get_new_sample <- function() {
-  # Get  this sorted out for stratification.
-
-  sample_size <- if (n_size() == "All") {
-    nrow(raw_data())
-  } else {
-    as.numeric(n_size())
-  }
-
-  nmax <- min(sample_size, nrow(raw_data))
-
-  if  (length(the_variables) > 1) grouping_var <- Raw_data[[the_variables[2]]]
-
-  if  (req(input$stratify) &&
-       length(unique(grouping_var)) < 10) {
-
-    Res <- NULL
-    groups <- unique(grouping_var)
-    counts_in_group <- numeric(length(groups))
-    for (k in 1:length(groups)) {
-      group <- groups[k]
-      This_group <- Raw_data[group == groups[k]]
-      nmax <- min(sample_size, nrow(This_group))
-      counts_in_group[k] <- nmax
-      Res <- bind_rows(Res, dplyr::sample_n(This_group, size = nmax))
-    }
-    samp_size_message  <-
-      paste(paste0(groups,
-                   "[n=",  counts_in_group, "]"),
-            collapse = " : ")
-    output$sample_message <- renderText({samp_size_message})
-  } else {
-    # simple sample
-    Res <- dplyr::sample_n( Raw_data, size = max)
-  }
-
-}
-
 #' construct the model formula
 #' @export
 get_model_formula <- function(sample, model_order=1, interaction=TRUE,

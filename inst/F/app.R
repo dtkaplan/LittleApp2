@@ -11,7 +11,7 @@ library(MAT160)
 library(openintro)
 library(Lock5Data)
 
-options(warn = -1) # suppress  warnings
+options(warn = -1) # suppress  warnings so log doesn't get crowded
 
 # Documentation for the app
 explain_text <- paste(
@@ -39,18 +39,12 @@ server <- function(input, output, session) {
 
   output$explain_text <- renderText({HTML(explain_text)})
 
-
-
-
   output$debug1 <- renderText({
     n_size()
     input$new_sample
     paste(capture.output(head(current_sample())), collapse = "\n")
     })
   output$debug2 <- renderText({nrow(current_sample())})
-
-
-
 
 }
 

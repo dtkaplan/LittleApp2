@@ -29,7 +29,7 @@ the fitted model, and the stats.
 }
 \description{
 Main calculations for any app consist of ...
-- (1) The pain plot `P`
+- (1) The main plot `main`
 - (2) The  side plot `side`. Can be null is none is needed.
 - (3) `stats` A data  frame or list with statistics on the system
 list(main = P1 %>% gf_theme(legend.position  =  "left"),

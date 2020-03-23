@@ -1,13 +1,5 @@
 #' Services for specifying and accessing data
 
-# Get the query string and use it to set up everything
-# getURLState <- eventReactive(input$frame, {
-#   query_string <- session$clientData$url_search
-#
-#   cat("Query string is:", query_string, "\n")
-#   query_string
-# })
-
 n_size <- reactiveVal(50, label = "sample_n")
 
 # Store the uploaded raw data
@@ -20,8 +12,6 @@ Saved_sample <- reactiveVal(NA)
 observeEvent(input$package, {
   if (input$package  == "UPLOAD") {
     updateSelectInput(session, "frame", choices  = "uploaded_dataset")
-    3 + 7
-    8 * 9
   } else {
     available_frames <- get_package_frames(input$package)
     updateSelectInput(session, "frame",
@@ -38,7 +28,6 @@ observeEvent(req(input$frame), {
     var_names <- names(raw_data())
   else
     var_names <- c("", "")
-
 
   randomly_selected <- sample(var_names, 2)
   updateSelectInput(session, "response",
@@ -128,18 +117,16 @@ output$frame_preview <- renderText({
 current_variables <- reactive({
   res <- req(input$response)
 
-  if (isTruthy(input$explanatory)) res <-  c(res, input$explanatory)
-  else return(res)
+  if (isTruthy(input$explanatory))
+    res <- c(res, input$explanatory)
+  if (isTruthy(input$covariate))
+    res <- c(res, input$covariate)
+  if (isTruthy(input$covariate2))
+    res <- c(res, input$covariate2)
 
-  if (isTruthy(input$covariate)) res <-  c(res, input$covariate)
-  else return(res)
+  res <- res[!duplicated(res)] # kill off repeats
 
-  if (isTruthy(input$covariate2)) res <-  c(res, input$covariate2)
-
-
-  res[!duplicated(res)] # kill off repeats
-  res <- res[res %in% names(raw_data())]
-
+  res[res %in% names(raw_data())]
 })
 
 frozen_sample <- eventReactive(input$freeze, {
@@ -158,9 +145,7 @@ frozen_calculation <- eventReactive(input$freeze, {
 
 # How many levels in each  variable
 count_levels <- reactive({
-  S <- current_sample()
-
-  unlist(lapply(S,  function(x) {length(unique(x))}))
+    unlist(lapply(current_sample(),  function(x) {length(unique(x))}))
 })
 
 is_sample_plotable <- reactive({
@@ -170,7 +155,8 @@ is_sample_plotable <- reactive({
 
 current_sample <- reactive({
   input$new_sample # for the dependency
-  # Handle resampling  specially
+  input$stratify
+  # Handle resampling specially
   if (is.data.frame(Saved_sample())) {
     res <- dplyr::sample_n(Saved_sample(),
                            size  = n_size(), replace=TRUE )
@@ -183,30 +169,37 @@ current_sample <- reactive({
   # the following is to  avoid legacy variable  names  from previous  dataset.
   req(the_variables) # will  be triggered if <the_variables> is empty
 
-
-
   Raw_data <- na.omit( raw_data()[the_variables] )
   if (n_size() == "All") {
     choose_n  <- nrow(Raw_data)
   } else {
+     # Return <nmax> rows for all groups that are big
+     # enough and all the rows for groups that are smaller than nmax
      choose_n <-  min(nrow(Raw_data), as.numeric(n_size()))
   }
-  Res <- dplyr::sample_n(Raw_data, size = choose_n)
 
+  if (input$stratify) {
+    Res <- Raw_data %>%
+      group_by(!!as.name(input$explanatory)) %>%
+      mutate(.index.in.group = sample(row_number())) %>%
+      filter(.index.in.group <= choose_n) %>%
+      select(- .index.in.group) %>%
+      ungroup()
+  } else {
+    Res <- dplyr::sample_n(Raw_data, size = choose_n)
+  }
+
+  # Randomize the response variable?
   if (input$randomize)  Res[[1]] <- sample(Res[[1]])
 
   Res
 })
 
 observe({
-  # n_size() # for the dependency
-  #input$stratify # for the dependency
-  # req(input$response)
-  # req(input$explanatory
-  # input$covariate
-  # input$covariate2
-  # input$frame
-
+  # when resampling is turned on, save the current sample to
+  # the Saved_sample reactive value.
+  # When resampling is turned off, Saved_sample becomes NA
+  # which serves as a flag to get_current_sample()
   if (input$resample) Saved_sample(isolate(current_sample()))
   else Saved_sample(NA)
 })

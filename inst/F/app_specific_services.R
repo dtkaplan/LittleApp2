@@ -28,7 +28,8 @@ main_calculation <- reactive({
           stats = HTML(
             "<p>No variation in this sample.</p>
              <p>Try sampling again perhaps with a larger sample size.</p>"
-          )
+          ),
+          side = NULL
      )
   }
 })
