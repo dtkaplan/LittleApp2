@@ -40,7 +40,6 @@ get_model_formula <- function(sample, model_order=1, interaction=TRUE,
   }
 
   explan <- vars[2]
-
   if (model_order > 1) explan <- glue("ns({explan}, {model_order})")
 
   if (length(vars) == 2) {

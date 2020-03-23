@@ -38,7 +38,7 @@ Common <- reactiveValues(
   mu = 0
 )
 
-observeEvent(input$show_model, { #annotations, {
+observeEvent(input$show_app_params, { #annotations, {
   range <- range(current_sample()[[1]])
 
   showModal(

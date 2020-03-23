@@ -65,13 +65,24 @@ F_main_calc <- function(formula, data, yrange = NULL,
   explanatory <- data[[explanatory_vars[1]]]
   explanatory_name <- explanatory_vars[[1]]
   # is there  a  covariate
-  if (length(explanatory_vars) == 2) {
+  if (length(explanatory_vars) > 1) {
     covariate <- data[[explanatory_vars[2]]]
-
     covariate_name <- explanatory_vars[2]
   }
   model <- lm(formula, data)
-  data$model_output  <- fitted(model)
+  data$model_output  <- predict(model)
+  mod_data <- data  # a copy which will be perhaps altered later
+  if (!is.null(covariate) && is.numeric(covariate)) {
+    # discretize the covariate for the displayed version  of the
+    # model (but not the version used for the  F calculations)
+    discrete_values <- seq(min(covariate), max(covariate), length = 4)
+    # Find the discrete_value that's closest to each element of
+    # the covariate. Use that for  getting the model values.
+
+    mod_data[[3]] <- round_to_closest(covariate,  discrete_values)
+    mod_data$model_output <- predict(model, newdata = mod_data)
+  }
+
 
   #  pull  out the  spatial  formula
   plot_formula <- as.formula(paste(response_name, "~",
@@ -81,12 +92,10 @@ F_main_calc <- function(formula, data, yrange = NULL,
   else as.formula(paste("~", covariate_name))
   alpha <- point_alpha(nrow(data))
   P1 <-
-    if  (is.numeric(explanatory) &&
-         length(unique(explanatory)) == 2 ) {
-      suppressWarnings(
+    if (is.numeric(explanatory) &&
+        length(unique(explanatory)) == 2 ) {
         gf_point(plot_formula, data  = data,
                  color  = color_formula, alpha = alpha)
-      )
     } else {
       gf_jitter(plot_formula,  data = data,
                 color  = color_formula,
@@ -111,13 +120,14 @@ F_main_calc <- function(formula, data, yrange = NULL,
     color_formula <-
       if  (is.null(covariate)) "blue"
     else as.formula(paste("~", covariate_name))
+
     if (is.numeric(explanatory)) {
       mod_plot_formula <-
         as.formula(paste("model_output ~",
                          explanatory_name))
       P1  <- P1 %>%
-        gf_line(mod_plot_formula, data  = data,
-                color = color_formula)
+        gf_line(mod_plot_formula, data  = mod_data,
+                color = color_formula, group  = color_formula)
     } else {
       mod_plot_formula <-
         as.formula(paste("model_output  + model_output ~",  explanatory_name))

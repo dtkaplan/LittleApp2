@@ -57,23 +57,12 @@ Common <- reactiveValues(
   model_type = "lm",
   model_order = 1,
   interaction_term = TRUE,
-  selected_category = character(0),
-  sample_size = 50
+  selected_category = character(0)
 )
 
-# One of the two modals you define
+# The modal that you define in the app.
 
-observeEvent(input$show_annotations, {
-  showModal(
-    modalDialog(
-      title = "Statistical Annotations", easyClose  = TRUE,
-      p("No annotations in this app."))
-  )
-})
-
-# The second of the two modals that you define in the app.
-
-observeEvent(input$show_model, {
+observeEvent(input$show_app_params, {
   showModal(
     modalDialog(
       title = "Model params", easyClose  = TRUE,

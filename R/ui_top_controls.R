@@ -35,7 +35,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
     "  ",
     span(
       actionBttn(
-        inputId = "show_model",
+        inputId = "show_app_params",
         label = "", #"model"
         icon = icon("signature"),
         size = "md"),
