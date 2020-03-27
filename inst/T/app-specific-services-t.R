@@ -25,7 +25,8 @@ main_calculation <- reactive({
                var_equal = Common$var_equal,
                y_range = NULL,
                null_hypothesis = as.numeric(Common$mu),
-               y_labels = ylabels)
+               y_labels = ylabels,
+               one_sample = Common$one_sample)
 
   res
 })
@@ -48,6 +49,7 @@ Common <- reactiveValues(
   show_t = FALSE,
   var_equal = FALSE,
   conf_level = 0.95,
+  one_sample = FALSE,
   mu = 0
 )
 
@@ -61,6 +63,7 @@ observeEvent(input$show_app_params, { #annotations, {
   null_value <- Common$mu
   if (null_value > range[2] |
       null_value < range[1]) null_value <- mean(range, na.rm = TRUE)
+  testsize <- ifelse(Common$one_sample, 1, 2)
 
   showModal(
     modalDialog(
@@ -69,12 +72,17 @@ observeEvent(input$show_app_params, { #annotations, {
           checkboxInput("show_mean", "Show mean",  Common$show_mean),
           checkboxInput("show_ci", "Show conf interval", Common$show_ci),
           checkboxInput("show_t", "Show t-interval",  Common$show_t),
-          checkboxInput("var_equal", "Assume equal variances", Common$var_equal),
           selectInput("conf_level", "Confidence level",
                       choices  = c(0.5, 0.8, 0.9, 0.95, 0.99, 0.999),
                       selected = Common$conf_level),
-          sliderInput("mu", "Null hypothesis value", min  = min(0, range ),
-                      max = max(0, range), value = null_value)
+          checkboxInput("one_sample", "Ignore explanatory variable", value = Common$one_sample),
+          #conditionalPanel("testsize == 1",
+            sliderInput("mu", "Null hypothesis value", min  = min(0, range ),
+                      max = max(0, range), value = null_value),
+          #),
+          #conditionalPanel("testsize == 2",
+            checkboxInput("var_equal", "Assume equal variances", Common$var_equal)
+          #)
       ),
       size = "s"
     )
@@ -98,22 +106,25 @@ observeEvent(input$var_equal, {
 observeEvent(input$conf_level, {
   Common$conf_level <-  as.numeric(input$conf_level)
 })
+observeEvent(input$one_sample, {
+  Common$one_sample <-  input$one_sample
+})
 observeEvent(input$mu, {
   Common$mu <-  as.numeric(input$mu)
 })
 
-format_t_stats <- function(stats) {
-  n_samp <- nrow(current_sample())
-  if ((n_samp - stats$parameter) == 1) {
+format_stats <- function(stats) {
+  n_samp <- stats$sample_size
+  if (length(stats$estimate) == 1) { # One-sample t-test
     my_estimate <- glue::glue("<li>mean = {signif(stats$estimate,  3)}</li>")
-    my_method <- glue::glue("One-sample t-test with mu_0 = {Common$mu}")
+    my_method <- glue::glue("One-sample t-test with mu_0 = {stats$null.value}")
   } else {
     groups <- gsub("mean in group", "", names(stats$estimate))
     my_estimate <- glue::glue(
     '<li>means: {groups[1]} = {signif(stats$estimate[1],3)} vs {groups[2]} = {signif(stats$estimate[2],3)}</li>
      <li>difference in means: {signif(diff(stats$estimate), 3)}</li>'
     )
-    my_method <- glue::glue('method: {ifelse(Common$var_equal, "equal", "unequal")} variance two-sample t test')
+    my_method <- glue::glue('method: {stats$method} with {ifelse(stats$var.equal, "equal", "unequal")} variance')
   }
 
   res <- with(stats,
@@ -128,21 +139,10 @@ format_t_stats <- function(stats) {
   <li>Degrees of freedom: {signif(stats$parameter,3)}</li>
   <li>{nice_p(stats$p.value)}</li>
   <li>{my_method}</li>
-  </ul>'
+  </ul>'   #with μ_0 = {stats$null.value}</li> for one-sample test.
        )
   )
 
   HTML(res)
-
-
-
 }
 
-current_stats  <- reactive({
-  req(main_calculation())
-
-  format_t_stats(main_calculation()$stats)
-})
-frozen_stats <- reactive({
-  format_t_stats(frozen_calculation()$stats)
-})

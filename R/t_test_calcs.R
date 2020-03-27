@@ -12,19 +12,22 @@
 #' @param yrange a pair of numbers specifying the range to use on the y axis
 #' @param null_hypothesis a number saying what value for mu_0 should be used in the one-sample t-test
 #' @param y_labels if the response is a probability, this length 2 character
+#' @param one_sample do a one-sample test. Ignore the explanatory variable
 #' vector will cause the y-axis tick marks at 0 and 1 to be labeled with the levels
 #' @export
 t_test_calcs <-  function(formula, data, level = 0.95,
                           show_mean = TRUE, show_ci = TRUE,
                           show_t = TRUE, var_equal = TRUE,
                           y_range = NULL, null_hypothesis = 0,
-                          y_labels = NULL) {
-  if (rlang::f_rhs(formula) == 1) {
+                          y_labels = NULL, one_sample = FALSE) {
+  if (one_sample) {
+    formula_one = formula
+    formula_one[[3]] <- 1 # put in the form "~ response"
     return(
-      one_sample_t_plot(formula  = formula, data  = data, level = level,
+      one_sample_t_plot(formula  = formula_one, data  = data, level = level,
                         show_mean = show_mean, show_ci = show_ci,
                         null_hypothesis = null_hypothesis,
-                        y_range = y_range)
+                        y_range = y_range, y_labels = y_labels)
     )
   }
   var_y <- as.character(formula[[2]])
@@ -48,7 +51,9 @@ t_test_calcs <-  function(formula, data, level = 0.95,
 
   P <-
     LA_dot_layer(formula = formula, data = data,
-                 color = color_formula, width =  0.15, height = 0,
+                 color = color_formula, width =  0.15,
+                 height = 0.1,
+                 #height = ifelse(is.numeric(data[[1]]), 0, 0.1),
                  alpha = point_alpha(nrow(data)), seed = 101) %>%
     gf_theme(legend.position = "none")
 
@@ -86,8 +91,11 @@ t_test_calcs <-  function(formula, data, level = 0.95,
                                    show.legend = FALSE))
   }
 
-  tmp <- stats::t.test(formula, data = data,
+  tmp <- stats::t.test(formula, data = data, mu = null_hypothesis,
                        var.equal = var_equal, conf.level = level)
+
+  tmp$var.equal <- var_equal
+  tmp$sample_size <- nrow(data)
 
   if (show_t) {
     left_mean <- tmp$estimate[2]
@@ -125,19 +133,34 @@ t_test_calcs <-  function(formula, data, level = 0.95,
 #'
 one_sample_t_plot <- function (formula, data, level = 0.95,
                                show_mean = TRUE, show_ci = TRUE,
-                               null_hypothesis = 0, y_range = NULL) {
+                               null_hypothesis = 0, y_range = NULL,
+                               y_labels = NULL) {
   var_y <- as.character(formula[[2]])
   if (is.null(y_range)) y_range = range(as.numeric(data[[1]]), na.rm = TRUE)
+
 
   Stats <-
     df_stats(formula, data = data,  mn = mean,
              ci = ci.mean(level = !!level)) %>%
     mutate(xpos = c(1.5))
 
+  total_range <- c(min(y_range[1], Stats$ci), max(y_range[2], Stats$ci))
+
   P <-
     LA_dot_layer(formula = formula, data = data, color = "black", width =  0.15, height = 0,
                  alpha = point_alpha(nrow(data)), seed = 101) %>%
     gf_theme(legend.position = "none")
+
+  if (!is.null(y_labels)) {
+    # set the y axis labels to reflect them
+    P <- P %>%
+      gf_theme(scale_y_continuous(
+        breaks = seq(0, 1, by = 0.25),
+        limits <- total_range,
+        labels = c(y_labels[1], "0.25", "0.5", "0.75", y_labels[2])))
+  } else {
+    P <- P %>% gf_lims(y = total_range)
+  }
 
   if (!is.numeric(data[[1]])) data[[1]]  <- as.numeric(data[[1]])
 
@@ -155,6 +178,8 @@ one_sample_t_plot <- function (formula, data, level = 0.95,
 
   tmp <- stats::t.test(data[[var_y]], mu = null_hypothesis,
                        conf.level = level)
+
+  tmp$sample_size = nrow(data)
 
   if (show_ci) {
     res <- data.frame(conf.int = tmp$conf.int)
@@ -182,7 +207,7 @@ one_sample_t_plot <- function (formula, data, level = 0.95,
   #  but display whole of confidence interval
   side <- ggplot(mtcars, aes(x=1,y=1)) + geom_text(label="No supplemental\n plot for t-test.")
 
-  list(main = P %>% gf_lims(y = total_range), side = side, stats = tmp)
+  list(main = P, side = side, stats = tmp)
 
 }
 

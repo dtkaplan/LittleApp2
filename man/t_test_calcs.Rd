@@ -14,7 +14,8 @@ t_test_calcs(
   var_equal = TRUE,
   y_range = NULL,
   null_hypothesis = 0,
-  y_labels = NULL
+  y_labels = NULL,
+  one_sample = FALSE
 )
 }
 \arguments{
@@ -34,7 +35,9 @@ t_test_calcs(
 
 \item{null_hypothesis}{a number saying what value for mu_0 should be used in the one-sample t-test}
 
-\item{y_labels}{if the response is a probability, this length 2 character
+\item{y_labels}{if the response is a probability, this length 2 character}
+
+\item{one_sample}{do a one-sample test. Ignore the explanatory variable
 vector will cause the y-axis tick marks at 0 and 1 to be labeled with the levels}
 
 \item{yrange}{a pair of numbers specifying the range to use on the y axis}
