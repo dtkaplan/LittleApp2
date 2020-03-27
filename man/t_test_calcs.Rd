@@ -13,7 +13,8 @@ t_test_calcs(
   show_t = TRUE,
   var_equal = TRUE,
   y_range = NULL,
-  null_hypothesis = 0
+  null_hypothesis = 0,
+  y_labels = NULL
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ t_test_calcs(
 \item{var_equal}{if `TRUE` use the equal variance t-test}
 
 \item{null_hypothesis}{a number saying what value for mu_0 should be used in the one-sample t-test}
+
+\item{y_labels}{if the response is a probability, this length 2 character
+vector will cause the y-axis tick marks at 0 and 1 to be labeled with the levels}
 
 \item{yrange}{a pair of numbers specifying the range to use on the y axis}
 }

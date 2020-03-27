@@ -14,13 +14,13 @@ explain_text <- paste(
 
 ui <- ui_main(
   ui_top_controls(),
-  ui_explain_tab("F", "info-circle"),
-  data_tab(),
+  # ui_explain_tab("F", "info-circle"),
+  data_tab(covar = FALSE),
   graph_panel(),
   compare_panel(),
-  stats_panel(),
-  codebook_panel(),
-  debug_panel()
+  stats_panel() #,
+  # codebook_panel(),
+  # debug_panel()
   )
 
 
@@ -32,9 +32,6 @@ server <- function(input, output, session) {
   source("app-specific-services-t.R", local = TRUE)
 
   output$explain_text <- renderText({HTML(explain_text)})
-
-
-
 
   output$debug1 <- renderText({
     n_size()

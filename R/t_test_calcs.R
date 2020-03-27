@@ -11,12 +11,14 @@
 #' @param var_equal if `TRUE` use the equal variance t-test
 #' @param yrange a pair of numbers specifying the range to use on the y axis
 #' @param null_hypothesis a number saying what value for mu_0 should be used in the one-sample t-test
-#'
+#' @param y_labels if the response is a probability, this length 2 character
+#' vector will cause the y-axis tick marks at 0 and 1 to be labeled with the levels
 #' @export
 t_test_calcs <-  function(formula, data, level = 0.95,
-                               show_mean = TRUE, show_ci = TRUE,
-                               show_t = TRUE, var_equal = TRUE,
-                               y_range = NULL, null_hypothesis = 0) {
+                          show_mean = TRUE, show_ci = TRUE,
+                          show_t = TRUE, var_equal = TRUE,
+                          y_range = NULL, null_hypothesis = 0,
+                          y_labels = NULL) {
   if (rlang::f_rhs(formula) == 1) {
     return(
       one_sample_t_plot(formula  = formula, data  = data, level = level,
@@ -30,7 +32,7 @@ t_test_calcs <-  function(formula, data, level = 0.95,
 
   color_formula <- formula[c(1,3)] # one-sided formula
 
-  if (!is.numeric(data[[2]])) {
+  if (!is.numeric(data[[2]]) && length(unique(data[[2]])) > 2) {
     data[[2]]  <- forcats::fct_lump(data[[2]], n = 1)
     # turn it into  two  levels because this is a t-test
   }
@@ -38,15 +40,28 @@ t_test_calcs <-  function(formula, data, level = 0.95,
     data[[1]] <- as.numeric(data[[1]])
   }
 
+  Stats <-
+    df_stats(formula, data = data,  mn = mean,
+             ci = ci.mean(level = !!level)) %>%
+    mutate(xpos = c(1.25, 1.75))
+  total_range <- range(c(y_range, min(Stats$ci_lower), max(Stats$ci_upper)))
+
   P <-
     LA_dot_layer(formula = formula, data = data,
                  color = color_formula, width =  0.15, height = 0,
                  alpha = point_alpha(nrow(data)), seed = 101) %>%
     gf_theme(legend.position = "none")
-  Stats <-
-    df_stats(formula, data = data,  mn = mean,
-             ci = ci.mean(level = !!level)) %>%
-    mutate(xpos = c(1.25, 1.75))
+
+  if (!is.null(y_labels)) {
+    # set the y axis labels to reflect them
+    P <- P %>%
+      gf_theme(scale_y_continuous(
+        breaks = seq(0, 1, by = 0.25),
+        labels = c(y_labels[1], "0.25", "0.5", "0.75", y_labels[2])))
+  } else {
+    P <- P %>% gf_lims(y = total_range)
+  }
+
 
 
   if (show_mean) {
@@ -100,7 +115,7 @@ t_test_calcs <-  function(formula, data, level = 0.95,
   # As much as possible, keep all samples on same scale,
   #  but display whole of confidence interval
   total_range <- range(y_range, c(min(Stats$ci_lower), max(Stats$ci_upper)))
-  P <- P %>% gf_lims(y = total_range)
+
 
   side <- ggplot(mtcars, aes(x=1,y=1)) + geom_text(label="No supplemental\n plot for t-test.")
   list(main = P, side = side, stats = tmp)
@@ -114,6 +129,10 @@ one_sample_t_plot <- function (formula, data, level = 0.95,
   var_y <- as.character(formula[[2]])
   if (is.null(y_range)) y_range = range(as.numeric(data[[1]]), na.rm = TRUE)
 
+  Stats <-
+    df_stats(formula, data = data,  mn = mean,
+             ci = ci.mean(level = !!level)) %>%
+    mutate(xpos = c(1.5))
 
   P <-
     LA_dot_layer(formula = formula, data = data, color = "black", width =  0.15, height = 0,
@@ -122,10 +141,7 @@ one_sample_t_plot <- function (formula, data, level = 0.95,
 
   if (!is.numeric(data[[1]])) data[[1]]  <- as.numeric(data[[1]])
 
-  Stats <-
-    df_stats(formula, data = data,  mn = mean,
-             ci = ci.mean(level = !!level)) %>%
-    mutate(xpos = c(1.5))
+
 
   if (show_mean) {
     P <- gf_errorbar(P, mn + mn ~ xpos,
@@ -164,7 +180,6 @@ one_sample_t_plot <- function (formula, data, level = 0.95,
   }
   # As much as possible, keep all samples on same scale,
   #  but display whole of confidence interval
-  total_range <- range(c(y_range, min(Stats$ci_lower), max(Stats$ci_upper)))
   side <- ggplot(mtcars, aes(x=1,y=1)) + geom_text(label="No supplemental\n plot for t-test.")
 
   list(main = P %>% gf_lims(y = total_range), side = side, stats = tmp)

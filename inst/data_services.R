@@ -206,18 +206,30 @@ observe({
 
 # If response is multi-level categorical, show one level and
 # and lump remaining into "Others". This is so that a simple model can be fitted.
+# Numeric gets passed through as numeric
 with_dicotomous_response <- reactive({
   data <- current_sample()
-  resp <- data[[1]]
-  if (is.logical(resp)) data[[1]] <- as.numeric(data[[1]])
-  else if (!is.numeric(resp) &&  !inherits(resp, "Date")) {
-    if (length(unique(resp)) > 2) {
-      data[[1]] <- forcats::fct_lump_n(
-        data[[1]], n = 1,
-        ties.method = "random")
-    }
-  }
+  data[1] <- dicotomize(data[[1]], force = FALSE)
 
   data
 })
+# Oblige the response to be explanatory
+force_dicotomous_response <- reactive({
+  data <- current_sample()
+  data[1] <- dicotomize(data[[1]], force = TRUE)
 
+  data
+})
+with_dicotomous_explanatory <- reactive({
+  data <- current_sample()
+  data[2] <- dicotomize(data[[2]], force = FALSE)
+
+  data
+})
+# force explanatory to be dicotomous
+force_dicotomous_explanatory <- reactive({
+  data <- current_sample()
+  data[2] <- dicotomize(data[[2]], force = TRUE)
+
+  data
+})
