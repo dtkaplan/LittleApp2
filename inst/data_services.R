@@ -7,54 +7,85 @@ Uploaded_data <- reactiveVal(NULL)
 # Store the current sample for future bootstrap draws
 # This will be NA when resampling is OFF.
 Saved_sample <- reactiveVal(NA)
+# Immediate access to the new frame name
+Current_frame <- reactiveVal(NA)
+observe({ Current_frame(input$frame) })
+# Immediate access to the new variable names
+Current_vars <- reactiveVal(NA)
+
+# update Current_vars()
+observe({
+  vars <- Current_vars()
+  vars[1] <- req(input$response)
+  Current_vars(vars)
+})
+observe({
+  vars <- Current_vars()
+  vars[2] <- req(input$explanatory)
+  Current_vars(vars)
+})
+observe({
+  vars <- Current_vars()
+  vars[3] <- req(input$covariate)
+  Current_vars(vars)
+})
+observe({
+  vars <- Current_vars()
+  vars[4] <- req(input$covariate2)
+  Current_vars(vars)
+})
+response_name <- reactive({Current_vars()[1]})
+explanatory_name <- reactive({Current_vars()[2]})
+covariate_name <- reactive({Current_vars()[3]})
+covariate2_name <- reactive({Current_vars()[4]})
 
 # update available frames
 observeEvent(input$package, {
   if (input$package  == "UPLOAD") {
     updateSelectInput(session, "frame", choices  = "uploaded_dataset")
   } else {
-    available_frames <- get_package_frames(input$package)
+    available_frames <- package_data_names(input$package)
+    new_frame <- sample(available_frames, 1)
+    Current_frame(new_frame) # store it away for immediate use
     updateSelectInput(session, "frame",
                     choices = c("Select data frame:" = "", available_frames),
                     # Randomize the choice of a frame
-                    selected = sample(available_frames, 1))
+                    selected = new_frame)
   }
 })
 
-
-# update response and explanatory variable choices
-observeEvent(req(input$frame), {
-  if (isTruthy(raw_data()))
+observeEvent(Current_frame(), {
+    req(isTruthy(raw_data()))
     var_names <- names(raw_data())
-  else
-    var_names <- c("", "")
 
-  randomly_selected <- sample(var_names, 2)
-  updateSelectInput(session, "response",
-                    choices = c("Select response var:" = "",
-                                var_names),
-                    selected = randomly_selected[1])
-  # If there's only one variable, hide the explanatory chooser
-  if (length(var_names) < 2) hide("explanatory") else show("explanatory")
-  updateSelectInput(session, "explanatory",
-                    choices = c("Select explanatory var:" = "",
-                                var_names),
-                    selected = randomly_selected[2])
-  # These aren't being hidden when called for. I don't know why.
-  if ('covariate' %in% names(input)) {
-    if (length(var_names) < 3) hide("covariate") else show("covariate")
-    updateSelectInput(session, "covariate",
-                      choices = c("Select covariate:" = "",
-                                  var_names))
+    randomly_selected <- sample(var_names, 2)
+    Current_vars(randomly_selected) # store away for immediate access
+    updateSelectInput(session, "response",
+                      choices = c("Select response var:" = "",
+                                  var_names),
+                      selected = randomly_selected[1])
+    # If there's only one variable, hide the explanatory chooser
+    if (length(var_names) < 2) hide("explanatory") else show("explanatory")
+    updateSelectInput(session, "explanatory",
+                      choices = c("Select explanatory var:" = "",
+                                  var_names),
+                      selected = randomly_selected[2])
+    # These aren't being hidden when called for. I don't know why.
+    if ('covariate' %in% names(input)) {
+      if (length(var_names) < 3) hide("covariate") else show("covariate")
+      updateSelectInput(session, "covariate",
+                        choices = c("Select covariate:" = "",
+                                    var_names))
+    }
 
     if('covariate2' %in% names(input)) {
       if (length(var_names) < 4) hide("covariate2") else show("covariate2")
       updateSelectInput(session, "covariate2",
                         choices = c("Select second covar:" = "",
                                     var_names))
-    }
-  }
+      }
 })
+
 
 observeEvent(input$uploaded_file, {
   inFile <- input$uploaded_file
@@ -89,21 +120,30 @@ observeEvent(req(input$package == "UPLOAD"), {
 })
 
 raw_data <- reactive({
-  req(input$frame) #  for dependency
+  req(Current_frame()) #  for dependency
   Uploaded_data() #  for dependency
 
   if (input$package == "UPLOAD") {
     req(Uploaded_data())
     return(Uploaded_data())
   }
-  if (isTruthy(input$frame)) {
+  if (isTruthy(Current_frame())) {
+    #db <- tools::Rd_db(input$package)
+    #frames_in_packages <- gsub("\\.Rd", "", names(db))
+    frames_in_packages <- package_data_names(input$package)
+    req(Current_frame() %in% frames_in_packages)
     my_env = new.env() # where to put the data
-    data(list = input$frame,  package = input$package, envir = my_env)
+    data(list = Current_frame(),  package = input$package, envir = my_env)
 
-    my_env[[input$frame]] # this is where data() puts the frame
+    the_data <- my_env[[Current_frame()]] # this is where data() puts the frame
   } else {
     NA
   }
+
+  while (ncol(the_data) < 2)
+    the_data$just_random_stuff <- runif(nrow(the_data))
+
+  the_data
 })
 
 
@@ -115,15 +155,9 @@ output$frame_preview <- renderText({
 
 # Always put variables in order: response, explanatory, covar, covar2
 current_variables <- reactive({
-  res <- req(input$response)
-
-  if (isTruthy(input$explanatory))
-    res <- c(res, input$explanatory)
-  if (isTruthy(input$covariate))
-    res <- c(res, input$covariate)
-  if (isTruthy(input$covariate2))
-    res <- c(res, input$covariate2)
-
+  res <- c(req(response_name()), explanatory_name(),
+           covariate_name(), covariate2_name())
+  res <- res[!is.na(res)]
   res <- res[!duplicated(res)] # kill off repeats
 
   res[res %in% names(raw_data())]
@@ -150,12 +184,15 @@ count_levels <- reactive({
 
 is_sample_plotable <- reactive({
   # They must all be > 1 to be plotable
-  all(count_levels() > 1)
+  if (exists("app_specific_plotable")) app_specific_plotable()
+  else all(count_levels() > 1)
 })
 
 current_sample <- reactive({
+  req(isTruthy(raw_data()))
   input$new_sample # for the dependency
   input$stratify
+
   # Handle resampling specially
   if (is.data.frame(Saved_sample())) {
     res <- dplyr::sample_n(Saved_sample(),
@@ -163,7 +200,12 @@ current_sample <- reactive({
     return(res)
   }
 
-  if (!isTruthy(raw_data())) return(NA)
+
+  ## Danny took this out when debugging
+
+
+
+  ##if (!isTruthy(raw_data())) return(NA)
   the_variables <- current_variables()
   the_variables <- the_variables[the_variables %in% names(raw_data())]
   # the following is to  avoid legacy variable  names  from previous  dataset.
@@ -180,11 +222,11 @@ current_sample <- reactive({
 
   if (input$stratify) {
     Res <- Raw_data %>%
-      group_by(!!as.name(input$explanatory)) %>%
-      mutate(.index.in.group = sample(row_number())) %>%
-      filter(.index.in.group <= choose_n) %>%
-      select(- .index.in.group) %>%
-      ungroup()
+      dplyr::group_by(!!as.name(input$explanatory)) %>%
+      dplyr::mutate(.index.in.group = sample(row_number())) %>%
+      dplyr::filter(.index.in.group <= choose_n) %>%
+      dplyr::select(- .index.in.group) %>%
+      dplyr::ungroup()
   } else {
     Res <- dplyr::sample_n(Raw_data, size = choose_n)
   }

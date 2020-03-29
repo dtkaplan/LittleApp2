@@ -10,7 +10,7 @@ main_calculation <- reactive({
   modf <- model_formula()
   data <- with_dicotomous_response()
 
-  yvals <- raw_data()[[input$response]]
+  yvals <- raw_data()[[response_name()]]
 
   if (is.numeric(yvals)) {
     yrange  <- range(yvals, na.rm = TRUE)
@@ -84,12 +84,12 @@ observeEvent(input$show_app_params, {
         choices = 0:6,
         selected = as.numeric(Common$model_order)),
 
-      if (isTruthy(current_sample()) && isTruthy(input$response) &&
-          nrow(current_sample()) > 2 && !is.numeric(current_sample()[input$response])) {
+      if (isTruthy(current_sample()) && isTruthy(response_name()) &&
+          nrow(current_sample()) > 2 && !is.numeric(current_sample()[response_name()])) {
         selectInput(
           inputId = "selected_category",
           label = "Response ref. level:",
-          choices = unique(current_sample()[input$response]),
+          choices = unique(current_sample()[response_name()]),
           selected = Common$selected_category)
       }
     )

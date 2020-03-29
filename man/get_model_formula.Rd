@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{get_model_formula}
 \alias{get_model_formula}
-\title{construct the model formula}
+\title{Helper functions outside reactive context}
 \usage{
 get_model_formula(
   sample,
@@ -11,6 +11,20 @@ get_model_formula(
   model_type = "lm"
 )
 }
+\arguments{
+\item{sample}{a data frame}
+
+\item{model_order}{integer, the order of spline to use for the primary explanatory variable
+when it is quantitative}
+
+\item{interaction}{logical flag. If `TRUE` include interactions among the explanatory
+variables}
+
+\item{model_type}{character string specifying the model architecture. Either `"lm"` or `"logistic"`
+construct the model formula}
+
+\item{frame}{character string name of a data frame}
+}
 \description{
-construct the model formula
+Get the names of frames available in the package
 }

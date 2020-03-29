@@ -4,7 +4,8 @@
 # Display outputs (non-modal)
 
 output$big_plot <- renderPlot({
-  res <- main_calculation()
+  res <- try(main_calculation())
+  if (inherits(res, "tryError")) return(NULL)
 
   if (input$side_display && !is.null(res$side)) {
     gridExtra::grid.arrange(res$main,
@@ -37,7 +38,13 @@ output$compare_plot2 <- renderPlot({
 
 # The stats outputs
 output$current_stats <- renderText({
-  res <- main_calculation()$stats
+  res <- try(main_calculation())
+  if (inherits(res, "tryError")) {
+    return(
+      html("Not enough variation in this sample. See data tab.")
+    )
+  }
+  res <- res$stats
   if (inherits(res,  "html")) {
     res  #  it's an  error  message
   } else {
@@ -70,15 +77,15 @@ output$save_plot = downloadHandler(
 #'
 output$codebook <- renderText({
   req(input$package)
-  req(input$frame)
+  req(Current_frame())
   if (input$package == "UPLOAD") {
     # special treatment
     return(HTML(p("Sorry, but uploaded files don't have documentation available here.)")))
   }
   # Values of input$frame are package namespaced, e.g. "mosaicData::CPS85"
-  components <- unlist(strsplit(input$frame, "::"))
+  components <- unlist(strsplit(Current_frame(), "::"))
   package <- input$package
-  data_name <- input$frame
+  data_name <- Current_frame()
   db <- tools::Rd_db(package)
   this_name <- paste0(data_name, ".Rd")
   if (this_name %in% names(db) ) {
@@ -93,7 +100,11 @@ output$codebook <- renderText({
   }
 })
 
-output$preview_plot <- renderPlot({main_calculation()$main})
+output$preview_plot <- renderPlot({
+  res <- try(main_calculation())
+  if (inherits(res, "tryError") || !is.list(res)) NULL
+  else res$main
+})
 
 #------------
 # Display facts about brushed area in the plot with the ruler
@@ -102,12 +113,12 @@ observeEvent(input$main_ruler, {
   req(current_sample())
   with(input$main_ruler, {
     yinfo <-
-      glue("{input$response}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
+      glue("{response_name()}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
 
-    if(input$explanatory != "none_selected" &&
-       is.numeric(raw_data()[[input$explanatory]])) {
+    if(explanatory_name() != "none_selected" &&
+       is.numeric(raw_data()[[explanatory_name()]])) {
       slope <- (ymax - ymin) / (xmax - xmin)
-      xinfo <- glue("{input$explanatory}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
+      xinfo <- glue("{explanatory_name()}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
       slope_info <- glue("Slope of box diagonals: ± {signif(slope, 3)}")
     } else {
       xinfo <- slope_info <- ""
@@ -130,12 +141,12 @@ observeEvent(input$comp_ruler, {
   req(current_sample())
   with(input$comp_ruler, {
     yinfo <-
-      glue("{input$response}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
+      glue("{response_name}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
 
-    if(input$explanatory != "none_selected" &&
-       is.numeric(raw_data()[[input$explanatory]])) {
+    if(explanatory_name() != "none_selected" &&
+       is.numeric(raw_data()[[explanatory_name()]])) {
       slope <- (ymax - ymin) / (xmax - xmin)
-      xinfo <- glue("{input$explanatory}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
+      xinfo <- glue("{explanatory_name()}-axis: {signif(xmin, 3)} to {signif(xmax, 3)} giving  ∆ = {signif(xmax - xmin, 3)}\n\n")
       slope_info <- glue("Slope of box diagonals: ± {signif(slope, 3)}")
     } else {
       xinfo <- slope_info <- ""
@@ -184,7 +195,7 @@ observeEvent(input$show_metadata, {
 # We can use that value to update the sample size.
 
 observeEvent(input$sample_size, {
-  n_size(input$sample_size)
+  if (n_size() != input$sample_size) n_size(input$sample_size)
 })
 
 observeEvent(nrow(current_sample()), {
@@ -214,16 +225,16 @@ observeEvent(input$n_select,  {
 observeEvent(input$bookmark, {
   state <-  list(
     package = input$package,
-    frame = input$frame,
+    frame = Current_frame(),
     n_size = n_size(),
-    response  = input$response,
-    explanatory = input$explanatory
+    response  = response_name(),
+    explanatory = explanatory_name()
     )
   if ("covariate" %in% names(input)){
-    state$covariate = input$covariate
+    state$covariate = covariate_name()
   }
   if ("covariate2" %in% names(input)){
-    state$covariate2 = input$covariate2
+    state$covariate2 = covariate2_name()
   }
   state <- jsonlite::toJSON(state)
 
@@ -242,5 +253,20 @@ observeEvent(input$bookmark, {
       p( myURL),
       p("use url_search")
     )
+  )
+})
+
+somethings_wrong_with_data <- reactive({
+  showModal(
+    modalDialog(p("This sample doesn't have enough variation. It might be that there is just one level of the explanatory variable in the sample or that one of the levels has only one row."),
+                p("Go to the data tab to see the raw data in the sample."),
+                br(),
+                p("Debugging info ..."),
+                p(glue::glue("package: {input$package}")),
+                p(glue::glue("dataframe: {Current_frame()}")),
+                p(glue::glue("response variable: {response_name()}")),
+                p(glue::glue("explanatory variable: {explanatory_name()}")),
+                p(glue::glue("sample size: {n_size()}")),
+                title = "Something's wrong :-(", easyClose  = TRUE)
   )
 })

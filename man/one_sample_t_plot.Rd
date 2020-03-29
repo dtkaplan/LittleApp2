@@ -11,7 +11,8 @@ one_sample_t_plot(
   show_mean = TRUE,
   show_ci = TRUE,
   null_hypothesis = 0,
-  y_range = NULL
+  y_range = NULL,
+  y_labels = NULL
 )
 }
 \description{

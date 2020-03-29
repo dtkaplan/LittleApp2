@@ -18,9 +18,13 @@ dicotomize <- function(x, force=TRUE, to_numeric = FALSE) {
   if (is.logical(x)) x <- return(as.numeric(x))
   if (is.numeric(x)) {
     if (force) {
-      res <- factor(
+      res <- try(factor(
         x >= median(x, na.rm = TRUE),
         labels = c("median or less", "greater than median"))
+      )
+      if (inherits(res, "tryError")) {
+        return(x)
+      }
       return(res)
     } else {
       return(x)

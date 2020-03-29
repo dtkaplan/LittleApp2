@@ -1,11 +1,9 @@
 # app-specific services for t-test app
 
-main_calculation <- reactive({
+app_specific_data <- reactive({
   data <- current_sample()
-  req(ncol(data) %in% 1:2)
-  modf <- model_formula()
 
-  # make sure response is numeric and explanatory as 2-levels
+  # force response to be numeric and explanatory as 2-levels
   data[1] <- resp <- dicotomize(data[[1]], force = FALSE, to_numeric = TRUE)
   if ("levels" %in% names(attributes(resp))) {
     ylabels <- attr(resp, "levels")
@@ -13,21 +11,67 @@ main_calculation <- reactive({
     ylabels <- NULL
   }
   data[2] <- dicotomize(data[[2]], force = TRUE)
-  yvals <- raw_data()[[input$response]]
 
-  yrange  <- range(as.numeric(yvals), na.rm = TRUE)
+  list(data = data, labels = attr(resp, "levels"))
+})
 
-  res <- t_test_calcs(modf, data,
-               level = Common$conf_level,
-               show_mean = Common$show_mean,
-               show_ci = Common$show_ci,
-               show_t = Common$show_t,
-               var_equal = Common$var_equal,
+app_specific_plotable <- reactive({
+  data <- app_specific_data()$data
+  min(table(data[[2]])) > 1 && is.numeric(data[[1]])
+})
+
+main_calculation <- reactive({
+  if (exists("app_specific_data")) {
+    res <- app_specific_data()
+    data <- res$data
+    ylabels <- res$labels
+  }
+  else data <- current_sample()
+
+  req(ncol(data) %in% 1:2)
+  modf <- model_formula()
+
+  if (!is_sample_plotable()) {
+    blank_plot <-
+      ggformula::gf_text(
+        ggformula::gf_blank(modf, data = head(data,0)),
+               1 ~ 1,
+               label="Not enough variation in this sample\n
+               Try sampling again,\n
+               perhaps with a larger sample size.")
+    res <- list(main = blank_plot,
+                stats = HTML(
+                  "<p>No variation in this sample.</p>
+             <p>Try sampling again perhaps with a larger sample size.</p>"
+                ),
+                side = NULL
+    )
+    return(res)
+  }
+
+  yvals <- raw_data()[[response_name()]]
+
+  if (is.numeric(yvals)) {
+    yrange  <- range(as.numeric(yvals), na.rm = TRUE)
+  }
+  else {
+    yrange <- c(0, 1)
+  }
+  res <-
+    try(t_test_calcs(modf, data,
+                      level = Common$conf_level,
+                      show_mean = Common$show_mean,
+                      show_ci = Common$show_ci,
+                      show_t = Common$show_t,
+                      var_equal = Common$var_equal,
                y_range = NULL,
                null_hypothesis = as.numeric(Common$mu),
                y_labels = ylabels,
-               one_sample = Common$one_sample)
-
+               one_sample = Common$one_sample),
+        silent = TRUE)
+  if (inherits(res, "try-error")) {
+    somethings_wrong_with_data()
+    }
   res
 })
 

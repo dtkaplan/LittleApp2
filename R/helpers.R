@@ -2,7 +2,6 @@
 #'
 #' Get the names of frames available in the package
 #'
-#' @param package character string name of a package
 #' @param frame character string name of a data frame
 #' @param sample a data frame
 #' @param model_order integer, the order of spline to use for the primary explanatory variable
@@ -10,17 +9,6 @@
 #' @param interaction logical flag. If `TRUE` include interactions among the explanatory
 #' variables
 #' @param model_type character string specifying the model architecture. Either `"lm"` or `"logistic"`
-#'
-#' @export
-get_package_frames <- function(package) {
-  if (package == "UPLOAD")  return("uploaded_data")
-  listing <- data(package = package)
-  as.character(listing$results[ ,3])
-}
-#' @export
-get_frame_var_names <- function(frame) {
-  names(frame)
-}
 
 #' construct the model formula
 #' @export

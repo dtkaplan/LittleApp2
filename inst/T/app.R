@@ -14,13 +14,10 @@ explain_text <- paste(
 
 ui <- ui_main(
   ui_top_controls(),
-  # ui_explain_tab("F", "info-circle"),
   data_tab(covar = FALSE),
   graph_panel(),
   compare_panel(),
-  stats_panel() #,
-  # codebook_panel(),
-  # debug_panel()
+  stats_panel()
   )
 
 
