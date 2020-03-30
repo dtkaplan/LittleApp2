@@ -188,9 +188,15 @@ is_sample_plotable <- reactive({
   else all(count_levels() > 1)
 })
 
+random_seed <- reactive({
+  input$new_sample # for the dependency
+  Sys.time()
+  })
+
 current_sample <- reactive({
   req(isTruthy(raw_data()))
-  input$new_sample # for the dependency
+
+
   input$stratify
 
   # Handle resampling specially
@@ -201,11 +207,7 @@ current_sample <- reactive({
   }
 
 
-  ## Danny took this out when debugging
 
-
-
-  ##if (!isTruthy(raw_data())) return(NA)
   the_variables <- current_variables()
   the_variables <- the_variables[the_variables %in% names(raw_data())]
   # the following is to  avoid legacy variable  names  from previous  dataset.
@@ -220,6 +222,8 @@ current_sample <- reactive({
      choose_n <-  min(nrow(Raw_data), as.numeric(n_size()))
   }
 
+
+  set.seed(random_seed())
   if (input$stratify) {
     Res <- Raw_data %>%
       dplyr::group_by(!!as.name(input$explanatory)) %>%
@@ -228,10 +232,11 @@ current_sample <- reactive({
       dplyr::select(- .index.in.group) %>%
       dplyr::ungroup()
   } else {
-    Res <- dplyr::sample_n(Raw_data, size = choose_n)
+    #  Res <- dplyr::sample_n(Raw_data, size = choose_n)
+    Res <- Raw_data[sample.int(nrow(Raw_data), as.integer(choose_n)), ]
   }
 
-  # Randomize the response variable?
+  # Shuffle the response variable?
   if (input$randomize)  Res[[1]] <- sample(Res[[1]])
 
   Res
@@ -246,32 +251,6 @@ observe({
   else Saved_sample(NA)
 })
 
-# If response is multi-level categorical, show one level and
-# and lump remaining into "Others". This is so that a simple model can be fitted.
-# Numeric gets passed through as numeric
-with_dicotomous_response <- reactive({
-  data <- current_sample()
-  data[1] <- dicotomize(data[[1]], force = FALSE)
 
-  data
-})
-# Oblige the response to be explanatory
-force_dicotomous_response <- reactive({
-  data <- current_sample()
-  data[1] <- dicotomize(data[[1]], force = TRUE)
 
-  data
-})
-with_dicotomous_explanatory <- reactive({
-  data <- current_sample()
-  data[2] <- dicotomize(data[[2]], force = FALSE)
 
-  data
-})
-# force explanatory to be dicotomous
-force_dicotomous_explanatory <- reactive({
-  data <- current_sample()
-  data[2] <- dicotomize(data[[2]], force = TRUE)
-
-  data
-})

@@ -21,6 +21,8 @@
 #' @param data a data frame with the sample of data to display
 #' @param show_model flag to draw the model
 #' @param yrange a y range to override that implied by the data
+#' @param labels Optionally, a length-2 character giving the labels for 0 and 1
+#' when the response variable is an indicator variable.
 #' @param sd  logical flag to show the plus-or-minus 1 sd in  the side plot
 #' @param R2 logical flag to show the R-squared in the side plot
 #' @param F  logical flag to show the F value in the side plot
@@ -42,8 +44,9 @@
 #' @export
 
 F_main_calc <- function(formula, data, yrange = NULL,
-                             show_model = TRUE,
-                             sd  =  TRUE) {
+                        labels = NULL,
+                        show_model = TRUE,
+                        sd  =  TRUE) {
   # Don't really need the last  few arguments. I wanted to have them
   # so that I could design the app. Perhaps I'll add controls about
   # what to show and use them  to  replace the static TRUE/FALSEs
@@ -51,13 +54,6 @@ F_main_calc <- function(formula, data, yrange = NULL,
   response <- data[[formula[[2]]]]
   response_name <- as.character(formula[[2]])
   top  <- NULL # a flag
-  if (length(unique(response))==2) {
-    levels = as.character(unique(response))
-    top = levels[2]
-    bottom = levels[1]
-    response <- as.numeric(response == top)
-    data[[response_name]] <- response
-  }
 
   explanatory_vars <- all.vars(formula[[3]])
 
@@ -103,14 +99,14 @@ F_main_calc <- function(formula, data, yrange = NULL,
                 alpha = alpha,
                 width  =  0.2, height = 0.1)
     }
-  if (!is.null(top)) {
+  if (!is.null(labels)) {
     # format the  y  scale nicely  for a dicotomous
     # variable
     P1 <- P1 %>%
       gf_refine(
         scale_y_continuous(
           response_name, breaks  =  c(0, .25, .5, .75, 1),
-          labels = c(bottom, .25,  .5, .75, top),
+          labels = c(labels[1], .25,  .5, .75, labels[2]),
           limits = c(-.1, 1.1)))
   } else if (!is.null(yrange)) {
     # put the y scale on a common footing for all samples

@@ -4,7 +4,14 @@
 \alias{F_main_calc}
 \title{Main calculations for the F app}
 \usage{
-F_main_calc(formula, data, yrange = NULL, show_model = TRUE, sd = TRUE)
+F_main_calc(
+  formula,
+  data,
+  yrange = NULL,
+  labels = NULL,
+  show_model = TRUE,
+  sd = TRUE
+)
 }
 \arguments{
 \item{formula}{of form A ~ B or A ~ B + C. You can also
@@ -14,6 +21,9 @@ explanatory variables.}
 \item{data}{a data frame with the sample of data to display}
 
 \item{yrange}{a y range to override that implied by the data}
+
+\item{labels}{Optionally, a length-2 character giving the labels for 0 and 1
+when the response variable is an indicator variable.}
 
 \item{show_model}{flag to draw the model}
 

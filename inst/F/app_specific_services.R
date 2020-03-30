@@ -8,9 +8,17 @@ main_calculation <- reactive({
   # These two assignments are to avoid lazy evaluation of the reactives
   # when calling F_main_calc()
   modf <- model_formula()
-  data <- with_dicotomous_response()
-
+  data <- current_sample()
   yvals <- raw_data()[[response_name()]]
+  # dicotomize any categorical response variable
+  if (! is.numeric(data[1])) {
+     res <- dicotomize(data[[1]], yvals,
+                           force = FALSE, to_numeric = TRUE)
+     labels <- attr(res,  "levels") # will be NULL if there aren't any
+     data[1] <- res
+  }
+
+
 
   if (is.numeric(yvals)) {
     yrange  <- range(yvals, na.rm = TRUE)
@@ -21,7 +29,7 @@ main_calculation <- reactive({
   # Construct the plots,
   # making sure that the data are adequate.
   if (is_sample_plotable()) {
-     F_main_calc(modf, data = data, yrange = yrange )
+     F_main_calc(modf, data = data, yrange = yrange, labels = labels )
   } else {
      list(main = gf_blank(modf, data = head(data,0)) %>%
             gf_label(1 ~ 1, label="Not enough variation in this sample\nTry sampling again,\n perhaps with a larger sample size."),
@@ -34,7 +42,16 @@ main_calculation <- reactive({
   }
 })
 
-
+observeEvent(response_name(), {
+  vals <- raw_data()[[response_name()]]
+  if (is.numeric(vals)) {
+    output$discrete_response  <- renderText({NULL})
+  } else {
+    output$discrete_response <- renderText({
+      "Categorical response variable converted to a 0/1 indicator variable."
+    })
+  }
+})
 
 model_formula <- reactive({
   req(current_sample())
