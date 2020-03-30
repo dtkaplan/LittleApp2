@@ -3,21 +3,53 @@
 app_specific_data <- reactive({
   data <- current_sample()
 
+  response_census <- raw_data()[[response_name()]]
   # force response to be numeric and explanatory as 2-levels
-  data[1] <- resp <- dicotomize(data[[1]], force = FALSE, to_numeric = TRUE)
+  data[1] <- resp <-
+    dicotomize(data[[1]], response_census,
+               force = FALSE, to_numeric = TRUE)
+  if ("levels" %in% names(attributes(resp))) {
+    output$discrete_response <-
+      renderText({
+        glue::glue("For t-test, response variable must be numeric.
+                   Converted {response_name()} into 0/1 variable
+                   where 1 means <{attr(resp, 'levels')[2]}>.")
+      })
+  } else {
+      output$discrete_response  <- renderText({NULL})
+  }
+  # Check whether the variable was originally categorical. If so
+  # remember the levels corresponding to 0 and 1 so that the plot
+  # can be made accordingly.
   if ("levels" %in% names(attributes(resp))) {
     ylabels <- attr(resp, "levels")
   } else {
     ylabels <- NULL
   }
-  data[2] <- dicotomize(data[[2]], force = TRUE)
+  explan_census <- raw_data()[[explanatory_name()]]
+  data[2] <- dicotomize(data[[2]], explan_census, force = TRUE)
 
+  if (length(unique(explan_census)) > 2) {
+    output$discrete_explanatory <- renderText({
+        glue::glue("The explanatory variable in a t test must be
+        categorical with two levels. Converted the variable '{explanatory_name()}'
+        into two levels:
+        {paste(paste0('<', attributes(data[[2]])$levels, '>'), collapse = ' and ')}.")
+      })
+  } else {
+    output$discrete_explanatory  <- renderText({NULL})
+  }
   list(data = data, labels = attr(resp, "levels"))
 })
 
 app_specific_plotable <- reactive({
   data <- app_specific_data()$data
   min(table(data[[2]])) > 1 && is.numeric(data[[1]])
+})
+
+# Reset the null hypothesis value when response variable changes
+observeEvent(response_name(), {
+  null_value_memory(0)
 })
 
 main_calculation <- reactive({
@@ -65,7 +97,7 @@ main_calculation <- reactive({
                       show_t = Common$show_t,
                       var_equal = Common$var_equal,
                y_range = NULL,
-               null_hypothesis = as.numeric(Common$mu),
+               null_hypothesis = null_value_memory(),
                y_labels = ylabels,
                one_sample = Common$one_sample),
         silent = TRUE)
@@ -93,20 +125,23 @@ Common <- reactiveValues(
   show_t = FALSE,
   var_equal = FALSE,
   conf_level = 0.95,
-  one_sample = FALSE,
-  mu = 0
+  one_sample = FALSE
 )
+
+null_value_memory <- reactiveVal(0)
 
 observeEvent(input$show_app_params, { #annotations, {
   if (is.numeric(current_sample()[[1]])) {
-    range <- range(current_sample()[[1]])
+    resp_range <- range(current_sample()[[1]])
+    if (resp_range[1] > 0) resp_range[1] <- 0
+    if (resp_range[2] < 0) resp_range[2] <- 0
   } else {
-    range <- c(0, 1) # when response is dicotomized
+    resp_range <- c(0, 1) # when response is dicotomized
   }
 
-  null_value <- Common$mu
-  if (null_value > range[2] |
-      null_value < range[1]) null_value <- mean(range, na.rm = TRUE)
+  if (null_value_memory() < resp_range[1]) null_value_memory(0)
+  if (null_value_memory() > resp_range[2]) null_value_memory(0)
+
   testsize <- ifelse(Common$one_sample, 1, 2)
 
   showModal(
@@ -120,13 +155,10 @@ observeEvent(input$show_app_params, { #annotations, {
                       choices  = c(0.5, 0.8, 0.9, 0.95, 0.99, 0.999),
                       selected = Common$conf_level),
           checkboxInput("one_sample", "Ignore explanatory variable", value = Common$one_sample),
-          #conditionalPanel("testsize == 1",
-            sliderInput("mu", "Null hypothesis value", min  = min(0, range ),
-                      max = max(0, range), value = null_value),
-          #),
-          #conditionalPanel("testsize == 2",
-            checkboxInput("var_equal", "Assume equal variances", Common$var_equal)
-          #)
+          sliderInput("mu", "Null hypothesis value", min  = resp_range[1],
+                      max = resp_range[2], value = null_value_memory()),
+          checkboxInput("var_equal", "Assume equal variances",
+                        Common$var_equal)
       ),
       size = "s"
     )
@@ -151,10 +183,10 @@ observeEvent(input$conf_level, {
   Common$conf_level <-  as.numeric(input$conf_level)
 })
 observeEvent(input$one_sample, {
-  Common$one_sample <-  input$one_sample
+  Common$one_sample <- input$one_sample
 })
 observeEvent(input$mu, {
-  Common$mu <-  as.numeric(input$mu)
+  null_value_memory(input$mu)
 })
 
 format_stats <- function(stats) {
@@ -165,8 +197,9 @@ format_stats <- function(stats) {
   } else {
     groups <- gsub("mean in group", "", names(stats$estimate))
     my_estimate <- glue::glue(
-    '<li>means: {groups[1]} = {signif(stats$estimate[1],3)} vs {groups[2]} = {signif(stats$estimate[2],3)}</li>
-     <li>difference in means: {signif(diff(stats$estimate), 3)}</li>'
+    '<li>means of {stats$response}:<ul><li>{stats$explanatory} = {groups[1]} = {signif(stats$estimate[1],3)} vs </li><li>{stats$explanatory} = {groups[2]} = {signif(stats$estimate[2],3)}</li></ul></li>
+     <li>difference in means: {signif(- diff(stats$estimate), 3)}</li>
+    <li>std error on difference: {signif(stats$stderr, 3)}</li>'
     )
     my_method <- glue::glue('method: {stats$method} with {ifelse(stats$var.equal, "equal", "unequal")} variance')
   }

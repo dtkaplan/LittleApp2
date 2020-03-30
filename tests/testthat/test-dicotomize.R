@@ -21,4 +21,6 @@ test_that("dicotomization works", {
   expect_equal(length(levels(dicotomize(Many_types$date))), 2)
   expect_true(inherits(dicotomize(Many_types$date, force = FALSE), "Date"))
   expect_equal(levels(dicotomize(Many_types$sales))[1], "$70,000")
+  for_logical <- dicotomize(Many_types$open  > median(Many_types$open,  na.rm=TRUE))
+  expect_equal(attr(for_logical, "levels"), c("false",  "true"))
 })

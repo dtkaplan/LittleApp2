@@ -91,11 +91,13 @@ t_test_calcs <-  function(formula, data, level = 0.95,
                                    show.legend = FALSE))
   }
 
-  tmp <- stats::t.test(formula, data = data, mu = null_hypothesis,
+  tmp <- stats::t.test(formula, data = data, mu = 0,
                        var.equal = var_equal, conf.level = level)
 
   tmp$var.equal <- var_equal
   tmp$sample_size <- nrow(data)
+  tmp$response <- as.character(formula[2])
+  tmp$explanatory <- as.character(formula[3])
 
   if (show_t) {
     left_mean <- tmp$estimate[2]

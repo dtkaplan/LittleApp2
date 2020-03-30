@@ -4,10 +4,13 @@
 \alias{dicotomize}
 \title{Dicotomize a variable}
 \usage{
-dicotomize(x, force = TRUE, to_numeric = FALSE)
+dicotomize(x, pop = x, force = TRUE, to_numeric = FALSE)
 }
 \arguments{
 \item{x}{the variable (as a vector) to be split}
+
+\item{pop}{an (optional) reference set of data (typically from a much larger sample)
+that determines the dicotomization level.}
 
 \item{force}{a logical flag. If `TRUE`, even
 numerical variables will be split.}

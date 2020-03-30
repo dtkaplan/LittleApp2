@@ -51,7 +51,9 @@ ui_select_data <-  function(package_list = default_packages_list,
     <tr><td>Source package</td><td>{smaller_select("package", package_list)}</td></tr>
     <tr><td>Data set</td><td>{smaller_select("frame", NULL)}</td></tr>
     <tr><td>Response</td><td>{smaller_select("response", NULL)}</td></tr>
-    <tr><td>Explan</td><td>{smaller_select("explanatory", NULL)}</td></tr>'
+    <tr><td colspan="2">{textOutput("discrete_response")}</td></tr>
+    <tr><td>Explan</td><td>{smaller_select("explanatory", NULL)}</td></tr>
+    <tr><td colspan="2">{textOutput("discrete_explanatory")}</td></tr>'
     )
 
   if (covar) {

@@ -6,6 +6,8 @@ library(miniUI)
 library(ggplot2)
 library(LittleApp2)
 
+options(warn = -1) # suppress  warnings so log doesn't get crowded
+
 # Documentation for the app
 explain_text <- paste(
   readLines("www/explain-t.html"),
