@@ -29,9 +29,9 @@ main_calculation <- reactive({
   # Construct the plots,
   # making sure that the data are adequate.
   if (is_sample_plotable()) {
-     F_main_calc(modf, data = data, yrange = yrange, labels = labels )
+     res <- F_main_calc(modf, data = data, yrange = yrange, labels = labels )
   } else {
-     list(main = gf_blank(modf, data = head(data,0)) %>%
+     res <- list(main = gf_blank(modf, data = head(data,0)) %>%
             gf_label(1 ~ 1, label="Not enough variation in this sample\nTry sampling again,\n perhaps with a larger sample size."),
           stats = HTML(
             "<p>No variation in this sample.</p>
@@ -40,14 +40,17 @@ main_calculation <- reactive({
           side = NULL
      )
   }
+  res$arrange <- "beside"
+
+  res
 })
 
 observeEvent(response_name(), {
   vals <- raw_data()[[response_name()]]
   if (is.numeric(vals)) {
-    output$discrete_response  <- renderText({NULL})
+    output$explain_response  <- renderText({NULL})
   } else {
-    output$discrete_response <- renderText({
+    output$explain_response <- renderText({
       "Categorical response variable converted to a 0/1 indicator variable."
     })
   }
@@ -112,6 +115,14 @@ observeEvent(input$show_app_params, {
     )
   )
 })
+
+# Source the the explanation document
+output$explain_text <- renderText({HTML(
+  paste(
+    readLines("www/explain-F.html"),
+    collapse = "\n")
+)})
+
 
 #---
 # App specific translation between main_calculation()$stats and

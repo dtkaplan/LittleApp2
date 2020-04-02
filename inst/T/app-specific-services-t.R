@@ -9,14 +9,14 @@ app_specific_data <- reactive({
     dicotomize(data[[1]], response_census,
                force = FALSE, to_numeric = TRUE)
   if ("levels" %in% names(attributes(resp))) {
-    output$discrete_response <-
+    output$explain_response <-
       renderText({
         glue::glue("For t-test, response variable must be numeric.
                    Converted {response_name()} into 0/1 variable
                    where 1 means <{attr(resp, 'levels')[2]}>.")
       })
   } else {
-      output$discrete_response  <- renderText({NULL})
+      output$explain_response  <- renderText({NULL})
   }
   # Check whether the variable was originally categorical. If so
   # remember the levels corresponding to 0 and 1 so that the plot
@@ -30,14 +30,14 @@ app_specific_data <- reactive({
   data[2] <- dicotomize(data[[2]], explan_census, force = TRUE)
 
   if (length(unique(explan_census)) > 2) {
-    output$discrete_explanatory <- renderText({
+    output$explain_explanatory <- renderText({
         glue::glue("The explanatory variable in a t test must be
         categorical with two levels. Converted the variable '{explanatory_name()}'
         into two levels:
         {paste(paste0('<', attributes(data[[2]])$levels, '>'), collapse = ' and ')}.")
       })
   } else {
-    output$discrete_explanatory  <- renderText({NULL})
+    output$explain_explanatory  <- renderText({NULL})
   }
   list(data = data, labels = attr(resp, "levels"))
 })
@@ -103,7 +103,8 @@ main_calculation <- reactive({
         silent = TRUE)
   if (inherits(res, "try-error")) {
     somethings_wrong_with_data()
-    }
+  }
+  res$arrange <- "beside"
   res
 })
 
@@ -222,4 +223,11 @@ format_stats <- function(stats) {
 
   HTML(res)
 }
+
+# Source the the explanation document
+explain_text <- reactive({
+  paste(
+    readLines("www/explain-F.html"),
+    collapse = "\n")
+})
 

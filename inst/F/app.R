@@ -14,31 +14,27 @@ library(Lock5Data)
 
 options(warn = -1) # suppress  warnings so log doesn't get crowded
 
-# Documentation for the app
-explain_text <- paste(
-  readLines("www/explain-F.html"),
-  collapse = "\n"
-)
+
 
 ui <- ui_main(
   ui_top_controls(),
-  # ui_explain_tab("F", "info-circle"),
   data_tab(),
   graph_panel(),
   compare_panel(),
-  stats_panel()#,
-  #codebook_panel(),
-  #debug_panel()
+  stats_panel()  #, debug_panel()
   )
 
 
 server <- function(input, output, session) {
 
-  source(system.file("data_services.R", package="LittleApp2"), local = TRUE)
-  source(system.file("output_services.R", package = "LittleApp2"), local = TRUE)
-  source("app_specific_services.R", local = TRUE)
+  observe({
+    # These are here so that all  the Little Apps can eventually be folded into
+    # a single URL
+    source(system.file("data_services.R", package="LittleApp2"), local = TRUE)
+    source(system.file("output_services.R", package = "LittleApp2"), local = TRUE)
+    source("app_specific_services.R", local = TRUE)
 
-  output$explain_text <- renderText({HTML(explain_text)})
+  })
 
   output$debug1 <- renderText({
     n_size()

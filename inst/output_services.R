@@ -8,10 +8,15 @@ output$big_plot <- renderPlot({
   if (inherits(res, "tryError")) return(NULL)
 
   if (input$side_display && !is.null(res$side)) {
-    gridExtra::grid.arrange(res$main,
-                            res$side,
-                            nrow = 1,
-                            widths = c(3,1))
+    if ("arrange" %in% names(res) && res$arrange == "beside") {
+      gridExtra::grid.arrange(res$main,
+                              res$side,
+                              nrow = 1,
+                              widths = c(3,1))
+    } else {
+      gridExtra::grid.arrange(res$main, res$side,
+                              nrow=2,  ncol=1,  heights = c(2, 1))
+    }
   } else {
     res$main
   }
@@ -164,14 +169,70 @@ observeEvent(input$comp_ruler, {
   })
 })
 
-## For the documentation
+## For the initial splash page
+observeEvent(TRUE, {
+  showModal(
+    modalDialog(
+      p("Little Apps are educational tools built around a standard framework. The framework will
+                  become familiar to you once you have used the Little Apps a few times."),
+      tags$ul(
+        tags$li("Every Little App displays a data frame (that you choose) from the
+                          perspective of a statistical method or concept."),
+        tags$li("At the bottom are a few icons. Each icon corresponds
+                          to", tags$em("one statistical perspective on the data frame.")),
+        tags$ul(
+          tags$li(tags$strong("Data"), "lets you  pick the data frame
+                                          and variables you want to display."),
+          tags$li(tags$strong("Graph"), "contains the main
+                                          graphic displaying the data and statistical
+                                          annotations."),
+          tags$li(tags$strong("Compare"), "shows the main graphic
+                                          for the current data sample alongside a corresponding
+                                          graphic for an earlier data sample you have",
+                  tags$strong("frozen"), shiny::icon("snowflake"), "in place."),
+          tags$li(tags$strong("Stats"), "is much like",  tags$strong("Compare"),
+                  "but displays a numerical statistical summary
+                   of the data.")
+        ),
+        tags$li(
+          "At the top are several buttons and switches.",
+          tags$ul(tags$li("Select the sample size", tags$strong("n"), "."),
+                  tags$li(shiny::icon("dice"), "generates a new random sample of  the data frame."),
+                  tags$li(shiny::icon("snowflake"), "freezes in  place the current sample so that,
+                                      in  the",  tags$strong("Compare"), "and",
+                                      tags$strong("Stats"), "displays, you can compare it to each
+                                      new sample that you  take."),
+                  tags$li(shiny::icon("bars"), "brings up a menu of controls and settings telling what
+                          to annotations to display in the graphics and aspects to the statistical method.
+                          These vary from one statistical method to another."),
+                  tags$li(tags$strong("'Shuffle'"), "is  a switch. When it's on, the cases in the
+                          response variable will be shuffled in the current sample.
+                          This destroys any relationship  between it and the explanatory variables.
+                          This effectively makes the  'Null hypothesis' true for the sample.")
+                  )
+          )
+      ),
+      p("When you dismiss this pop-up, you'll be in the 'Data' tab. Choose
+                  your data source and the data frame you want to explore. Enjoy!"),
+      br(),
+      p(tags$em("The development of these StatPREPLittle Apps has been supported by grant DUE-1626337 from the
+                US National Science Foundation. The author is Daniel Kaplan, a professor
+                at Macalester College.")),
+      title  = "Welcome to the StatPREP Little Apps ...",  easyClose = TRUE)
+  )
+},
+ignoreNULL = TRUE
+)
+
+
+## For the app-specific documentation
 observeEvent(input$show_explain, {
   showModal(
     modalDialog(htmlOutput("explain_text"),
                 title  = "Explaining the App ...",  easyClose = TRUE)
   )
 },
-  ignoreNULL = FALSE
+  ignoreNULL = TRUE
 )
 
 ## For the codebook

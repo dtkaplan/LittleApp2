@@ -51,9 +51,9 @@ ui_select_data <-  function(package_list = default_packages_list,
     <tr><td>Source package</td><td>{smaller_select("package", package_list)}</td></tr>
     <tr><td>Data set</td><td>{smaller_select("frame", NULL)}</td></tr>
     <tr><td>Response</td><td>{smaller_select("response", NULL)}</td></tr>
-    <tr><td colspan="2">{textOutput("discrete_response")}</td></tr>
+    <tr><td colspan="2">{textOutput("explain_response")}</td></tr>
     <tr><td>Explan</td><td>{smaller_select("explanatory", NULL)}</td></tr>
-    <tr><td colspan="2">{textOutput("discrete_explanatory")}</td></tr>'
+    <tr><td colspan="2">{textOutput("explain_explanatory")}</td></tr>'
     )
 
   if (covar) {
@@ -70,26 +70,3 @@ ui_select_data <-  function(package_list = default_packages_list,
   HTML(paste(table_str), "</table>")
 }
 
-
-
-  #),
-#   tags$hr(),
-#   checkboxInput('header', 'Header', TRUE),
-#   radioButtons('sep', 'Separator',
-#                c(Comma=',',
-#                  Semicolon=';',
-#                  Tab='\t'),
-#                ','),
-#   radioButtons('quote', 'Quote',
-#                c(None='',
-#                  'Double Quote'='"',
-#                  'Single Quote'="'"),
-#                '"'),
-#   tags$hr(),
-#   p('If you want a sample .csv or .tsv file to upload,',
-#     'you can first download the sample',
-#     a(href = 'mtcars.csv', 'mtcars.csv'), 'or',
-#     a(href = 'pressure.tsv', 'pressure.tsv'),
-#     'files, and then try uploading them.'
-#   )
-# )

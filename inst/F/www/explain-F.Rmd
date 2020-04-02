@@ -4,8 +4,6 @@ pagetitle: "Model Functions"
 
 ## **Model Functions _Little App_**
 
-Newbies: *Read this page then go to the "Data" tab on the bottom.*
-
 In this app, you select a response variable and an explanatory variable,
 as well as (optionally) a covariate.
 
@@ -13,24 +11,22 @@ The app automatically builds a model of  the response variable
 in terms of the explanatory variable and covariate (if any).  The model
 is displayed along with the data.
 
-The first step (after reading this) is to go to the "Data" tab. There you can choose a library of data sets, a specific data frame from that library, and reponse and explanatory variables. The data and a model of the response in terms of the explanatory variables will be shown immediately.
+The first step is to go to the "Data" tab. There you can choose from a library of data sets, a specific data frame from that library, and response and explanatory variables. The data and a model of the response in terms of the explanatory variables will be shown immediately.
 
 The buttons near the top of the app allow you to 
 
 - set the size n of the sample
 - `r shiny::icon("dice")`: draw a new sample 
 - `r shiny::icon("snowflake")`: freeze the current display so that you can compare it to new samples that you take. You can update the frozen display simply by pressing the button again.
-- `r shiny::icon("signature")`: make model choices such as flexibility and model type
+- `r shiny::icon("bars")`: make model choices such as flexibility and model type
 - Randomize the response variable, implementing a Null Hypothesis
 
 At the bottom of the apps are several tabs that give different displays of the situation:
 
-- *Explain*: This page explaining the app
-- *Data*: Where you pick a data frame and response and explanatory variables. Doing this is **required**. You can't see your data until you say which data and variables you want.
+- *Data*: Where you pick a data frame and response and explanatory variables. There are buttons here for displaying this page of explanation and the codebook for the data frame you have chosen.
 - *Graph*: The main display of the current sample of data.
 - *Compare*: Side-by-side displays of the current sample and the last sample frozen by you.
 - *Stats*: Statistics summarizing the current sample (and the last sample frozen)
-- *Codebook*: Documentation for the selected data frame
 
 
 ### Randomize response
