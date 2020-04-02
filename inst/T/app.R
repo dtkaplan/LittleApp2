@@ -8,12 +8,6 @@ library(LittleApp2)
 
 options(warn = -1) # suppress  warnings so log doesn't get crowded
 
-# Documentation for the app
-explain_text <- paste(
-  readLines("www/explain-t.html"),
-  collapse = "\n"
-)
-
 ui <- ui_main(
   ui_top_controls(),
   data_tab(covar = FALSE),
@@ -30,7 +24,6 @@ server <- function(input, output, session) {
   source(system.file("output_services.R", package = "LittleApp2"), local = TRUE)
   source("app-specific-services-t.R", local = TRUE)
 
-  output$explain_text <- renderText({HTML(explain_text)})
 
   output$debug1 <- renderText({
     n_size()

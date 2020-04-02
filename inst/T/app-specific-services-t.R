@@ -227,9 +227,11 @@ format_stats <- function(stats) {
 }
 
 # Source the the explanation document
-explain_text <- reactive({
-  paste(
-    readLines("www/explain-F.html"),
-    collapse = "\n")
+output$explain_text <- renderText({
+  HTML(
+    paste(
+      readLines("www/explain-t.html"),
+      collapse = "\n")
+  )
 })
 
