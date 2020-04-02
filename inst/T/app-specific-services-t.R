@@ -1,5 +1,7 @@
 # app-specific services for t-test app
 
+app_title <- reactive({"t-test"})
+
 app_specific_data <- reactive({
   data <- current_sample()
 

@@ -2,7 +2,10 @@
 
 # The `main_calculation` reactive carries out the necessary calculations
 #  and returns them  in  a list.
-# THIS IS THE COMPUTATIONAL CORE OF THE APP
+
+app_title  <- reactive({"Model Functions"})
+
+
 main_calculation <- reactive({
   req(ncol(current_sample()) > 1)
   # These two assignments are to avoid lazy evaluation of the reactives

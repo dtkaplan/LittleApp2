@@ -173,6 +173,8 @@ observeEvent(input$comp_ruler, {
 observeEvent(TRUE, {
   showModal(
     modalDialog(
+      p("This  is the", tags$strong(app_title()), "Little App."),
+      br(),
       p("Little Apps are educational tools built around a standard framework. The framework will
                   become familiar to you once you have used the Little Apps a few times."),
       tags$ul(
@@ -202,8 +204,8 @@ observeEvent(TRUE, {
                                       in  the",  tags$strong("Compare"), "and",
                                       tags$strong("Stats"), "displays, you can compare it to each
                                       new sample that you  take."),
-                  tags$li(shiny::icon("bars"), "brings up a menu of controls and settings telling what
-                          to annotations to display in the graphics and aspects to the statistical method.
+                  tags$li(shiny::icon("bars"), "brings up a menu of controls and settings for the
+                          annotations to display in the graphics and parameters of the statistical method.
                           These vary from one statistical method to another."),
                   tags$li(tags$strong("'Shuffle'"), "is  a switch. When it's on, the cases in the
                           response variable will be shuffled in the current sample.
