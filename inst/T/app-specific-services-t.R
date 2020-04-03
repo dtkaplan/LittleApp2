@@ -106,9 +106,14 @@ main_calculation <- reactive({
   if (inherits(res, "try-error")) {
     somethings_wrong_with_data()
   }
-  res$arrange <- "beside"
+
   res
 })
+
+plot_arrangement <- function(main, aux) {
+  gridExtra::grid.arrange(main, aux,
+                          nrow=2,  ncol=1,  heights = c(2, 1))
+}
 
 model_formula <- reactive({
   req(current_sample())
