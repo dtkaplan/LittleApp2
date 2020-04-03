@@ -8,7 +8,7 @@ graph_panel <- function() {
   miniTabPanel(
     "Graph", icon = icon("chart-bar"),
     miniContentPanel(
-      checkboxInput("side_display", label = "compare response & model values:", value = FALSE),
+      checkboxInput("side_display", label = "Show auxiliary graph", value = FALSE),
       textOutput("big_plot_comment_top"),
       plotOutput("big_plot", width="100%",
                  brush = brushOpts(id = "main_ruler")),
@@ -22,7 +22,8 @@ graph_panel <- function() {
 compare_panel <- function() {
   miniTabPanel(
     "Compare", icon = icon("book-open"),
-      radioGroupButtons("compare_what", "Show what?",  c("data plot", "model values", "both")),
+      radioGroupButtons("compare_what", "Show what?",
+                        c("main plot" = "main", "aux. plot" = "aux", "both" = "both")),
       side_by_side_table(
         current = plotOutput("compare_plot1", brush = brushOpts(id = "comp_ruler")),
         frozen  = plotOutput("compare_plot2", brush = brushOpts(id = "comp_ruler"))

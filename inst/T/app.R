@@ -7,7 +7,7 @@ library(ggplot2)
 library(LittleApp2)
 library(triola)
 library(mosaicData)
-library(MAT160)
+library(StatsUsingTechnologyData)
 library(openintro)
 library(Lock5Data)
 

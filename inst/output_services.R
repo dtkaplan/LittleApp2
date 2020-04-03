@@ -8,15 +8,7 @@ output$big_plot <- renderPlot({
   if (inherits(res, "tryError")) return(NULL)
 
   if (input$side_display && !is.null(res$side)) {
-    if ("arrange" %in% names(res) && res$arrange == "beside") {
-      gridExtra::grid.arrange(res$main,
-                              res$side,
-                              nrow = 1,
-                              widths = c(3,1))
-    } else {
-      gridExtra::grid.arrange(res$main, res$side,
-                              nrow=2,  ncol=1,  heights = c(2, 1))
-    }
+      plot_arrangement(res$main, res$side)
   } else {
     res$main
   }
@@ -26,8 +18,7 @@ output$big_plot <- renderPlot({
 
 output$compare_plot1 <- renderPlot({
   construct_compare_plot(
-    main_calculation(),
-    input$compare_what)
+    main_calculation(), input$compare_what, plot_arrangement)
 })
 
 output$compare_plot2 <- renderPlot({
@@ -36,7 +27,7 @@ output$compare_plot2 <- renderPlot({
   } else {
     construct_compare_plot(
       frozen_calculation(),
-      input$compare_what)
+      input$compare_what, plot_arrangement)
   }
 })
 

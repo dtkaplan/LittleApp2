@@ -43,10 +43,12 @@ main_calculation <- reactive({
           side = NULL
      )
   }
-  res$arrange <- "beside"
-
   res
 })
+
+plot_arrangement <- function(main, aux) {
+  gridExtra::grid.arrange(main, aux, nrow = 1, widths = c(3,1))
+}
 
 observeEvent(response_name(), {
   vals <- raw_data()[[response_name()]]

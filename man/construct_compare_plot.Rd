@@ -4,13 +4,20 @@
 \alias{construct_compare_plot}
 \title{Lay out the plots for the compare tab}
 \usage{
-construct_compare_plot(calc, what)
+construct_compare_plot(
+  calc,
+  what = c("main", "aux", "both"),
+  plot_arrangement = three_one
+)
 }
 \arguments{
 \item{calc}{the results  of the main (or frozen) calculation}
 
 \item{what}{whether to display the "data plot" or the "model values"
 side plot,  or both}
+
+\item{plot_arrangement}{a function to lay out the two plots. Default is
+side by side, with the main plot taking 3 units of width and the aux plot 1.}
 }
 \description{
 For internal use ... to lay out the main and side plots

@@ -25,7 +25,7 @@ For each app,  in `app-specific-services.R`, there should be these
    1. `main` - a  plot
    2. `side` - another plot (or `NULL`  if you  don't need one)
    3. `stats` - a data frame or list containing the statistics to display. If there is an error or some reason that the stats cannot be calculated, you  have a choice of dealing with this in  the `format_stats()` function (see below) or by having `main_calculation()` return a `stats` component that is an HTML string  rather than a list/data-frame. 
-- `model_formula()` Returns a model formula  suitable for the app.
+- `model_formula()` Returns a model formula  suitable for the app. IS THIS STILL RIGHT?
 - A reactive triggered by `input$show_app_params` that produces a modal dialog allowing the user to set parameters. In the Shiny  input  widgets, use the values stored in `Common` (see below) to initialize each parameter.
 - `Common`. A reactiveValue containing elements with the  same names as in the parameter-setting modal frame. For each of these, there also needs
 to be an `observeEvent()` that sets the value of the `Common` element whenever the `input` is changed, e.g. 

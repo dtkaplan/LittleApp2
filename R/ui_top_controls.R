@@ -23,6 +23,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         size= "md"),
       title  = "Draw a new sample of size n"
     ),
+    uiOutput("next_to_new_sample", inline = TRUE), # A placeholder
     "  ",
     span(
       actionBttn(

@@ -18,7 +18,7 @@ options(warn = -1) # suppress  warnings so log doesn't get crowded
 
 ui <- ui_main(
   ui_top_controls(),
-  data_tab(),
+  data_tab(covar = FALSE),
   graph_panel(),
   compare_panel(),
   stats_panel()  #, debug_panel()
@@ -32,16 +32,9 @@ server <- function(input, output, session) {
     # a single URL
     source(system.file("data_services.R", package="LittleApp2"), local = TRUE)
     source(system.file("output_services.R", package = "LittleApp2"), local = TRUE)
-    source("app_specific_services.R", local = TRUE)
+    source("Bootstrap_services.R", local = TRUE)
 
   })
-
-  output$debug1 <- renderText({
-    n_size()
-    input$new_sample
-    paste(capture.output(head(current_sample())), collapse = "\n")
-    })
-  output$debug2 <- renderText({nrow(current_sample())})
 
 }
 
