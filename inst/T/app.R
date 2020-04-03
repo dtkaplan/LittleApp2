@@ -5,6 +5,11 @@ library(shinyjs)
 library(miniUI)
 library(ggplot2)
 library(LittleApp2)
+library(triola)
+library(mosaicData)
+library(MAT160)
+library(openintro)
+library(Lock5Data)
 
 options(warn = -1) # suppress  warnings so log doesn't get crowded
 

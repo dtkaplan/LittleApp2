@@ -178,13 +178,15 @@ observeEvent(TRUE, {
       p("Little Apps are educational tools built around a standard framework. The framework will
                   become familiar to you once you have used the Little Apps a few times."),
       tags$ul(
-        tags$li("Every Little App displays a data frame (that you choose) from the
+        tags$li("Every Little App displays a data set (that you choose) from the
                           perspective of a statistical method or concept."),
         tags$li("At the bottom are a few icons. Each icon corresponds
                           to", tags$em("one statistical perspective on the data frame.")),
         tags$ul(
-          tags$li(tags$strong("Data"), "lets you  pick the data frame
-                                          and variables you want to display."),
+          tags$li(tags$strong("Data"), "lets you pick the data set (also called a 'data frame')
+                                          and variables you want to display. Buttons let you
+                  view to codebook for the data frame and provide and explanation of the
+                  particularly statistical method featured in the app."),
           tags$li(tags$strong("Graph"), "contains the main
                                           graphic displaying the data and statistical
                                           annotations."),
