@@ -8,7 +8,7 @@ app_specific_data <- reactive({
   response_census <- raw_data()[[response_name()]]
   # force response to be numeric and explanatory as 2-levels
   data[1] <- resp <-
-    dicotomize(data[[1]], response_census,
+    dichotomize(data[[1]], response_census,
                force = FALSE, to_numeric = TRUE)
   if ("levels" %in% names(attributes(resp))) {
     output$explain_response <-
@@ -29,7 +29,7 @@ app_specific_data <- reactive({
     ylabels <- NULL
   }
   explan_census <- raw_data()[[explanatory_name()]]
-  data[2] <- dicotomize(data[[2]], explan_census, force = TRUE)
+  data[2] <- dichotomize(data[[2]], explan_census, force = TRUE)
 
   if (length(unique(explan_census)) > 2) {
     output$explain_explanatory <- renderText({
@@ -144,7 +144,7 @@ observeEvent(input$show_app_params, { #annotations, {
     if (resp_range[1] > 0) resp_range[1] <- 0
     if (resp_range[2] < 0) resp_range[2] <- 0
   } else {
-    resp_range <- c(0, 1) # when response is dicotomized
+    resp_range <- c(0, 1) # when response is dichotomized
   }
 
   if (null_value_memory() < resp_range[1]) null_value_memory(0)

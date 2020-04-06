@@ -1,4 +1,4 @@
-test_that("dicotomization works", {
+test_that("dichotomization works", {
   Many_types <-
     data.frame(
       open = c(142.25, 141.23, 141.33, 140.82, 141.31,
@@ -14,13 +14,13 @@ test_that("dicotomization works", {
            date = as.Date(date)
     )
 
-  expect_equal(length(levels(dicotomize(Many_types$open))), 2)
+  expect_equal(length(levels(dichotomize(Many_types$open))), 2)
   expect_true(
-    is.numeric(dicotomize(Many_types$open, force = FALSE)))
-  expect_false(is.numeric(dicotomize(Many_types$open)))
-  expect_equal(length(levels(dicotomize(Many_types$date))), 2)
-  expect_true(inherits(dicotomize(Many_types$date, force = FALSE), "Date"))
-  expect_equal(levels(dicotomize(Many_types$sales))[1], "$70,000")
-  for_logical <- dicotomize(Many_types$open  > median(Many_types$open,  na.rm=TRUE))
+    is.numeric(dichotomize(Many_types$open, force = FALSE)))
+  expect_false(is.numeric(dichotomize(Many_types$open)))
+  expect_equal(length(levels(dichotomize(Many_types$date))), 2)
+  expect_true(inherits(dichotomize(Many_types$date, force = FALSE), "Date"))
+  expect_equal(levels(dichotomize(Many_types$sales))[1], "$70,000")
+  for_logical <- dichotomize(Many_types$open  > median(Many_types$open,  na.rm=TRUE))
   expect_equal(attr(for_logical, "levels"), c("false",  "true"))
 })

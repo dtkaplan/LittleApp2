@@ -100,7 +100,7 @@ F_main_calc <- function(formula, data, yrange = NULL,
                 width  =  0.2, height = 0.1)
     }
   if (!is.null(labels)) {
-    # format the  y  scale nicely  for a dicotomous
+    # format the  y  scale nicely  for a dichotomous
     # variable
     P1 <- P1 %>%
       gf_refine(

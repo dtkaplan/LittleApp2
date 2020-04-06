@@ -1,4 +1,4 @@
-#' Dicotomize a variable
+#' dichotomize a variable
 #'
 #' Split a variable into two levels. Logical variables
 #' will be converted to a TRUE/FALSE factor. Numerical variables
@@ -7,15 +7,20 @@
 #'
 #' @param x the variable (as a vector) to be split
 #' @param pop an (optional) reference set of data (typically from a much larger sample)
-#' that determines the dicotomization level.
+#' that determines the dichotomization level.
 #' @param force a logical flag. If `TRUE`, even
 #' numerical variables will be split.
-#' @param to_numeric a logical flag. If `TRUE`, dicotomized factors
+#' @param to_numeric a logical flag. If `TRUE`, dichotomized factors
 #' will be reported as 0/1 numbers with the levels in the attributes.
+#'
+#' @details When `to_numeric` is true, the names of the dichotomized levels
+#' will be reported as an attribute `levels` in the result. This can be used to label the
+#' plot. (It will be `NULL` if the variable was already numeric.)
+#'
 #'
 #' @export
 #'
-dicotomize <- function(x, pop = x, force=TRUE, to_numeric = FALSE) {
+dichotomize <- function(x, pop = x, force=TRUE, to_numeric = FALSE) {
 
   smaller_date <- "on or before"
   smaller_number <- "median or less"
@@ -62,7 +67,7 @@ dicotomize <- function(x, pop = x, force=TRUE, to_numeric = FALSE) {
       x <- factor(x)
     }
   } else {
-    stop("Unrecognized variable type to dicotomize. Contact developer.")
+    stop("Unrecognized variable type to dichotomize. Contact developer.")
   }
 
   if (to_numeric) {

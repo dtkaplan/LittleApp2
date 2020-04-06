@@ -13,9 +13,9 @@ main_calculation <- reactive({
   modf <- model_formula()
   data <- current_sample()
   yvals <- raw_data()[[response_name()]]
-  # dicotomize any categorical response variable
+  # dichotomize any categorical response variable
   if (! is.numeric(data[1])) {
-     res <- dicotomize(data[[1]], yvals,
+     res <- dichotomize(data[[1]], yvals,
                            force = FALSE, to_numeric = TRUE)
      labels <- attr(res,  "levels") # will be NULL if there aren't any
      data[1] <- res
