@@ -55,12 +55,9 @@ observeEvent(response_name(), {
 })
 
 main_calculation <- reactive({
-  if (exists("app_specific_data")) {
-    res <- app_specific_data()
-    data <- res$data
-    ylabels <- res$labels
-  }
-  else data <- current_sample()
+  res <- app_specific_data()
+  data <- res$data
+  ylabels <- res$labels
 
   req(ncol(data) %in% 1:2)
   modf <- model_formula()

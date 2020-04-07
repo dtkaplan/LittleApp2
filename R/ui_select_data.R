@@ -22,7 +22,7 @@ data_tab <- function(package_list = default_packages_list,                      
           ui_select_data(package_list, covar, covar2),
           actionButton("show_explain", "Explain App"),
           actionButton("show_metadata", "Show codebook"),
-          checkboxInput("stratify", "Stratify by explan vars")
+          checkboxInput("stratify", "Stratify sampling by explan vars")
         ),
         tagList(
           plotOutput("preview_plot", width="300px", height="250px")

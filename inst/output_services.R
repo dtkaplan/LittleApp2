@@ -161,7 +161,7 @@ observeEvent(input$comp_ruler, {
 })
 
 ## For the initial splash page
-observeEvent(TRUE, {
+observeEvent(input$show_explain, {
   showModal(
     modalDialog(
       p("This  is the", tags$strong(app_title()), "Little App."),
@@ -221,14 +221,15 @@ ignoreNULL = TRUE
 
 
 ## For the app-specific documentation
-observeEvent(input$show_explain, {
-  showModal(
-    modalDialog(htmlOutput("explain_text"),
-                title  = "Explaining the App ...",  easyClose = TRUE)
-  )
-},
-  ignoreNULL = TRUE
-)
+# This has been deprecated in favor of a web page
+# observeEvent(input$show_explain, {
+#   showModal(
+#     modalDialog(htmlOutput("explain_text"),
+#                 title  = "Explaining the App ...",  easyClose = TRUE)
+#   )
+# },
+#   ignoreNULL = TRUE
+# )
 
 ## For the codebook
 observeEvent(input$show_metadata, {

@@ -7,18 +7,10 @@ app_title <- reactive({
 ntrials <- reactiveVal(5)
 model_order <- reactiveVal(1)
 
-# A top-line control for a new resampling trial
-output$next_to_new_sample <- renderUI({
-  span("  ",
-       actionBttn(
-         inputId = "new_trial",
-         label = "resample", icon = icon("redo"),
-         size= "md")
-  )
-})
 #-------------
 # Display messages when variable conversion is being done
 app_specific_data <- reactive({
+  input$new_sample # for the dependency
   data <- current_sample()
   response_census <- raw_data()[[response_name()]]
   if (!is.numeric(response_census)) { # categorical response variable

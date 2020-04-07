@@ -195,18 +195,15 @@ random_seed <- reactive({
 
 current_sample <- reactive({
   req(isTruthy(raw_data()))
+  input$stratify # for the dependence
 
-
-  input$stratify
-
+  # The resampling system hasn't been responding to new_sample
   # Handle resampling specially
-  if (is.data.frame(Saved_sample())) {
-    res <- dplyr::sample_n(Saved_sample(),
-                           size  = n_size(), replace=TRUE )
-    return(res)
-  }
-
-
+  # if (is.data.frame(Saved_sample())) {
+  #   res <- dplyr::sample_n(Saved_sample(),
+  #                          size  = n_size(), replace=TRUE )
+  #   return(res)
+  # }
 
   the_variables <- current_variables()
   the_variables <- the_variables[the_variables %in% names(raw_data())]
@@ -221,7 +218,6 @@ current_sample <- reactive({
      # enough and all the rows for groups that are smaller than nmax
      choose_n <-  min(nrow(Raw_data), as.numeric(n_size()))
   }
-
 
   set.seed(random_seed())
   if (input$stratify) {
@@ -242,15 +238,15 @@ current_sample <- reactive({
   Res
 })
 
-observe({
-  # when resampling is turned on, save the current sample to
-  # the Saved_sample reactive value.
-  # When resampling is turned off, Saved_sample becomes NA
-  # which serves as a flag to get_current_sample()
+#---------Set up to draw a resample---
+# When resampling is pressed for the first time, save the current sample to
+# the Saved_sample reactive value.
+# When resampling is turned off, Saved_sample becomes NA
+# which serves as a flag to get_current_sample()
+observeEvent(input$resample, {
   if (input$resample) Saved_sample(isolate(current_sample()))
   else Saved_sample(NA)
 })
-
 
 
 

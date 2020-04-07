@@ -52,16 +52,16 @@ ui_top_controls <- function(title = "App controls",  ...) {
         value = as.logical(FALSE)),
       title = "For Null Hypothesis testing. Use random shuffling to eliminate the relationship between the response and explanatory variables"
     ),
-    "  ",
-    span(
-    checkboxInput(
-      inputId = "resample",
-      label = "resample",
-      #size = "mini",
-      #labelWidth = "60px",
-      value = as.logical(FALSE)),
-    title = "Resample from the current sample rather than generating a new sample"
-    ),
+    # "  ",
+    # span(
+    # checkboxInput(
+    #   inputId = "resample",
+    #   label = "resample",
+    #   #size = "mini",
+    #   #labelWidth = "60px",
+    #   value = as.logical(FALSE)),
+    # title = "Resample from the current sample rather than generating a new sample"
+    # ),
 
     "  ",
     span(

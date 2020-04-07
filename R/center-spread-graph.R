@@ -35,22 +35,13 @@ center_spread_graph <- function(formula, data, yrange = NULL, labels = NULL,
 
   jitter_height <-
     if (length(unique(data[[yvar]])) > 2) 0
-    else 0.2 # If it's a zero/one variable, still jitter it
+    else 0.1 # If it's a zero/one variable, still jitter it
 
   Stats <- mosaicCore::df_stats(formula, data = data,
                                 mean = mean, mean = mosaicCore::ci.mean(!!annots$prob_level),
                                 median = median, sd = sd,
                                 summary = coverage(!!annots$prob_level),
                                 na.action = "na.pass")
-
-  For_sd_ruler <-
-    mosaicCore::df_stats(formula, data = data,
-                         mean = mean, sd = sd) %>%
-    mutate(center = mean, pos_sd = mean + sd, neg_sd =  mean - sd,
-           pos_2sd = mean + 2*sd, neg_2sd =  mean - 2*sd,) %>%
-    select( - sd,  - center)
-  For_sd_ruler_labels <- For_sd_ruler %>%
-    tidyr::gather(key = label, value = vertical, `pos_sd`, neg_sd, pos_2sd, neg_2sd, mean)
 
   P <- gf_jitter(formula, data = data, seed = 101,
                width = 0.10, height = jitter_height,
@@ -68,6 +59,15 @@ center_spread_graph <- function(formula, data, yrange = NULL, labels = NULL,
                            inherit = FALSE, color = "gray", alpha = 0.5,  size = 4)
   }
   if (annots$show_sd & nrow(data) > 1) {
+    For_sd_ruler <-
+      mosaicCore::df_stats(formula, data = data,
+                           mean = mean, sd = sd) %>%
+      mutate(center = mean, pos_sd = mean + sd, neg_sd =  mean - sd,
+             pos_2sd = mean + 2*sd, neg_2sd =  mean - 2*sd,) %>%
+      select( - sd,  - center)
+    For_sd_ruler_labels <- For_sd_ruler %>%
+      tidyr::gather(key = label, value = vertical, `pos_sd`, neg_sd, pos_2sd, neg_2sd, mean)
+
     this_formula <- as.formula(glue::glue("`pos_sd` + neg_sd ~ {xvar}"))
     P <- P %>% gf_errorbar(this_formula, data = For_sd_ruler,
                            inherit = FALSE, color = "red", width = 0.1)
@@ -86,11 +86,11 @@ center_spread_graph <- function(formula, data, yrange = NULL, labels = NULL,
     this_formula <- as.formula(glue::glue("mean + mean ~ {xvar}"))
     P <- P %>% gf_errorbar(this_formula, data = Stats,
                            inherit = FALSE, color = "black", size = 2)
-    if (annots$show_ci && nrow(data) > 1) {
-      this_formula <- as.formula(glue::glue("mean_lower + mean_upper ~ {xvar}"))
-      P <- P %>% gf_errorbar(this_formula, data = Stats,
-                             inherit = FALSE, color = "black", size = 1, width = 0.8)
-    }
+  }
+  if (annots$show_ci && nrow(data) > 1) {
+    this_formula <- as.formula(glue::glue("mean_lower + mean_upper ~ {xvar}"))
+    P <- P %>% gf_errorbar(this_formula, data = Stats,
+                           inherit = FALSE, color = "black", size = 1, width = 0.8)
   }
 
   if (annots$show_violin & nrow(data) > 1)

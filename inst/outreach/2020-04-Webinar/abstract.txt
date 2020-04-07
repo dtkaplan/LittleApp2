@@ -1,0 +1,8 @@
+Title: Little App Update!
+
+Date: Thursday April 23 at 3pm EDT (tentative: TO BE CONFIRMED WITH JENNIFER)
+
+Discussants: Jennifer Ward (Clark Univ) & Danny Kaplan (Macalester College)
+
+Abstract: We're approaching the third anniversary of the StatPREP Little Apps.  To celebrate, we're launching a brand new set of Apps with a new look and new functionality. Among the changes are a dramatically increased choice of data sets (including those keyed to textbooks often used by StatPREP instructors),  the ability to upload your own CSV files, a feature that lets you freeze a display and show it side-by-side with the current display. The original apps will continue to be available at their current web addresses, but we think you'll want to switch to the new ones to benefit from their new capabilities.
+
