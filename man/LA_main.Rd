@@ -4,7 +4,7 @@
 \alias{LA_main}
 \title{Construct the Little App server function}
 \usage{
-LA_main(app_specifics, covar = FALSE)
+LA_main(app_specifics, explan = TRUE, covar = FALSE)
 }
 \description{
 Construct the Little App server function

@@ -215,29 +215,40 @@ observeEvent(input$show_app_params, {
   showModal(
     modalDialog(
       title = "Model params", easyClose  = TRUE,
+      p("Stratification means 'layering,' that is, to divide into layers. In this app,
+        we divide the covariate into layers. That way, we can show the relationship
+        between the response and the primary explanatory variable separately for
+        each layer of the covariate. This control sets the number of layers
+        to use when converting a continuous numerical variable into discrete
+        levels."),
       radioGroupButtons(
         inputId = 'nstrata',
         label = "Number of strata for covariate:",
         choices = 0:6,
         selected = as.numeric(Common$nstrata)),
-      pickerInput(
-        inputId = 'model_type',
-        label = "Type:",
-        choices = list("linear combinations" = "lm",
-                       "logistic" = "logistic"),
-        selected = Common$model_type),
-
+      tags$hr(),
+      p("These controls govern the 'shape' of the model fit to the
+        data. When there is an interaction term, the relationship
+        between the response and primary explanatory variable can be
+        different for each level of the covariate. Without an interaction,
+        all the model functions will have the same shape."),
       prettyCheckbox(
         inputId = "interaction_term",
         label = "Interactions",
         value = as.logical(Common$interaction_term)),
-
+      tags$br(),
+      p("The model order sets how 'curvy' the model function can be. 1 means
+        a straight line. (This applies only when the primary explanatory
+        variable is quantitative.)"),
       radioGroupButtons(
         inputId = 'model_order',
         label = "Model order:",
         choices = 0:6,
         selected = as.numeric(Common$model_order)),
-
+      tags$hr(),
+      p("This control (not yet installed) allows you to set which level
+        of a categorical response variable to assign to 1 when turning the variable
+        into a 0/1 format for model building."),
       if (isTruthy(current_sample()) && isTruthy(response_name()) &&
           nrow(current_sample()) > 2 && !is.numeric(current_sample()[response_name()])) {
         selectInput(

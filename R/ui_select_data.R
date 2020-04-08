@@ -13,13 +13,14 @@
 #'
 #'
 #' @export
-data_tab <- function(package_list = default_packages_list,                            covar = TRUE, covar2 = FALSE) {
+data_tab <- function(package_list = default_packages_list,
+                     explan = TRUE, covar = TRUE, covar2 = FALSE) {
   miniTabPanel(
     "Data", icon = icon("folder"),
     miniContentPanel(
       side_by_side_table(
         tagList(
-          ui_select_data(package_list, covar, covar2),
+          ui_select_data(package_list, explan, covar, covar2),
           actionButton("show_explain", "Explain App"),
           actionButton("show_metadata", "Show codebook"),
           checkboxInput("stratify", "Stratify sampling by explan vars")
@@ -43,6 +44,7 @@ default_packages_list <-
        "UPLOAD" = "UPLOAD")
 
 ui_select_data <-  function(package_list = default_packages_list,
+                            explan = TRUE,
                             covar = TRUE, covar2 = FALSE) {
   table_str <-
     glue(
@@ -51,10 +53,15 @@ ui_select_data <-  function(package_list = default_packages_list,
     <tr><td>Source package</td><td>{smaller_select("package", package_list)}</td></tr>
     <tr><td>Data set</td><td>{smaller_select("frame", NULL)}</td></tr>
     <tr><td>Response</td><td>{smaller_select("response", NULL)}</td></tr>
-    <tr><td colspan="2">{textOutput("explain_response")}</td></tr>
-    <tr><td>Explan</td><td>{smaller_select("explanatory", NULL)}</td></tr>
-    <tr><td colspan="2">{textOutput("explain_explanatory")}</td></tr>'
+    <tr><td colspan="2">{textOutput("explain_response")}</td></tr>'
+
     )
+
+  if (explan) {
+    table_str <- paste(table_str, glue(
+      '<tr><td>Explan</td><td>{smaller_select("explanatory", NULL)}</td></tr>
+        <tr><td colspan="2">{textOutput("explain_explanatory")}</td></tr>'     ))
+  }
 
   if (covar) {
     table_str <- paste(table_str, glue(

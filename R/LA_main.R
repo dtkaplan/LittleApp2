@@ -1,7 +1,7 @@
 #' Construct the Little App server function
 #'
 #' @export
-LA_main <- function(app_specifics, covar=FALSE) {
+LA_main <- function(app_specifics, explan = TRUE, covar=FALSE) {
   library(shiny)
   library(shinyWidgets)
   library(shinyjs)
@@ -19,7 +19,7 @@ LA_main <- function(app_specifics, covar=FALSE) {
   res <- list()
   res$ui <- ui_main(
     ui_top_controls(),
-    data_tab(covar = covar),
+    data_tab(explan = explan, covar = covar),
     graph_panel(),
     compare_panel(),
     stats_panel()
