@@ -107,6 +107,8 @@ output$preview_plot <- renderPlot({
 
 observeEvent(input$main_ruler, {
   req(current_sample())
+  req(!is.na(explanatory_name())) #  for the density app with
+  # response variable on the x axis and no explanatory var.
   with(input$main_ruler, {
     yinfo <-
       glue("{response_name()}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
@@ -137,7 +139,7 @@ observeEvent(input$comp_ruler, {
   req(current_sample())
   with(input$comp_ruler, {
     yinfo <-
-      glue("{response_name}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
+      glue("{response_name()}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
 
     if(explanatory_name() != "none_selected" &&
        is.numeric(raw_data()[[explanatory_name()]])) {

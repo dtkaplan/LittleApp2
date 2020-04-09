@@ -11,7 +11,9 @@ graph_panel <- function() {
       checkboxInput("side_display", label = "Show auxiliary graph", value = FALSE),
       textOutput("big_plot_comment_top"),
       plotOutput("big_plot", width="100%",
-                 brush = brushOpts(id = "main_ruler")),
+                 brush = brushOpts(id = "main_ruler",
+                                   delayType = "debounce",
+                                   resetOnNew = TRUE)),
       textOutput("big_plot_comment_bottom"),
       downloadButton("save_plot",  "Download graphic")
     )
