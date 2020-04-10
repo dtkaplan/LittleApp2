@@ -15,7 +15,7 @@ F_side_plot(raw, fitted, explan = "bogus", dflex = 1, sd = TRUE)
 
 \item{dflex}{integer, degrees of flexibility (which is n - (degfreedom+1))}
 
-\item{sd}{if `TRUE`, show the interval of plus-or-minus one
+\item{sd}{if \code{TRUE}, show the interval of plus-or-minus one
 standard deviation}
 }
 \description{

@@ -17,10 +17,10 @@ get_model_formula(
 \item{model_order}{integer, the order of spline to use for the primary explanatory variable
 when it is quantitative}
 
-\item{interaction}{logical flag. If `TRUE` include interactions among the explanatory
+\item{interaction}{logical flag. If \code{TRUE} include interactions among the explanatory
 variables}
 
-\item{model_type}{character string specifying the model architecture. Either `"lm"` or `"logistic"`
+\item{model_type}{character string specifying the model architecture. Either \code{"lm"} or \code{"logistic"}
 construct the model formula}
 
 \item{frame}{character string name of a data frame}

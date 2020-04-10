@@ -39,20 +39,24 @@ the fitted model, and the stats.
 }
 \description{
 Main calculations for any app consist of ...
-- (1) The main plot `main`
-- (2) The  side plot `side`. Can be null is none is needed.
-- (3) `stats` A data  frame or list with statistics on the system
-list(main = P1 %>% gf_theme(legend.position  =  "left"),
+\itemize{
+\item (1) The main plot \code{main}
+\item (2) The  side plot \code{side}. Can be null is none is needed.
+\item (3) \code{stats} A data  frame or list with statistics on the system
+list(main = P1 \%>\% gf_theme(legend.position  =  "left"),
+}
 }
 \details{
 A basic plot showing two or three variables:
-- a response
-- an explanatory variable
-- a covariate (optional)
+\itemize{
+\item a response
+\item an explanatory variable
+\item a covariate (optional)
 Constructs two graphics, one showing the data
 and (optionally) the fitted model, the other showing
 showing the side plot comparing the distribution
 of raw to  model values
+}
 }
 \examples{
 tmp <- F_app_plot(wage ~ splines::ns(educ, 2)*sex,  data = mosaicData::CPS85)

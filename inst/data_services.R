@@ -206,11 +206,14 @@ current_sample <- reactive({
   # }
 
   the_variables <- current_variables()
-  the_variables <- the_variables[the_variables %in% names(raw_data())]
+
+  the_variables <-
+    the_variables[the_variables %in% names(raw_data()),
+                  drop = FALSE]
   # the following is to  avoid legacy variable  names  from previous  dataset.
   req(the_variables) # will  be triggered if <the_variables> is empty
 
-  Raw_data <- na.omit( raw_data()[the_variables] )
+  Raw_data <- na.omit( raw_data()[the_variables, drop = FALSE] )
   if (n_size() == "All") {
     choose_n  <- nrow(Raw_data)
   } else {
@@ -228,8 +231,10 @@ current_sample <- reactive({
       dplyr::select(- .index.in.group) %>%
       dplyr::ungroup()
   } else {
-    #  Res <- dplyr::sample_n(Raw_data, size = choose_n)
-    Res <- Raw_data[sample.int(nrow(Raw_data), as.integer(choose_n)), ]
+    Res <- Raw_data[
+      sample.int(nrow(Raw_data), as.integer(choose_n)),
+      ,  # all columns
+      drop = FALSE]
   }
 
   # Shuffle the response variable?

@@ -5,7 +5,7 @@
 
 output$big_plot <- renderPlot({
   res <- try(main_calculation())
-  if (inherits(res, "tryError")) return(NULL)
+  if (inherits(res, "try-error")) return(NULL)
 
   if (input$side_display && !is.null(res$side)) {
       plot_arrangement(res$main, res$side)
@@ -35,7 +35,7 @@ output$compare_plot2 <- renderPlot({
 # The stats outputs
 output$current_stats <- renderText({
   res <- try(main_calculation())
-  if (inherits(res, "tryError")) {
+  if (inherits(res, "try-error")) {
     return(
       html("Not enough variation in this sample. See data tab.")
     )
@@ -64,6 +64,7 @@ output$save_plot = downloadHandler(
       grDevices::png(..., width = width, height = height,
                      res = 300, units = "in")
     }
+    cat("In download handler\n")
     ggsave(file, plot = main_calculation()$main, device = device)
   })
 
@@ -97,9 +98,12 @@ output$codebook <- renderText({
 })
 
 output$preview_plot <- renderPlot({
-  res <- try(main_calculation())
-  if (inherits(res, "tryError") || !is.list(res)) NULL
-  else res$main
+  req(try(main_calculation()))
+  # result of main_calculation will be cached from previous call
+  res <- main_calculation()
+  if (!is.list(res)) stop("main_calculation() should produce a list.")
+
+  res$main
 })
 
 #------------

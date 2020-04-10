@@ -27,11 +27,11 @@ t_test_calcs(
 
 \item{show_mean}{logical flag. Whether to show the groupwise means in the plot.}
 
-\item{show_ci}{similar to `show_mean`, but for the confidence interval}
+\item{show_ci}{similar to \code{show_mean}, but for the confidence interval}
 
-\item{show_t}{similar to `show_mean`, but for the t interval}
+\item{show_t}{similar to \code{show_mean}, but for the t interval}
 
-\item{var_equal}{if `TRUE` use the equal variance t-test}
+\item{var_equal}{if \code{TRUE} use the equal variance t-test}
 
 \item{null_hypothesis}{a number saying what value for mu_0 should be used in the one-sample t-test}
 

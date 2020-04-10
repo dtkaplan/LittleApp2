@@ -12,10 +12,10 @@ dichotomize(x, pop = x, force = TRUE, to_numeric = FALSE)
 \item{pop}{an (optional) reference set of data (typically from a much larger sample)
 that determines the dichotomization level.}
 
-\item{force}{a logical flag. If `TRUE`, even
+\item{force}{a logical flag. If \code{TRUE}, even
 numerical variables will be split.}
 
-\item{to_numeric}{a logical flag. If `TRUE`, dichotomized factors
+\item{to_numeric}{a logical flag. If \code{TRUE}, dichotomized factors
 will be reported as 0/1 numbers with the levels in the attributes.}
 }
 \description{
@@ -25,7 +25,7 @@ will be split at the median and returned as a factor. Factors will be
 lumped into the most populated and all the others.
 }
 \details{
-When `to_numeric` is true, the names of the dichotomized levels
-will be reported as an attribute `levels` in the result. This can be used to label the
-plot. (It will be `NULL` if the variable was already numeric.)
+When \code{to_numeric} is true, the names of the dichotomized levels
+will be reported as an attribute \code{levels} in the result. This can be used to label the
+plot. (It will be \code{NULL} if the variable was already numeric.)
 }

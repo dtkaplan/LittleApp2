@@ -14,11 +14,11 @@ data_tab(
 \arguments{
 \item{package_list}{A named list whose values are character strings containing
 the packages to be included and whose names are  the user-facing strings for the
-select widget. See `default_packages_list` for an example.}
+select widget. See \code{default_packages_list} for an example.}
 
 \item{covar}{Flag: whether to add a selector for a covariate}
 
-\item{covar2}{Flag: whether to add a selector for a second covariate (if `covar=TRUE`)}
+\item{covar2}{Flag: whether to add a selector for a second covariate (if \code{covar=TRUE})}
 }
 \description{
 Creates the tab with controls for selecting package, frame, response,

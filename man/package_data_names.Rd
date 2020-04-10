@@ -12,7 +12,7 @@ package_data_names(name, lib.loc = NULL)
 \item{lib.loc}{Optional character string naming the library location}
 }
 \description{
-This is constructed from the internals of `data()`
+This is constructed from the internals of \code{data()}
 It returns the names of the datasets identified in R's internal
 compressed dataset database for the package
 }

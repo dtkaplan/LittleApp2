@@ -43,7 +43,7 @@ dichotomize <- function(x, pop = x, force=TRUE, to_numeric = FALSE) {
           labels = c(smaller_number, "greater than median"))
         )
       }
-      if (! inherits(res, "tryError")) {
+      if (! inherits(res, "try-error")) {
         x <- res
       }
     }

@@ -7,7 +7,7 @@
 side_by_side_table(...)
 }
 \arguments{
-\item{...}{shiny widgets with a name, e,.g. `freq <- sliderInput('one', ....)`}
+\item{...}{shiny widgets with a name, e,.g. \code{freq <- sliderInput('one', ....)}}
 }
 \description{
 Layout helpers

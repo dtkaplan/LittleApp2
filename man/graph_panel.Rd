@@ -7,6 +7,6 @@
 graph_panel()
 }
 \description{
-Functions to make tabs for the UI: `graph_panel()`,  `compare_panel()`, `stats_panel()`,
-`debug_panel()`
+Functions to make tabs for the UI: \code{graph_panel()},  \code{compare_panel()}, \code{stats_panel()},
+\code{debug_panel()}
 }

@@ -15,6 +15,6 @@ up the modal containing the app-specific controls}
 \description{
 As a matter of design policy, each Little App has a row of controls
 across the top of the window. These controls are always shown, irrespective
-of which tab is showing. `ui_top_controls` is a function that creates the set of controls,
-which then needs to be placed in an appropriate container such as a `miniUI::miniButtonBlock`.
+of which tab is showing. \code{ui_top_controls} is a function that creates the set of controls,
+which then needs to be placed in an appropriate container such as a \code{miniUI::miniButtonBlock}.
 }
