@@ -91,24 +91,40 @@ observeEvent(input$show_app_params, {
   showModal(
     modalDialog(
       title = "Model params", easyClose  = TRUE,
+      p("This is relevant when the response variable is 0/1.
+        The 'logistic' form forces the model to stay within the
+        bounds 0 to 1, while the 'linear combination' form allows
+        the model to go outside the 0-1 interval. Logistic is generally
+        preferred for 0-1 variables."),
       pickerInput(
         inputId = 'model_type',
         label = "Type:",
         choices = list("linear combinations" = "lm",
                        "logistic" = "logistic"),
         selected = Common$model_type),
-
+      tags$br(),
+      p("An 'interaction' means that the response variable
+        can depend on the explanatory variable differently for different
+        values of the covariate. That is, the model does not have to
+        have the same shape for different values of the covariate."),
       prettyCheckbox(
         inputId = "interaction_term",
-        label = "Interactions",
+        label = "Include interaction",
         value = as.logical(Common$interaction_term)),
-
+      tags$br(),
+      p("The 'model order' specifies the curviness of the model.
+        1 is a straight line, 2 has one bend, and so on. This applies
+        only to quantitative explanatory variables."),
       radioGroupButtons(
         inputId = 'model_order',
         label = "Model order:",
         choices = 0:6,
         selected = as.numeric(Common$model_order)),
 
+      tags$hr(),
+      p("For categorical variables, select the level to use
+        as a reference when converting to a 0/1 variable. (This
+        is an experimental feature, not yet implmented.)"),
       if (isTruthy(current_sample()) && isTruthy(response_name()) &&
           nrow(current_sample()) > 2 && !is.numeric(current_sample()[response_name()])) {
         selectInput(
@@ -116,7 +132,9 @@ observeEvent(input$show_app_params, {
           label = "Response ref. level:",
           choices = unique(current_sample()[response_name()]),
           selected = Common$selected_category)
-      }
+      },
+      ,
+      footer = modalButton("Go back to the app ...")
     )
   )
 })

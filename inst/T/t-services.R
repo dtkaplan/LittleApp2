@@ -165,7 +165,8 @@ observeEvent(input$show_app_params, { #annotations, {
           checkboxInput("var_equal", "Assume equal variances",
                         Common$var_equal)
       ),
-      size = "s"
+      size = "s",
+      footer = modalButton("Go back to the app ...")
     )
   )
 

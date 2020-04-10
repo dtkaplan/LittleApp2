@@ -43,7 +43,8 @@ observeEvent(input$show_app_params, {
         inputId = 'model_order',
         label = "Model order:",
         choices = 0:6,
-        selected = as.numeric(model_order()))
+        selected = as.numeric(model_order())),
+      footer = modalButton("Go back to the app ...")
     )
   )
 })

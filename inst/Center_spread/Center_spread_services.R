@@ -111,7 +111,9 @@ observeEvent(input$show_app_params, {
       tags$hr(),
       p("Density display:"),
       checkboxInput("show_violin", "Show violin plot.",
-                    value = Annots$show_violin)
+                    value = Annots$show_violin),
+      ,
+      footer = modalButton("Go back to the app ...")
 
     )
   )

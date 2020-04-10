@@ -43,6 +43,7 @@ covariate2_name <- reactive({Current_vars()[4]})
 observeEvent(input$package, {
   if (input$package  == "UPLOAD") {
     updateSelectInput(session, "frame", choices  = "uploaded_dataset")
+    Current_frame("uploaded_dataset") # update the state
   } else {
     available_frames <- package_data_names(input$package)
     new_frame <- sample(available_frames, 1)
@@ -86,17 +87,6 @@ observeEvent(Current_frame(), {
       }
 })
 
-
-observeEvent(input$uploaded_file, {
-  inFile <- input$uploaded_file
-  if (is.null(inFile))
-    return(NULL)
-
-  Sheet <- read.csv(inFile$datapath)#, header = input$header,
-                    #sep = input$sep, quote = input$quote)
-  Uploaded_data(Sheet)
-})
-
 data_upload_controls <- function() {
   shiny::tagList(
     shiny::fileInput('uploaded_file', 'Choose file to upload',
@@ -114,7 +104,8 @@ data_upload_controls <- function() {
 observeEvent(req(input$package == "UPLOAD"), {
   showModal(
     modalDialog(title="Upload your own file.",
-                data_upload_controls())
+                data_upload_controls(),
+                footer = modalButton("Go back to the app ..."))
 
   )
 })
@@ -124,8 +115,26 @@ raw_data <- reactive({
   Uploaded_data() #  for dependency
 
   if (input$package == "UPLOAD") {
-    req(Uploaded_data())
-    return(Uploaded_data())
+    inFile <- input$uploaded_file
+    if (is.null(inFile)) return(NULL)
+
+    Sheet <- read.csv(inFile$datapath)
+    Uploaded_data(Sheet)
+    var_names <- names(Sheet)
+
+    randomly_selected <- sample(var_names, 2)
+    Current_vars(randomly_selected) # store away for immediate access
+    updateSelectInput(session, "response",
+                      choices = c("Select response var:" = "",
+                                  var_names),
+                      selected = randomly_selected[1])
+    # If there's only one variable, hide the explanatory chooser
+    if (length(var_names) < 2) hide("explanatory") else show("explanatory")
+    updateSelectInput(session, "explanatory",
+                      choices = c("Select explanatory var:" = "",
+                                  var_names),
+                      selected = randomly_selected[2])
+    return(Sheet)
   }
   if (isTruthy(Current_frame())) {
     #db <- tools::Rd_db(input$package)

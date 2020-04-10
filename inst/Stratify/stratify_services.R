@@ -256,7 +256,8 @@ observeEvent(input$show_app_params, {
           label = "Response ref. level:",
           choices = unique(current_sample()[response_name()]),
           selected = Common$selected_category)
-      }
+      },
+      footer = modalButton("Go back to the app ...")
     )
   )
 })

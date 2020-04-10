@@ -224,7 +224,8 @@ observeEvent(input$show_app_params, {
         tags$li(radioGroupButtons("orientation",
                                   choices = c("On Y-axis", "On X-axis"),
                                   selected = Annots$orientation))
-      )
+      ),
+      footer = modalButton("Go back to the app ...")
 
     )
   )
