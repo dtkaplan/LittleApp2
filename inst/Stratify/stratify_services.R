@@ -36,7 +36,7 @@ app_specific_data <- reactive({
                    this statistical display makes sense only for quantitative response variables.")
         })
     } else {
-      error("Shouldn't get here. Contact developer. Missing levels.")
+      stop("Shouldn't get here. Contact developer. Missing levels.")
     }
   }
 
@@ -49,6 +49,16 @@ main_calculation <- reactive({
   response_labels <- res$labels # labels for response if converted from factor
 
   big_mod_formula <- model_formula() # with the covariate
+
+  if (explanatory_name() == response_name()) {
+    output$explain_explanatory <- renderText({
+      "Explanatory variable must be different from response variable."
+    })
+
+    req(FALSE)
+  } else {
+    output$explain_explanatory <- renderText({""})
+  }
 
   small_mod_formula <-
     if(Common$model_order == 1 || !is.numeric(data[[2]]))
@@ -71,9 +81,39 @@ main_calculation <- reactive({
     if (max(data[[1]]) <= 1 && min(data[[1]]) >= 0) binomial() # logistic model
     else gaussian() # linear model
 
-  small_model <- glm(small_mod_formula, data = data, family = mod_family)
-  big_model <- glm(big_mod_formula, data = data, family = mod_family)
+  small_model <- try(
+    glm(small_mod_formula, data = data, family = mod_family),
+    silent = TRUE)
+  big_model <- try(glm(big_mod_formula, data = data, family = mod_family),
+                   silent = TRUE)
+  if (inherits(small_model, "try-error")) {
+    output$explain_explanatory <- renderText({
+      "Not enough variation in the explanatory variable!!"
+    })
+  } else {
+    output$explain_explanatory <- renderText({NULL})
+    if (inherits(big_model, "try-error")) {
+      output$explain_covariate <- renderText({
+        "The covariate doesn't show sufficient variation."
+      })
+    } else output$explain_covariate <- renderText({NULL})
+  }
+  if (isTruthy(covariate_name())) {
+    if (explanatory_name() == covariate_name() ||
+        response_name() == covariate_name()) {
+      output$explain_covar <- renderText({
+        "It makes no sense to have the covariate
+                  be the same as the response or explanatory variables."
+      })
 
+      req(FALSE)
+    } else {
+      output$explain_covar <- renderText({""})
+    }
+  }
+
+  req(small_model)
+  req(big_model)
   # set graph scale based on raw data
   yvals <- raw_data()[[response_name()]]
   yrange <-
@@ -88,6 +128,8 @@ main_calculation <- reactive({
     unique(data[[2]])
   }
 
+  if (ncol(data) < 3) Current_vars(Current_vars()[1:2])
+
   if(is.na(covariate_name())) {
     new_grid <- data.frame(x_grid, stringsAsFactors = FALSE)
     names(new_grid) <- explanatory_name()
@@ -96,7 +138,6 @@ main_calculation <- reactive({
     new_grid <- expand.grid(x_grid, covar_grid)
     names(new_grid) <- c(explanatory_name(), covariate_name())
   }
-
   jitter_height <-
     if (length(unique(data[[1]])) > 2) 0
     else 0.1
@@ -112,7 +153,6 @@ main_calculation <- reactive({
     gf_theme(legend.position="none",
              axis.text.x = element_text(angle = 30, hjust = 1))
   # Need to add the labels, if any exist
-
   if ( !is.null(response_labels)) {
     P <- P %>%
       gf_refine(
@@ -159,11 +199,11 @@ main_calculation <- reactive({
               color = color_formula, inherit = FALSE,
               alpha = 1)
   }
-
   return(list(main = P, side = NULL,
               stats = list(small = small_model,
                            big = big_model,
                            raw = data[[1]])))
+
 })
 
 plot_arrangement <- function(main, aux) {
@@ -224,7 +264,7 @@ observeEvent(input$show_app_params, {
       radioGroupButtons(
         inputId = 'nstrata',
         label = "Number of strata for covariate:",
-        choices = 0:6,
+        choices = 2:6,
         selected = as.numeric(Common$nstrata)),
       tags$hr(),
       p("These controls govern the 'shape' of the model fit to the

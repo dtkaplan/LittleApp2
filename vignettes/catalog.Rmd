@@ -1,0 +1,19 @@
+---
+title: "The Little App Collection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The Little App Collection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(LittleApp2)
+```

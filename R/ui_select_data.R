@@ -65,11 +65,13 @@ ui_select_data <-  function(package_list = default_packages_list,
 
   if (covar) {
     table_str <- paste(table_str, glue(
-      '<tr><td>Covar</td><td>{smaller_select("covariate", NULL)}</td></tr>'
+      '<tr><td>Covar</td><td>{smaller_select("covariate", NULL)}</td></tr>
+      <tr><td colspan="2">{textOutput("explain_covar")}</td></tr>'
     ))
     if (covar2) {
       table_str <- paste(table_str, glue(
-        '<tr><td>Covar2</td><td>{smaller_select("covariate2", NULL)}</td></tr>'
+        '<tr><td>Covar2</td><td>{smaller_select("covariate2", NULL)}</td></tr>
+        <tr><td colspan="2">{textOutput("explain_covar2")}</td></tr>'
       ))
     }
   }
