@@ -222,7 +222,7 @@ observeEvent(input$show_explain, {
       title  = "Welcome to the StatPREP Little Apps ...",  easyClose = TRUE)
   )
 },
-ignoreNULL = TRUE
+ignoreNULL = FALSE
 )
 
 
