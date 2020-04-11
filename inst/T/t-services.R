@@ -153,15 +153,39 @@ observeEvent(input$show_app_params, { #annotations, {
     modalDialog(
       title = "Statistical Annotations", easyClose  = TRUE,
         tagList(
+          p("The t-test is fundamentally about means."),
           checkboxInput("show_mean", "Show mean",  Common$show_mean),
+          p("The confidence interval on the mean reflects uncertainty
+            due to random sampling. There are other sources of uncertainty,
+            such as *sampling bias* and *confounding*, that are not incorporated into the
+            confidence interval."),
           checkboxInput("show_ci", "Show conf interval", Common$show_ci),
+
           checkboxInput("show_t", "Show t-interval",  Common$show_t),
+          tags$hr(),
+          p("The confidence level is typically set at 0.95. We give you a choice
+            here so that you can explore how the intervals depend on the
+            confidence level."),
           selectInput("conf_level", "Confidence level",
                       choices  = c(0.5, 0.8, 0.9, 0.95, 0.99, 0.999),
                       selected = Common$conf_level),
+          tags$hr(),
+          p("In a one-sample t-test, there is no explanatory variable
+            and so there is just a single mean being tested. If you want
+            to explore one-sample t-tests, check the box to ignore
+            the explanatory variable. You can also set a level for the
+            Null Hypothesis value, which is a value (typically 0) that
+            you would be interested in rejecting."),
           checkboxInput("one_sample", "Ignore explanatory variable", value = Common$one_sample),
           sliderInput("mu", "Null hypothesis value", min  = resp_range[1],
                       max = resp_range[2], value = null_value_memory()),
+          tags$hr(),
+
+          p("Some people, when doing a two-sample t-test, prefer a refined
+            calculation that doesn't assume that the response variable
+            has the same variance in the two groups. You can explore whether
+            there is a good reason for this refined calculaton or whether
+            the assumption of equal variances gives and adequate approximation."),
           checkboxInput("var_equal", "Assume equal variances",
                         Common$var_equal)
       ),
