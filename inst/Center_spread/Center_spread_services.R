@@ -79,9 +79,9 @@ observeEvent(input$show_app_params, {
 
       p("Whether to show various statistics on the response variable:"),
       tags$ul(
-        tags$li(checkboxInput("show_mean", "Mean:", value = Annots$show_mean)),
-        tags$li(checkboxInput("show_median", "Median:", value = Annots$show_median)),
-        tags$li(checkboxInput("show_sd", "Standard deviation:", value = Annots$show_sd)),
+        tags$li(checkboxInput("show_mean", "Show mean", value = Annots$show_mean)),
+        tags$li(checkboxInput("show_median", "Show median", value = Annots$show_median)),
+        tags$li(checkboxInput("show_sd", "Show standard deviation as ruler", value = Annots$show_sd)),
       ),
       p("The standard deviation is a number that describes a distance. The app
         shows a 'ruler' with the standard deviation as the unit of distance."),
@@ -157,7 +157,12 @@ main_calculation <- reactive({
 
   stats$raw <- Without_explanatory$S$resid
 
-  list(main = With_explanatory$P, side = Without_explanatory$P, stats = stats)
+
+  list(main = With_explanatory$P %>%
+         gf_theme(theme_minimal()),
+       side = Without_explanatory$P %>%
+         gf_theme(theme_minimal()),
+       stats = stats)
 })
 
 plot_arrangement <- function(main, aux) {

@@ -8,7 +8,8 @@ output$big_plot <- renderPlot({
   if (inherits(res, "try-error")) return(NULL)
 
   if (input$side_display && !is.null(res$side)) {
-      plot_arrangement(res$main, res$side)
+      plot_arrangement(res$main,
+                       res$side)
   } else {
     res$main
   }
@@ -209,8 +210,16 @@ observeEvent(input$show_explain, {
                   tags$li(tags$strong("'Shuffle'"), "is  a switch. When it's on, the cases in the
                           response variable will be shuffled in the current sample.
                           This destroys any relationship  between it and the explanatory variables.
-                          This effectively makes the  'Null hypothesis' true for the sample.")
-                  )
+                          This effectively makes the  'Null hypothesis' true for the sample."),
+                  tags$li(shiny::icon("info"), "brings up this page of instructions."),
+                  tags$li(shiny::icon("user-secret"), "shows the codebook
+                          for the currently selected data frame."),
+                  tags$li(shiny::icon("bookmark"), "shows a machine-readable
+                          summary of the data and variables currently being displayed. This
+                          may be useful for your notes, but it is also an important
+                          component of any bug report.")
+                  ),
+
           )
       ),
       p("When you dismiss this pop-up, you'll be in the 'Data' tab. Choose
@@ -309,15 +318,21 @@ observeEvent(input$bookmark, {
       session$clientData$url_port,
       session$clientData$url_pathname,
       "?state=", state)
-
+  bug_address <-
+  paste0("https://docs.google.com/forms/d/e/1FAIpQLSexrcLj1y6E6AqDBXpbWmSsjKyjgr-4tmv2VDjpq7xKi7d8Iw/viewform?usp=pp_url&entry.839337160=",
+       myURL)
   showModal(
     modalDialog(
-      p("Use this URL to restore data..."),
+      p("Paste this into each bug report."),
       p( myURL),
-      p("use url_search")
+      a(href = bug_address,
+        #href="https://docs.google.com/forms/d/e/1FAIpQLSexrcLj1y6E6AqDBXpbWmSsjKyjgr-4tmv2VDjpq7xKi7d8Iw/viewform?usp=sf_link",
+        icon("bug"),  "File bug report.")
+      )
     )
-  )
 })
+
+
 
 somethings_wrong_with_data <- reactive({
   showModal(

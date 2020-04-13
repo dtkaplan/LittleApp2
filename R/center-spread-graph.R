@@ -62,11 +62,13 @@ center_spread_graph <- function(formula, data, yrange = NULL, labels = NULL,
     For_sd_ruler <-
       mosaicCore::df_stats(formula, data = data,
                            mean = mean, sd = sd) %>%
-      mutate(center = mean, pos_sd = mean + sd, neg_sd =  mean - sd,
+      mutate(center = mean, `pos_sd` = mean + sd, neg_sd =  mean - sd,
              pos_2sd = mean + 2*sd, neg_2sd =  mean - 2*sd,) %>%
       select( - sd,  - center)
     For_sd_ruler_labels <- For_sd_ruler %>%
-      tidyr::gather(key = label, value = vertical, `pos_sd`, neg_sd, pos_2sd, neg_2sd, mean)
+      tidyr::gather(key = label, value = vertical, `pos_sd`, neg_sd, pos_2sd, neg_2sd, mean) %>%
+      mutate(label = gsub("pos_", "+", label)) %>%
+      mutate(label = gsub("neg_", "–", label))
 
     this_formula <- as.formula(glue::glue("`pos_sd` + neg_sd ~ {xvar}"))
     P <- P %>% gf_errorbar(this_formula, data = For_sd_ruler,

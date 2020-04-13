@@ -126,6 +126,10 @@ t_test_calcs <-  function(formula, data, level = 0.95,
   #  but display whole of confidence interval
   total_range <- range(y_range, c(min(Stats$ci_lower), max(Stats$ci_upper)))
 
+  P <- P %>%
+    gf_theme(theme_minimal()) %>%
+    gf_theme(
+      axis.text.y = element_text(angle = 30, hjust = 1))
 
   side <- ggplot(mtcars, aes(x=1,y=1)) + geom_text(label="No supplemental\n plot for t-test.")
   list(main = P, side = side, stats = tmp)
@@ -166,7 +170,7 @@ one_sample_t_plot <- function (formula, data, level = 0.95,
 
   if (!is.numeric(data[[1]])) data[[1]]  <- as.numeric(data[[1]])
 
-
+  P <- P %>% gf_hline(yintercept = null_hypothesis)
 
   if (show_mean) {
     P <- gf_errorbar(P, mn + mn ~ xpos,
@@ -201,7 +205,6 @@ one_sample_t_plot <- function (formula, data, level = 0.95,
                                      size = 1.5,
                                      inherit = FALSE,
                                      show.legend = FALSE)) %>%
-      gf_hline(yintercept = null_hypothesis) %>%
       gf_text(top ~ midpoint, color = "black", label = ~ p_label,
               data = T_stats, vjust = 0)
   }

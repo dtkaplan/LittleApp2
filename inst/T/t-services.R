@@ -1,6 +1,16 @@
 # app-specific services for t-test app
 
 app_title <- reactive({"t-test"})
+shinyjs::hide("side_display")
+shinyjs::hide("compare_what")
+
+observeEvent(input$explanatory, {
+  Common$one_sample <- input$explanatory == ""
+})
+
+plot_arrangement <- function(main, aux) {
+  gridExtra::grid.arrange(main, aux, nrow = 1, widths = c(2, 2))
+}
 
 app_specific_data <- reactive({
   data <- current_sample()
@@ -96,13 +106,17 @@ main_calculation <- reactive({
                       show_t = Common$show_t,
                       var_equal = Common$var_equal,
                y_range = NULL,
-               null_hypothesis = null_value_memory(),
+               null_hypothesis = as.numeric(null_value_memory()),
                y_labels = ylabels,
                one_sample = Common$one_sample),
         silent = TRUE)
   if (inherits(res, "try-error")) {
     somethings_wrong_with_data()
   }
+
+  res$main <- res$main %>%
+    gf_theme(theme_minimal()) %>%
+    gf_theme(legend.position="none")
 
   res
 })
@@ -149,10 +163,10 @@ observeEvent(input$show_app_params, { #annotations, {
 
   testsize <- ifelse(Common$one_sample, 1, 2)
 
+
   showModal(
     modalDialog(
       title = "Statistical Annotations", easyClose  = TRUE,
-        tagList(
           p("The t-test is fundamentally about means."),
           checkboxInput("show_mean", "Show mean",  Common$show_mean),
           p("The confidence interval on the mean reflects uncertainty
@@ -160,8 +174,7 @@ observeEvent(input$show_app_params, { #annotations, {
             such as *sampling bias* and *confounding*, that are not incorporated into the
             confidence interval."),
           checkboxInput("show_ci", "Show conf interval", Common$show_ci),
-
-          checkboxInput("show_t", "Show t-interval",  Common$show_t),
+          if (!Common$one_sample) checkboxInput("show_t", "Show t-interval",  Common$show_t),
           tags$hr(),
           p("The confidence level is typically set at 0.95. We give you a choice
             here so that you can explore how the intervals depend on the
@@ -170,26 +183,38 @@ observeEvent(input$show_app_params, { #annotations, {
                       choices  = c(0.5, 0.8, 0.9, 0.95, 0.99, 0.999),
                       selected = Common$conf_level),
           tags$hr(),
+          tags$h3('The "one-sample" test'),
           p("In a one-sample t-test, there is no explanatory variable
             and so there is just a single mean being tested. If you want
             to explore one-sample t-tests, check the box to ignore
             the explanatory variable. You can also set a level for the
             Null Hypothesis value, which is a value (typically 0) that
             you would be interested in rejecting."),
-          checkboxInput("one_sample", "Ignore explanatory variable", value = Common$one_sample),
-          sliderInput("mu", "Null hypothesis value", min  = resp_range[1],
-                      max = resp_range[2], value = null_value_memory()),
+          if (Common$one_sample) {
+            p("You're doing a one-sample test now. If you want to switch to a
+              two-sample test, go to the data tab and choose and explanatory variable.")
+          } else {
+            p("To implement a one-sample test, set the explanatory
+              variable in the Data tab to the top-most choice: 'set explanatory variable'.
+              This effectively turns off the explanatory variable.")
+          },
+          # checkboxInput("one_sample", "Ignore explanatory variable", value = Common$one_sample),
+          if (Common$one_sample)
+            numericInput("mu", "Null hypothesis mu:", min  = resp_range[1],
+                      max = resp_range[2], value = null_value_memory(),
+                     width = "100%"),
           tags$hr(),
 
-          p("Some people, when doing a two-sample t-test, prefer a refined
+      if (!Common$one_sample)
+        p("Some people, when doing a two-sample t-test, prefer a refined
             calculation that doesn't assume that the response variable
             has the same variance in the two groups. You can explore whether
             there is a good reason for this refined calculaton or whether
             the assumption of equal variances gives and adequate approximation."),
-          checkboxInput("var_equal", "Assume equal variances",
-                        Common$var_equal)
-      ),
-      size = "s",
+      if (!Common$one_sample)
+        checkboxInput("var_equal", "Assume equal variances",
+                      Common$var_equal),
+
       footer = modalButton("Go back to the app ...")
     )
   )

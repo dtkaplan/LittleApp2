@@ -6,7 +6,7 @@
 #' @export
 graph_panel <- function() {
   miniTabPanel(
-    "Graph", icon = icon("chart-bar"),
+    "Graph", icon = icon("chart-bar"), value = graph_panel(),
     miniContentPanel(
       checkboxInput("side_display", label = "Show auxiliary graph", value = FALSE),
       textOutput("big_plot_comment_top"),
@@ -18,46 +18,47 @@ graph_panel <- function() {
       downloadButton("save_plot",  "Download graphic")
     )
   )
-
 }
 #' @export
 compare_panel <- function() {
   miniTabPanel(
-    "Compare", icon = icon("book-open"),
+    "Compare", icon = icon("book-open"), value = "compare_panel",
       radioGroupButtons("compare_what", "Show what?",
                         c("main plot" = "main", "aux. plot" = "aux", "both" = "both")),
       side_by_side_table(
         current = plotOutput("compare_plot1", brush = brushOpts(id = "comp_ruler")),
         frozen  = plotOutput("compare_plot2", brush = brushOpts(id = "comp_ruler"))
+      )
     )
-  )
 }
 #' @export
 stats_panel <- function() {
   miniTabPanel(
-    "Stats", icon = icon("binoculars"),
+    "Stats", icon = icon("binoculars"), value = "stats_panel",
     miniContentPanel(
       side_by_side_table(
         current = htmlOutput("current_stats"),
         frozen = htmlOutput("frozen_stats")
-      )))
-}
-
-#' @export
-codebook_panel <- function() {
-  miniTabPanel(
-    "Codebook", icon = icon("user-secret"),
-    miniContentPanel(
-      htmlOutput("codebook")))
-}
-#' @export
-debug_panel <- function() {
-  miniTabPanel(
-    "Debug", icon = icon("car"), # bug
-    p("output$debug1 rendered here:"),
-    verbatimTextOutput("debug1"),
-    p("output$debug2 rendered here:"),
-    verbatimTextOutput("debug2")
+      )
+    )
   )
 }
+
+#' #' @export
+#' codebook_panel <- function() {
+#'   miniTabPanel(
+#'     "Codebook", icon = icon("user-secret"),
+#'     miniContentPanel(
+#'       htmlOutput("codebook")))
+#' }
+#' #' @export
+#' debug_panel <- function() {
+#'   miniTabPanel(
+#'     "Debug", icon = icon("car"), # bug
+#'     p("output$debug1 rendered here:"),
+#'     verbatimTextOutput("debug1"),
+#'     p("output$debug2 rendered here:"),
+#'     verbatimTextOutput("debug2")
+#'   )
+#' }
 

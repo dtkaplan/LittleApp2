@@ -44,13 +44,11 @@ ui_top_controls <- function(title = "App controls",  ...) {
     ),
     "  ",
     span(
-      switchInput(
+      awesomeCheckbox(
         inputId = "randomize",
         label = "shuffle",
-        size = "mini",
-        labelWidth = "60px",
         value = as.logical(FALSE)),
-      title = "For Null Hypothesis testing. Use random shuffling to eliminate the relationship between the response and explanatory variables"
+      title = "Random shuffle to eliminate the relationship between the response and explanatory variables"
     ),
     # "  ",
     # span(
@@ -62,6 +60,24 @@ ui_top_controls <- function(title = "App controls",  ...) {
     #   value = as.logical(FALSE)),
     # title = "Resample from the current sample rather than generating a new sample"
     # ),
+    "  ",
+    span(
+      actionBttn("show_explain",
+                 label = NULL,
+                 style = "simple",
+                 color = "primary",
+                 size  = "xs",
+                 icon = icon("info")
+      ),title = "Explain basic app controls."),
+    "  ",
+    span(
+      actionBttn("show_metadata",
+                 label = NULL,
+                 style = "simple",
+                 color = "primary",
+                 size = "xs",
+                 icon = icon("user-secret")
+      ), title = "Show codebook."),
 
     "  ",
     span(

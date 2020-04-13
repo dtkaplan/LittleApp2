@@ -134,14 +134,33 @@ F_main_calc <- function(formula, data, yrange = NULL,
                     color  =  color_formula)
     }
   }
-
-
+  P1 <- P1 %>%
+    gf_theme(theme_minimal())
 
   P2 <- F_side_plot(response,
                     data$model_output,
                     explan = explanatory,
                     dflex = model$rank -  1,
                     sd = sd)
+
+  auxplot <- P2$P %>%
+    gf_theme(theme_minimal()) %>%
+    gf_theme(legend.position = "none")
+
+  if (!is.null(labels)) {
+    # format the  y  scale nicely  for a dichotomous
+    # variable
+    auxplot <- auxplot %>%
+      gf_refine(
+        scale_y_continuous(
+          response_name, breaks  =  c(0, .25, .5, .75, 1),
+          labels = c(labels[1], .25,  .5, .75, labels[2]),
+          limits = c(-.1, 1.1)))
+  } else if (!is.null(yrange)) {
+    # put the y scale on a common footing for all samples
+   auxplot <- auxplot %>% gf_lims(y  = yrange)
+  }
+
   if (!is.null(top)) {
     P2$P <- P2$P  %>% gf_lims(y  = c(-.1, 1.1))
   } else if (!is.null(yrange)) {
@@ -149,6 +168,6 @@ F_main_calc <- function(formula, data, yrange = NULL,
   }
 
   list(main = P1 %>% gf_theme(legend.position  =  "left"),
-       side  = P2$P,
+       side  = auxplot,
        stats = P2$stats)
 }

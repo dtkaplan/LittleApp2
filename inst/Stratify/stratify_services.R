@@ -5,6 +5,10 @@
 
 app_title  <- reactive({"Stratification and confounding"})
 
+shinyjs::hide("side_display")
+shinyjs::hide("compare_what")
+
+
 app_specific_data <- reactive({
   data <- current_sample()
   ylabels <- yrange <- NULL #initializing
@@ -199,7 +203,12 @@ main_calculation <- reactive({
               color = color_formula, inherit = FALSE,
               alpha = 1)
   }
-  return(list(main = P, side = NULL,
+
+  P <- P %>%
+    gf_theme(theme_light(),
+             axis.text.x = element_text(angle = 30, hjust = 1))
+  return(list(main = P,
+              side = NULL,
               stats = list(small = small_model,
                            big = big_model,
                            raw = data[[1]])))

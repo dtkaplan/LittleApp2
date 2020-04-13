@@ -16,6 +16,8 @@ LA_main <- function(app_specifics, explan = TRUE, covar=FALSE) {
 
   options(warn = -1) # suppress  warnings so log doesn't get crowded
 
+  Data_tab <-
+
   res <- list()
   res$ui <- ui_main(
     ui_top_controls(),
@@ -30,6 +32,14 @@ LA_main <- function(app_specifics, explan = TRUE, covar=FALSE) {
     source(system.file("data_services.R",  package = "LittleApp2"), local = TRUE)
     source(system.file("output_services.R", package = "LittleApp2"), local = TRUE)
     source(app_specifics, local = TRUE)
+    # Which panel to display
+    output$current_display <- renderText ({
+      switch(input$main_display,
+             "Data" = Data_tab,
+             "Graphic" = Graph_tab,
+             "Compare" = Compare_tab,
+             "Stats" = Stats_tab)
+    })
   }
 
   res

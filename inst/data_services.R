@@ -46,14 +46,14 @@ observeEvent(input$package, {
     Current_frame("uploaded_dataset") # update the state
   } else {
     available_frames <- package_data_names(input$package)
-    new_frame <- sample(available_frames, 1)
+    new_frame <- if (input$package == "LittleApp2") "NHANES2" else sample(available_frames, 1)
     Current_frame(new_frame) # store it away for immediate use
     updateSelectInput(session, "frame",
                     choices = c("Select data frame:" = "", available_frames),
                     # Randomize the choice of a frame
                     selected = new_frame)
   }
-})
+}, ignoreNULL = TRUE)
 
 observeEvent(Current_frame(), {
     req(isTruthy(raw_data()))
@@ -232,9 +232,9 @@ current_sample <- reactive({
   }
 
   set.seed(random_seed())
-  if (input$stratify) {
+  if (input$stratify && !is.numeric(Raw_data[[explanatory_name()]])) {
     Res <- Raw_data %>%
-      dplyr::group_by(!!as.name(input$explanatory)) %>%
+      dplyr::group_by(!!as.name(explanatory_name())) %>%
       dplyr::mutate(.index.in.group = sample(row_number())) %>%
       dplyr::filter(.index.in.group <= choose_n) %>%
       dplyr::select(- .index.in.group) %>%
