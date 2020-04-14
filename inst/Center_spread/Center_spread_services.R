@@ -104,7 +104,7 @@ observeEvent(input$show_app_params, {
             of the mean. For large n, most of the individual data points lie
             outside the confidence interval. The length of the confidence interval
             is roughly the length of the summary interval divided by sqrt(n).
-            Here, n =", n_size(), "so sqrt(n) = ", signif(sqrt(n_size()), 2), "."),
+            Here, n =", n_size(), "so sqrt(n) = ", signif(sqrt(as.numeric(n_size())), 2), "."),
           checkboxInput("show_ci", "Show confidence interval.",
                         value = Annots$show_ci))
       ),
