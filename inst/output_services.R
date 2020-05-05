@@ -323,7 +323,11 @@ observeEvent(input$bookmark, {
        myURL)
   showModal(
     modalDialog(
-      p("Paste this into each bug report."),
+      p("Download current sample as CSV (without randomization)."),
+      downloadButton("downloadSample", "Download"),
+      tags$hr(),
+      p("The following can be used to summarize the dataset and variables you are looking at."),
+      tags$hr(),
       p( myURL),
       a(href = bug_address,
         #href="https://docs.google.com/forms/d/e/1FAIpQLSexrcLj1y6E6AqDBXpbWmSsjKyjgr-4tmv2VDjpq7xKi7d8Iw/viewform?usp=sf_link",
@@ -332,7 +336,26 @@ observeEvent(input$bookmark, {
     )
 })
 
+#-------------
 
+output$downloadSample <- downloadHandler(
+  filename = function() {
+    paste(input$frame, "-",
+          gsub("[ :]", "-", Sys.time()),
+          ".csv", sep = "")
+  },
+  content = function(file) {
+    Res <- current_sample()
+    if (".orig.order." %in% names(Res)) {
+      # put the randomized data back in order
+      Res[[1]][order(Res$.orig.order.)] <- Res[[1]]
+      Res$.orig.order. <- NULL
+    }
+    write.csv(Res, file, row.names = FALSE)
+  }
+)
+
+#-------------
 
 somethings_wrong_with_data <- reactive({
   showModal(

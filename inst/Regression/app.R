@@ -11,7 +11,7 @@ library(StatsUsingTechnologyData)
 library(openintro)
 library(Lock5Data)
 
-components <- LA_main(app_specifics = "stratify_services.R",
+components <- LA_main(app_specifics = "F_services.R",
                       covar = TRUE)
 
 shinyApp(components$ui, components$server)

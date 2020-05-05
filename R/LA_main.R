@@ -9,6 +9,7 @@ LA_main <- function(app_specifics, explan = TRUE, covar=FALSE) {
   library(ggplot2)
   library(LittleApp2)
   library(triola)
+  library(sullystats6e)
   library(mosaicData)
   library(StatsUsingTechnologyData)
   library(openintro)

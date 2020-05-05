@@ -247,8 +247,12 @@ current_sample <- reactive({
   }
 
   # Shuffle the response variable?
-  if (input$randomize)  Res[[1]] <- sample(Res[[1]])
-
+  if (input$randomize)  {
+    Res$.orig.order. <- 1:nrow(Res) # keep track of the original
+    random_order <-   sample(Res$.orig.order.)
+    Res$.orig.order. <- Res$.orig.order.[random_order]
+    Res[[1]] <- Res[[1]][random_order]
+  }
   Res
 })
 

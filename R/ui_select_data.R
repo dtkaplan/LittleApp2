@@ -39,6 +39,7 @@ default_packages_list <-
        "mosaic" = "mosaicData",
        "Lock-5" = "Lock5Data",
        "Triola"  = "triola",
+       "Sullivan" = "sullystats6e",
        "UPLOAD" = "UPLOAD")
 
 ui_select_data <-  function(package_list = default_packages_list,

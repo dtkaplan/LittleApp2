@@ -86,7 +86,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         label = "", #"bookmark"
         icon = icon("bookmark"),
         size = "xs"),
-      title = "Bookmark state of app"
+      title = "Bookmark/Download data sample"
     )
   )
 }
