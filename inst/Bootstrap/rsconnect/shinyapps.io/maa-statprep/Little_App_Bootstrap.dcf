@@ -1,0 +1,12 @@
+name: Little_App_Bootstrap
+title: Little_App_Bootstrap
+username:
+account: maa-statprep
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2174152
+bundleId: 3107522
+url: https://maa-statprep.shinyapps.io/Little_App_Bootstrap/
+when: 1588705934.82943
+asMultiple: FALSE
+asStatic: FALSE

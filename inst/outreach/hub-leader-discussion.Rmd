@@ -1,0 +1,16 @@
+## Discussion notes
+
+## Hub Leaders discuss the Little  Apps
+
+April 17, 2020
+
+
+##
+
+* Like being able to upload data
+* Liked other textbooks and datasets
+
+
+Recommendations:
+
+* Jennifer:  being  able to "download" data. Button to download the data in  CSV form, exactly the current sample (just the variables being  displayed) and also the whole  data  frame.

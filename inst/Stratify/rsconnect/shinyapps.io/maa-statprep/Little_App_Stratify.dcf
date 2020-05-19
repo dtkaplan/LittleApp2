@@ -1,0 +1,12 @@
+name: Little_App_Stratify
+title: Little_App_Stratify
+username:
+account: maa-statprep
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2174008
+bundleId: 3107503
+url: https://maa-statprep.shinyapps.io/Little_App_Stratify/
+when: 1588705691.58218
+asMultiple: FALSE
+asStatic: FALSE

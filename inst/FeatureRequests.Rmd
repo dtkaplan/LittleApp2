@@ -1,0 +1,12 @@
+# Feature requests
+
+## Bootstrapping app
+
+1. Allow the explanatory variable to be turned off.  njacob@ecok.edu
+2. When the explanatory variable is categorical  (or "off"), show the confidence interval on the auxiliary graph. njacob@ecok.edu
+3. Add the confidence interval to the statistics report.  njacob@ecok.edu
+
+
+## People
+
+- njacob@ecok.edu - Nicholas Jacob
