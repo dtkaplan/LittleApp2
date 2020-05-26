@@ -87,6 +87,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
         icon = icon("bookmark"),
         size = "xs"),
       title = "Bookmark/Download data sample"
-    )
+    ),
+    uiOutput("far_right", inline = TRUE), # A placeholder
   )
 }

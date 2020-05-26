@@ -7,6 +7,19 @@ shinyjs::hide("compare_what")
 shinyjs::hide("randomize")
 shinyjs::hide("stratify")
 
+# add to top controls
+output$far_right <- renderUI(textOutput("z_score", inline = TRUE))
+
+output$z_score <- renderText({
+  z <- z_score()
+  if (length(z)== 0 || is.na(z)) ""
+  else paste("z-score on mouse hover:", round(z_score(), 1))})
+
+z_score <- reactive({
+  input$hover_pos
+  foo <- mean_and_sd()
+  (input$hover_pos$x - foo[1])/foo[2]
+})
 # for plotting the density and violin broken into region
 hviolin <- function(x, adjust = 1, breaks = mean(x, na.rm=TRUE), center = 1,
                     scale = 3,
@@ -90,6 +103,10 @@ Annots <- reactiveValues(
   x_breaks = numeric(5)
 )
 
+mean_and_sd <- reactive({
+  x <- current_sample()[[1]]
+  c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
+})
 # initialize the divisions
 observe({
   response_name()
@@ -145,6 +162,7 @@ observeEvent(input$choose_breaks, {
   Annots$x_breaks <<- c(breaks[1:2], Annots$x_breaks[3], breaks[3:4]) # put the middle one back
 })
 
+# This is just a repeat of the previous observeEvent(), but using the brush in the main plot
 observeEvent(input$main_ruler, {
   # Find the one of the current breaks closest to an edge of the brush
   breaks <- Annots$x_breaks[c(1,2,4,5)] # leave the middle one in the center
@@ -195,11 +213,17 @@ observeEvent(input$show_app_params, {
       title = paste("Controls for", app_title(), "Little App"), easyClose  = TRUE,
       plotOutput("select_breaks",
                  brush = brushOpts(id  = "choose_breaks",
-
                                    direction = "xy",
                                    resetOnNew = TRUE)),
       p("Density display:"),
       tags$ul(
+        tags$li(
+                checkboxInput("show_normal",
+                              "Compare to a normal distribution with  the same mean and variance.", Annots$show_normal)),
+        tags$br(),
+        tags$li(p("How the 'center' of the distribution  is shown."),
+                radioGroupButtons("center_point", choices = c("mean", "median"),
+                                  selected = Annots$center_point)),
         tags$li(p("One or two sided display of density"),
                 radioGroupButtons("density_mode",
                                   choices = c("density", "violin"),
@@ -208,13 +232,9 @@ observeEvent(input$show_app_params, {
         tags$li(p("Smoothing: relative size of region in which the density is calculated."),
                 radioGroupButtons("bandwidth",
                                   choices = c("tiny", "small", "default",  "large", "very large"),
-                                  selected = Annots$bandwidth),
-                tags$br()),
-                tags$li(p("Compare to a normal distribution with  the same mean and variance."),
-                checkboxInput("show_normal", "Show normal dist:", Annots$show_normal)),
-        tags$li(p("How the 'center' of the distribution  is shown."),
-                radioGroupButtons("center_point", choices = c("mean", "median"),
-                                  selected = Annots$center_point))
+                                  selected = Annots$bandwidth)
+                )
+
       ),
       tags$hr(),
       tags$ul(
@@ -305,6 +325,9 @@ main_calculation <- reactive({
     coord_cartesian(ylim = c(0.5, 2),
                     xlim = x_limits(),
                     expand = FALSE)
+  P <- P %>%
+    gf_vline(xintercept = Annots$x_breaks, color = "gray", size = 2)
+
 
   if (Annots$show_normal) {
     m <- mean(data[[1]], na.rm = TRUE)
@@ -325,27 +348,25 @@ main_calculation <- reactive({
       mutate(top = vert_baseline + y, bottom = vert_baseline - y)
     P <- P %>%
       gf_line(top ~ x, data = Normal,
-              color = "gray", size = 2, alpha = 0.6) %>%
+              color = "black", size = 1.5, alpha = 0.6) %>%
       gf_linerange(top + middle ~ x, data = Vlines,
-                   color = "gray", size = 1.5,
+                   color = "black", size = 1,
                    alpha = 0.6, inherit = FALSE) %>%
       gf_label(y ~ x, data = Normal_labels,
                label = ~ label, alpha = 0.5,
-               fill = "gray", size = 3.5, inherit = FALSE)
+               fill = NA, size = 3.5, inherit = FALSE)
     if (Annots$density_mode != "density") {
       P <- P %>%
         gf_line(bottom ~ x, data = Normal,
-                color = "gray", size = 2, alpha = 0.6) %>%
+                color = "black", size = 1.5, alpha = 0.6) %>%
         gf_linerange(bottom + middle ~ x, data = Vlines,
-                     color = "gray", size = 1.5,
+                     color = "black", size = 1,
                      alpha = 0.6, inherit = FALSE)
 
 
     }
     }
 
-  P <- P %>%
-    gf_vline(xintercept = Annots$x_breaks)
 
   if (Annots$orientation == "On Y-axis") {
     P <- P %>%

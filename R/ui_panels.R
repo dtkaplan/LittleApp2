@@ -11,6 +11,7 @@ graph_panel <- function() {
       checkboxInput("side_display", label = "Show auxiliary graph", value = FALSE),
       textOutput("big_plot_comment_top"),
       plotOutput("big_plot", width="100%",
+                 hover = hoverOpts(id = "hover_pos", delay = 1000),
                  brush = brushOpts(id = "main_ruler",
                                    delayType = "debounce",
                                    resetOnNew = TRUE)),

@@ -3,7 +3,7 @@
 # The `main_calculation` reactive carries out the necessary calculations
 #  and returns them  in  a list.
 
-app_title  <- reactive({"Model Functions"})
+app_title  <- reactive({"Regression Modeling"})
 
 
 main_calculation <- reactive({

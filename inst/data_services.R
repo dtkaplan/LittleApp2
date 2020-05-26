@@ -15,25 +15,34 @@ Current_vars <- reactiveVal(NA)
 
 # update Current_vars()
 observe({
-  vars <- Current_vars()
+  vars <- isolate(Current_vars())
   vars[1] <- req(input$response)
   Current_vars(vars)
 })
 observe({
-  vars <- Current_vars()
+  vars <- isolate(Current_vars())
   vars[2] <- req(input$explanatory)
   Current_vars(vars)
 })
 observe({
-  vars <- Current_vars()
-  vars[3] <- req(input$covariate)
-  Current_vars(vars)
-})
+   vars <- isolate(Current_vars())
+   if (isTruthy(input$covariate)) {
+     vars[3] <- input$covariate
+   } else {
+     vars <- vars[1:2]
+   }
+   Current_vars(vars)
+   })
 observe({
-  vars <- Current_vars()
-  vars[4] <- req(input$covariate2)
+  vars <- isolate(Current_vars())
+  if (isTruthy(input$covariate2)) {
+    vars[4] <- input$covariate2
+  } else {
+    vars <- vars[1:min(3, length(vars))]
+  }
   Current_vars(vars)
 })
+
 response_name <- reactive({Current_vars()[1]})
 explanatory_name <- reactive({Current_vars()[2]})
 covariate_name <- reactive({Current_vars()[3]})
@@ -75,14 +84,14 @@ observeEvent(Current_frame(), {
     if ('covariate' %in% names(input)) {
       if (length(var_names) < 3) hide("covariate") else show("covariate")
       updateSelectInput(session, "covariate",
-                        choices = c("Select covariate:" = "",
+                        choices = c("None" = "",
                                     var_names))
     }
 
     if('covariate2' %in% names(input)) {
       if (length(var_names) < 4) hide("covariate2") else show("covariate2")
       updateSelectInput(session, "covariate2",
-                        choices = c("Select second covar:" = "",
+                        choices = c("None" = "",
                                     var_names))
       }
 })

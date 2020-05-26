@@ -14,7 +14,7 @@ app_specific_data <- reactive({
   data <- current_sample()
   response_census <- raw_data()[[response_name()]]
   if (!is.numeric(response_census)) { # categorical response variable
-    data[1] <- resp <-
+    data[[1]] <- resp <-
       dichotomize(data[[1]], response_census,
                   force = FALSE, to_numeric = TRUE)
     if ("levels" %in% names(attributes(resp))) {
@@ -33,6 +33,7 @@ app_specific_data <- reactive({
   } else { # Numerical response
     ylabels <- NULL
     yrange <- range(response_census, na.rm = TRUE)
+    output$explain_response <- renderText({NULL})
   }
 
   explan_census <- raw_data()[[explanatory_name()]]

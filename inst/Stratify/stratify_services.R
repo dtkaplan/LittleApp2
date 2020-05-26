@@ -42,6 +42,8 @@ app_specific_data <- reactive({
     } else {
       stop("Shouldn't get here. Contact developer. Missing levels.")
     }
+  } else {
+    output$explain_response <- renderText({NULL})
   }
 
   list(data = data, labels = ylabels, yrange = yrange)
@@ -203,10 +205,30 @@ main_calculation <- reactive({
               color = color_formula, inherit = FALSE,
               alpha = 1)
   }
-
+  half_line <- 11/2
   P <- P %>%
-    gf_theme(theme_light(),
-             axis.text.x = element_text(angle = 30, hjust = 1))
+    gf_theme(#theme_light(),
+
+      panel.background =
+        element_rect(fill = "white",
+                     colour = NA),
+      panel.border = element_rect(fill = NA,
+                                  colour = "grey70", size = rel(1)),
+      panel.grid = element_line(colour = "grey87"),
+      panel.grid.major = element_line(size = rel(0.5)),
+      panel.grid.minor = element_line(size = rel(0.25)),
+      axis.ticks = element_line(colour = "grey70", size = rel(0.5)),
+      strip.background = element_rect(fill = "grey70",
+                                      colour = NA),
+      strip.text = element_text(colour = "white",
+                                size = rel(0.8),
+                                margin = margin(0.8 * half_line,
+                                                0.8 * half_line,
+                                                0.8 * half_line,
+                                                0.8 * half_line)),
+                                complete = TRUE,
+      legend.position="none",
+      axis.text.x = element_text(angle = 30, hjust = 1))
   return(list(main = P,
               side = NULL,
               stats = list(small = small_model,
