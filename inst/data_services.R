@@ -146,14 +146,15 @@ raw_data <- reactive({
     return(Sheet)
   }
   if (isTruthy(Current_frame())) {
-    #db <- tools::Rd_db(input$package)
-    #frames_in_packages <- gsub("\\.Rd", "", names(db))
     frames_in_packages <- package_data_names(input$package)
     req(Current_frame() %in% frames_in_packages)
     my_env = new.env() # where to put the data
     data(list = Current_frame(),  package = input$package, envir = my_env)
 
     the_data <- my_env[[Current_frame()]] # this is where data() puts the frame
+    if (!inherits(the_data, "data.frame")) {
+      the_data <- as_tibble(the_data)
+    }
   } else {
     NA
   }
