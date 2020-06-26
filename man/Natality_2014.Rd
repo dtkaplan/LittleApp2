@@ -5,7 +5,8 @@
 \alias{Natality_2014}
 \alias{}
 \title{Medical info on each birth in the US in 2014}
-\format{A data frame with a random sample of size 100000 from the complete CDC set of 3,998,175 cases, each of which is a birth in the US in 2014.
+\format{
+A data frame with a random sample of size 100000 from the complete CDC set of 3,998,175 cases, each of which is a birth in the US in 2014.
 \itemize{
 \item{\code{mager}} {Mother's age at date of birth}
 \item{\code{fagecomb}} {Father's age at date of birth}
@@ -52,7 +53,8 @@
 \item{\code{priorlive}} {Number of previous live births.}
 \item{\code{priordead}} {Number of previous births where baby died.}
 \item{\code{priorterm}} {Number of terminations of pregnancy before this birth.}
-}}
+}
+}
 \usage{
 Natality_2014
 }

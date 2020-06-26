@@ -124,14 +124,14 @@ F_main_calc <- function(formula, data, yrange = NULL,
                          explanatory_name))
       P1  <- P1 %>%
         gf_line(mod_plot_formula, data  = mod_data,
-                color = color_formula, group  = color_formula)
+                color = color_formula, group  = color_formula, alpha = 1)
     } else {
       mod_plot_formula <-
         as.formula(paste("model_output  + model_output ~",  explanatory_name))
       P1 <- P1 %>%
         gf_errorbar(mod_plot_formula,
                     data = mod_data,
-                    color  =  color_formula)
+                    color  =  color_formula, alpha = 1)
     }
   }
   P1 <- P1 %>%

@@ -51,8 +51,11 @@ covariate2_name <- reactive({Current_vars()[4]})
 # update available frames
 observeEvent(input$package, {
   if (input$package  == "UPLOAD") {
-    updateSelectInput(session, "frame", choices  = "uploaded_dataset")
-    Current_frame("uploaded_dataset") # update the state
+    fname <- if (isTruthy(input$file_URL)) input$file_URL
+             else input$uploaded_file
+    updateSelectInput(session, "frame",
+                      choices  = fname)
+    Current_frame(fname) # update the state
   } else {
     available_frames <- package_data_names(input$package)
     new_frame <- if (input$package == "LittleApp2") "NHANES2" else sample(available_frames, 1)
@@ -66,6 +69,7 @@ observeEvent(input$package, {
 
 observeEvent(Current_frame(), {
     req(isTruthy(raw_data()))
+
     var_names <- names(raw_data())
 
     randomly_selected <- sample(var_names, 2)
@@ -81,6 +85,7 @@ observeEvent(Current_frame(), {
                                   var_names),
                       selected = randomly_selected[2])
     # These aren't being hidden when called for. I don't know why.
+    #cat("About to update covariate. There are", length(var_names), "variables\n")
     if ('covariate' %in% names(input)) {
       if (length(var_names) < 3) hide("covariate") else show("covariate")
       updateSelectInput(session, "covariate",
@@ -98,7 +103,7 @@ observeEvent(Current_frame(), {
 
 data_upload_controls <- function() {
   shiny::tagList(
-    shiny::fileInput('uploaded_file', 'Choose file to upload',
+    shiny::fileInput('uploaded_file', '',
                      accept = c(
                        'text/csv',
                        'text/comma-separated-values',
@@ -113,6 +118,10 @@ data_upload_controls <- function() {
 observeEvent(req(input$package == "UPLOAD"), {
   showModal(
     modalDialog(title="Upload your own file.",
+                textInput("file_URL", "Paste file URL here:", width = "100%",
+                          placeholder = ".csv or .rda file URL"),
+                textOutput("URL_error"),
+                p("or browse your own disk "),
                 data_upload_controls(),
                 footer = modalButton("Go back to the app ..."))
 
@@ -124,10 +133,19 @@ raw_data <- reactive({
   Uploaded_data() #  for dependency
 
   if (input$package == "UPLOAD") {
-    inFile <- input$uploaded_file
-    if (is.null(inFile)) return(NULL)
-
-    Sheet <- read.csv(inFile$datapath)
+    if (isTruthy(input$file_URL) && grepl("\\.(csv|rda)$",input$file_URL)) {
+      Sheet <- try(read.csv(input$file_URL, stringsAsFactors = FALSE))
+      if (inherits(Sheet, "try-error")) {
+        output$URL_error <- renderText("Cannot read URL.")
+        return(NULL)
+      }
+      output$URL_error <- renderText("Successful reading URL")
+    } else {
+      inFile <- input$uploaded_file
+      if (is.null(inFile)) return(NULL)
+      output$URL_error <- renderText("")
+      Sheet <- read.csv(inFile$datapath, stringsAsFactors = FALSE)
+    }
     Uploaded_data(Sheet)
     var_names <- names(Sheet)
 

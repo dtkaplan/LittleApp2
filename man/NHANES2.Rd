@@ -4,7 +4,8 @@
 \name{NHANES2}
 \alias{NHANES2}
 \title{National Health and Nutrition Evaluation Survey data}
-\format{The variables are
+\format{
+The variables are
 \itemize{
 \item \code{sex}: Sex of study participant	coded as male or female
 \item \code{age}: Age in years at screening of study participant. Note: Subjects 80 years or older were recorded as 80.
@@ -61,7 +62,8 @@
 \item \code{marijuana_regular}: Participant has been/is a regular marijuana user (used at least once a month for a year). Reported for participants aged 18 to 59 years as Yes or No.
 \item \code{age_sex}: Age of participant when had sex for the first time. Reported for participants aged 18 to 69 years.
 \item \code{orientation_sex}: Participant's self-described sexual orientation. Reported for participants aged 18 to 59 years. One of Heterosexual, Homosexual, Bisexual.
-}}
+}
+}
 \source{
 See \code{NHANES::NHANES}
 }
