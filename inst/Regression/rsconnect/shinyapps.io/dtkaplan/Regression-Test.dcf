@@ -1,0 +1,12 @@
+name: Regression-Test
+title: Regression-Test
+username:
+account: dtkaplan
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4215684
+bundleId: 4666347
+url: https://dtkaplan.shinyapps.io/Regression-Test/
+when: 1622587123.12414
+asMultiple: FALSE
+asStatic: FALSE

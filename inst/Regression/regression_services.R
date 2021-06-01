@@ -155,8 +155,9 @@ output$explain_text <- renderText({HTML(
 format_stats <- function(stats) {
   # this doesn't need to be a reactive. It merely takes the <stats> output
   # from the main calculation and formats it.
-  regression_table <- capture.output(summary(stats$model))[-c(1:8, 14, 15)]
-  regression_table[1] <- "Regression table"
+  # regression_stats <- capture.output(summary(stats$model))[15:18]
+  regression_table <- summary(stats$model)$coefficients %>%
+    signif(., digits=3) %>% as.data.frame() %>% capture.output()
   anova_table <- capture.output(anova(stats$model))[-c(2, 8, 9)]
   stats$F <- with(stats,  ((n-(1+dflex))/dflex)*(R2/(1-R2)))
   res <- with(stats, glue::glue("
@@ -171,7 +172,7 @@ format_stats <- function(stats) {
   <li>R-sq = {signif(R2, 3)}</li>\n\n
   <li>F = {signif(F, 2)}</li>\n\n
   </ul>
-  <pre>{paste(regression_table, collapse='\n')}</pre><br>
+  <pre>Regression table\n{paste(regression_table, collapse='\n')}</pre><br>
   <pre>{paste(anova_table, collapse='\n')}</pre>"))
 
   HTML(res)
