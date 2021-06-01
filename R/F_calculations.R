@@ -55,6 +55,7 @@ F_main_calc <- function(formula, data, yrange = NULL,
   response_name <- as.character(formula[[2]])
   top  <- NULL # a flag
 
+  #
   explanatory_vars <- all.vars(formula[[3]])
 
   covariate <- NULL
@@ -166,6 +167,7 @@ F_main_calc <- function(formula, data, yrange = NULL,
   } else if (!is.null(yrange)) {
     P2$P <- P2$P %>% gf_lims(y = yrange)
   }
+  P2$stats$model <- model
 
   list(main = P1 %>% gf_theme(legend.position  =  "left"),
        side  = auxplot,

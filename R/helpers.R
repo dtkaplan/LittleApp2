@@ -21,7 +21,8 @@ get_model_formula <- function(sample, model_order=1, interaction=TRUE,
     ifelse(interaction && model_type %in% c("lm", "logistic"),
       "*",  "+")
 
-  vars <- names(sample)
+  vars <- setdiff(names(sample), ".orig.order.")
+  # In above, delete the .orig.order. column, if any,  from the model
 
   if (length(vars) == 1) {
     return(as.formula(glue("{vars[1]} ~ 1")))
