@@ -66,7 +66,7 @@ F_main_calc <- function(formula, data, yrange = NULL,
     covariate_name <- explanatory_vars[2]
   }
   model <- lm(formula, data)
-  data$model_output  <- predict(model)
+  data$model_output  <- predict(model, newdata = data)
   mod_data <- data  # a copy which will be perhaps altered later
   if (!is.null(covariate) && is.numeric(covariate)) {
     # discretize the covariate for the displayed version  of the
