@@ -70,7 +70,7 @@ dichotomize <- function(x, pop = x, force=TRUE, to_numeric = FALSE) {
     stop("Unrecognized variable type to dichotomize. Contact developer.")
   }
 
-  if (to_numeric) {
+  if (!is.numeric(x) && to_numeric) {
       # convert to numeric 0/1 and store levels in attributes.
       levs <- levels(x)
       if ("Other" %in% levs) {

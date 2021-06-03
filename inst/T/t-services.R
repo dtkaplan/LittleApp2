@@ -14,7 +14,8 @@ plot_arrangement <- function(main, aux) {
 
 app_specific_data <- reactive({
   data <- current_sample()
-
+  # get rid of the shuffling column, if any
+  data <- data[, names(data) != ".orig.order."]
   response_census <- raw_data()[[response_name()]]
   # force response to be numeric and explanatory as 2-levels
   data[1] <- resp <-
@@ -41,7 +42,7 @@ app_specific_data <- reactive({
   explan_census <- raw_data()[[explanatory_name()]]
   data[2] <- dichotomize(data[[2]], explan_census, force = TRUE)
 
-  if (length(unique(explan_census)) > 2) {
+  if ((!input$explanatory=="") && length(unique(explan_census)) > 2) {
     output$explain_explanatory <- renderText({
         glue::glue("The explanatory variable in a t test must be
         categorical with two levels. Converted the variable '{explanatory_name()}'
@@ -65,6 +66,7 @@ observeEvent(response_name(), {
 })
 
 main_calculation <- reactive({
+  input$randomize # for the dependency
   res <- app_specific_data()
   data <- res$data
   ylabels <- res$labels
@@ -128,7 +130,7 @@ plot_arrangement <- function(main, aux) {
 
 model_formula <- reactive({
   req(current_sample())
-  vars <-  names(current_sample())
+  vars <-  setdiff(names(current_sample()), ".orig.order.")
   get_model_formula(current_sample(), 1, FALSE, "lm")
 })
 
