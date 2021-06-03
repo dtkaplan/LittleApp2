@@ -142,10 +142,10 @@ observeEvent(input$main_ruler, {
 # Same thing, but for compare plot
 observeEvent(input$comp_ruler, {
   req(current_sample())
+  if (is.na(explanatory_name())) return(NULL)
   with(input$comp_ruler, {
     yinfo <-
       glue("{response_name()}-axis: {signif(ymin,3)} to {signif(ymax, 3)} giving  ∆ = {signif(ymax - ymin, 3)}\n\n")
-
     if(explanatory_name() != "none_selected" &&
        is.numeric(raw_data()[[explanatory_name()]])) {
       slope <- (ymax - ymin) / (xmax - xmin)

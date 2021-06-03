@@ -105,7 +105,9 @@ Annots <- reactiveValues(
 
 mean_and_sd <- reactive({
   x <- current_sample()[[1]]
-  c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
+  if (is.numeric(x))
+    c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
+  else c(NA, NA)
 })
 # initialize the divisions
 observe({
@@ -400,7 +402,7 @@ format_stats <- function(stats) {
   stats$breaks <- format(stats$breaks, digits = 3, justify = "right", width = 6)
 
   paste(
-    p("Distribution of data points by region."),
+    p("Distribution of data points by region. (Unsmoothed. Graphic shows area of smoothed distribution.)"),
     tags$table(class = "density-services-table",
       tags$tr(tags$th("Interval"),
               tags$th("  Count"),
