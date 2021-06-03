@@ -76,7 +76,7 @@ ui_top_controls <- function(title = "App controls",  ...) {
                  style = "simple",
                  color = "primary",
                  size = "xs",
-                 icon = icon("user-secret")
+                 icon = icon("eye")  #icon("user-secret")
       ), title = "Show codebook."),
 
     "  ",

@@ -212,8 +212,8 @@ observeEvent(input$show_explain, {
                           This destroys any relationship  between it and the explanatory variables.
                           This effectively makes the  'Null hypothesis' true for the sample."),
                   tags$li(shiny::icon("info"), "brings up this page of instructions."),
-                  tags$li(shiny::icon("user-secret"), "shows the codebook
-                          for the currently selected data frame."),
+                  tags$li(shiny::icon("eye"), "shows the codebook
+                          for the currently selected data frame."), # was "user-secret"
                   tags$li(shiny::icon("bookmark"), "shows a machine-readable
                           summary of the data and variables currently being displayed. This
                           may be useful for your notes, but it is also an important
