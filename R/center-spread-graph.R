@@ -41,8 +41,8 @@ center_spread_graph <- function(formula, data, yrange = NULL, labels = NULL,
                                 mean = mean, mean = mosaicCore::ci.mean(!!annots$prob_level),
                                 median = median, sd = sd,
                                 summary = coverage(!!annots$prob_level),
+                                n = length(),
                                 na.action = "na.pass")
-
   P <- gf_jitter(formula, data = data, seed = 101,
                width = 0.10, height = jitter_height,
                alpha = point_alpha(nrow(data)))
@@ -128,7 +128,9 @@ center_spread_graph <- function(formula, data, yrange = NULL, labels = NULL,
 
   mod <- lm(mod_formula, data = data)
   mod_stats <- list(fitted = sd(fitted(mod), na.rm = TRUE),
-                    resid  = sd(resid(mod), na.rm = TRUE))
+                    resid  = sd(resid(mod), na.rm = TRUE),
+                    model = mod,
+                    stat_table = Stats)
 
 return(list(P = P, S = mod_stats))
 }

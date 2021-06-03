@@ -10,7 +10,6 @@ library(mosaicData)
 library(StatsUsingTechnologyData)
 library(openintro)
 library(Lock5Data)
-library(knitr)
 
 components <- LA_main(app_specifics = "regression_services.R",
                       covar = TRUE)

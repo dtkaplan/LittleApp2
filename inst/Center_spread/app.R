@@ -10,6 +10,8 @@ library(mosaicData)
 library(StatsUsingTechnologyData)
 library(openintro)
 library(Lock5Data)
+library(knitr)
+library(kableExtra)
 
 
 components <- LA_main(app_specifics = "Center_spread_services.R",

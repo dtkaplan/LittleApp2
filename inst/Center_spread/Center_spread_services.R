@@ -181,6 +181,18 @@ format_stats <- function(stats) { # A muggle function
 
     )
   })
+  Show_stats <- stats$stat_table %>%
+    mutate(`mean` = signif(mean, digits=3),
+           `95% CI` = paste0("[",
+           signif(mean_lower, digits=2), " to ",
+           signif(mean_upper, digits=2), "]"),
+           sd = signif(sd, digits=2),
+           median = signif(median ,digits=3),
+           # coverage = paste0("[", signif(summary_lower, digits=3), " to ",
+           #                  signif(summary_upper, digits=3), "]")
+           ) %>%
+    select(!!input$explanatory, mean, `95% CI`, sd, median, n) %>% #, coverage) %>%
+  knitr::kable(.) %>% kableExtra::kable_styling(.)
 
-  return(HTML(res))
+  return(HTML( paste(Show_stats, collapse="\n"), "<br>", res))
 }
