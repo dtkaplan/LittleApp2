@@ -42,7 +42,7 @@ app_specific_data <- reactive({
   explan_census <- raw_data()[[explanatory_name()]]
   data[2] <- dichotomize(data[[2]], explan_census, force = TRUE)
 
-  if ((!input$explanatory=="") && length(unique(explan_census)) > 2) {
+  if ((!is.null(input$explanatory)) && (!input$explanatory=="") && length(unique(explan_census)) > 2) {
     output$explain_explanatory <- renderText({
         glue::glue("The explanatory variable in a t test must be
         categorical with two levels. Converted the variable '{explanatory_name()}'
@@ -201,10 +201,11 @@ observeEvent(input$show_app_params, { #annotations, {
               This effectively turns off the explanatory variable.")
           },
           # checkboxInput("one_sample", "Ignore explanatory variable", value = Common$one_sample),
-          if (Common$one_sample)
+          if (Common$one_sample) {
             numericInput("mu", "Null hypothesis mu:", min  = resp_range[1],
                       max = resp_range[2], value = null_value_memory(),
-                     width = "100%"),
+                     width = "100%")
+            },
           tags$hr(),
 
       if (!Common$one_sample)
@@ -243,7 +244,8 @@ observeEvent(input$one_sample, {
   Common$one_sample <- input$one_sample
 })
 observeEvent(input$mu, {
-  null_value_memory(input$mu)
+  if( !is.null(input$mu) && input$mu != "" && !is.na(as.numeric(input$mu)))
+    null_value_memory(input$mu)
 })
 
 format_stats <- function(stats) {

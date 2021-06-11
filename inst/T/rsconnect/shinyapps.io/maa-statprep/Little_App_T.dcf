@@ -5,8 +5,9 @@ account: maa-statprep
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2174177
-bundleId: 3107464
+bundleId: 4706388
 url: https://maa-statprep.shinyapps.io/Little_App_T/
-when: 1588705077.1525
+when: 1623432111.27004
+lastSyncTime: 1623432111.27006
 asMultiple: FALSE
 asStatic: FALSE
