@@ -183,8 +183,8 @@ observeEvent(input$show_explain, {
         tags$ul(
           tags$li(tags$strong("Data"), "lets you pick the data set (also called a 'data frame')
                                           and variables you want to display. Buttons let you
-                  view to codebook for the data frame and provide and explanation of the
-                  particularly statistical method featured in the app."),
+                  view the codebook for the data frame and provide and explanation of the
+                  particular statistical method featured in the app."),
           tags$li(tags$strong("Graph"), "contains the main
                                           graphic displaying the data and statistical
                                           annotations."),
